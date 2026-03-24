@@ -125,3 +125,12 @@ background:#34495e;
     }
 
 }
+ a {
+    color: white;
+    margin: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}

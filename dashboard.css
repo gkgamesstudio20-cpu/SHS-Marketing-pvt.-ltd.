@@ -93,7 +93,7 @@ body {
     background: #2980b9;
 }
 
-sidebar {
+/* sidebar {
     background: #34495e;
     padding: 12px;
     text-align: center;
@@ -101,9 +101,9 @@ sidebar {
     top: 0;
     z-index: 1000;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
+} */
 
-sidebar a {
+ a {
     color: white;
     margin: 12px;
     text-decoration: none;
@@ -113,7 +113,3 @@ sidebar a {
     transition: all 0.3s ease;
 }
 
-sidebar a:hover {
-    background: #2ecc71;
-    color: white;
-}

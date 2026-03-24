@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Referral Link - SHS Marketing Pvt. Ltd.</title>
     <link rel="stylesheet" href="referral.css">
 </head>
@@ -14,9 +16,11 @@
 
         <div class="sidebar">
 
-            <h2>SHS Marketing Pvt. Ltd.</h2>
+          <a href="#" onclick="home()">
+                <h2>SHS Marketing Pvt. Ltd.</h2>
+            </a>
 
-               <ul>
+            <ul>
                 <li onclick="dashboard()">Dashboard</li>
                 <li onclick="Myteam()">My Team</li>
                 <!-- <li>Earnings</li> -->
@@ -38,7 +42,8 @@
 
                 <p>Share this link to invite new members:</p>
 
-                <input id="refLink" type="text" value="https://SHS-Marketing-Pvt.Ltd.com/register?ref=USER123" readonly>
+                <input id="refLink" type="text" value="https://SHS-Marketing-Pvt.Ltd.com/register?ref=USER123" readonly> 
+
 
                 <button onclick="copyLink()">Copy Link</button>
 
@@ -57,7 +62,7 @@
             alert("Referral link copied!");
         }
     </script>
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>

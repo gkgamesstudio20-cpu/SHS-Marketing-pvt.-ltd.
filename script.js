@@ -13,7 +13,7 @@ function login() {
 
 
 function dashboard() {
-    alert("SHS Marketing Pvt. Ltd.")
+    // alert("Profile saved successfully!");
     window.location.href = "dashboard.html";
 
 }
@@ -50,4 +50,11 @@ function logout() {
 
 function goTo(page) {
     window.location.href = page;
+}
+function home() {
+
+    // localStorage.removeItem("user");
+
+    window.location.href = "index.html";
+
 }
