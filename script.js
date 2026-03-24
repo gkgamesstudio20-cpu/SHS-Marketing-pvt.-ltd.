@@ -5,7 +5,7 @@ function register() {
 
 function login() {
 
-    localStorage.removeItem("user");
+    //localStorage.removeItem("user");
 
     window.location.href = "login.html";
 
