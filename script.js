@@ -55,6 +55,6 @@ function home() {
 
     // localStorage.removeItem("user");
 
-    window.location.href = "index.html";
+    window.location.href = "loginindex.html";
 
 }

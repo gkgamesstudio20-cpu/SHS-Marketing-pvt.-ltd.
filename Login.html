@@ -18,7 +18,9 @@
         <form id="loginForm">
 
             <label>Mobile Number</label>
-            <input type="tel"  id="loginMobile" placeholder="Enter your Mobile number" required>
+            <input type="tel" id="loginMobile" maxlength="10" pattern="[0-9]{10}" inputmode="numeric" placeholder="Enter your Mobile Number"  required> 
+           
+            <!-- <input type="tel"  id="loginMobile" placeholder="Enter your Mobile number" required> -->
 
             <label>Password</label>
             <input type="password" id="loginPassword" placeholder="Enter your password" required>
@@ -62,7 +64,7 @@
                             alert("Login Successful!");
 
                             // Redirect to dashboard
-                            window.location.href = "dashboard.html";
+                            window.location.href = "loginindex.html";
                         } else {
                             alert("Invalid Mobile Number or Password.");
                         }
