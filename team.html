@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My Team - SHS Marketing Pvt. Ltd.</title>
+    <link rel="stylesheet" href="team.css">
+</head>
+
+<body>
+
+    <div class="dashboard">
+
+        <!-- Sidebar -->
+
+        <div class="sidebar">
+
+            <h2>SHS Marketing Pvt. Ltd.</h2>
+
+               <ul>
+                <li onclick="dashboard()">Dashboard</li>
+                <li onclick="Myteam()">My Team</li>
+                <!-- <li>Earnings</li> -->
+                <!-- <li>Withdraw</li> -->
+                <li onclick="referal()">Referral Link</li>
+                <li onclick="profile()">Profile</li>
+                <li onclick="logout()">Logout</li>
+            </ul>
+
+
+        </div>
+
+        <!-- Main Content -->
+
+        <div class="main">
+
+            <h1>My Team</h1>
+
+            <table>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Level</th>
+                    <th>Join Date</th>
+                    <th>Status</th>
+                </tr>
+
+                <tr>
+                    <td>1001</td>
+                    <td>user1</td>
+                    <td>Level 1</td>
+                    <td>12 Mar 2026</td>
+                    <td class="active-status">Active</td>
+                </tr>
+
+                <tr>
+                    <td>1002</td>
+                    <td>user2</td>
+                    <td>Level 2</td>
+                    <td>15 Mar 2026</td>
+                    <td class="active-status">Active</td>
+                </tr>
+
+                <tr>
+                    <td>1003</td>
+                    <td>user3</td>
+                    <td>Level 2</td>
+                    <td>20 Mar 2026</td>
+                    <td class="inactive-status">Inactive</td>
+                </tr>
+
+                <tr>
+                    <td>1004</td>
+                    <td>user4</td>
+                    <td>Level 3</td>
+                    <td>25 Mar 2026</td>
+                    <td class="active-status">Active</td>
+                </tr>
+
+            </table>
+
+        </div>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

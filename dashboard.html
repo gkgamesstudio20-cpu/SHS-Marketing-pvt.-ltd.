@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Dashboard - SHS Marketing Pvt. Ltd.</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+
+    <div class="dashboard">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <a href="#"> <h2>SHS Marketing Pvt. Ltd.</h2></a>
+           
+
+            <ul>
+                <li onclick="dashboard()">Dashboard</li>
+                <li onclick="Myteam()">My Team</li>
+                <!-- <li>Earnings</li> -->
+                <!-- <li>Withdraw</li> -->
+                <li onclick="referal()">Referral Link</li>
+                <li onclick="profile()">Profile</li>
+                <li onclick="logout()">Logout</li>
+            </ul>
+
+        </div>
+
+        <!-- Main Content -->
+        <div class="main">
+
+            <h1>Dashboard</h1>
+
+            <div class="cards">
+
+                <div class="card">
+                    <h3>Total Earnings</h3>
+                    <p>₹500</p>
+                </div>
+
+                <div class="card">
+                    <h3>Team Members</h3>
+                    <p>25</p>
+                </div>
+
+                <div class="card">
+                    <h3>Direct Referrals</h3>
+                    <p>10</p>
+                </div>
+
+                <div class="card">
+                    <h3>Wallet Balance</h3>
+                    <p>₹120</p>
+                </div>
+
+            </div>
+
+            <div class="referral">
+
+                <h2>Your Referral Link</h2>
+
+                <input type="text" id="refeeralID" value="https://SHS-Marketing-Pvt.Ltd.com/register?ref=USER123"
+                    readonly>
+
+                <button onclick="copyrefeeralID()">Copy</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
