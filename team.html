@@ -8,6 +8,14 @@
     <link rel="stylesheet" href="team.css">
 </head>
 
+
+<script>var isLoggedIn = localStorage.getItem("isLoggedIn");
+
+    if (isLoggedIn !== "true") {
+        alert("Please login first");
+        window.location.href = "Login.html";
+    }</script>
+
 <body>
 
     <div class="dashboard">

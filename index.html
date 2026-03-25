@@ -1,56 +1,558 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index - SHS Marketing Pvt. Ltd.</title>
+    <meta name="description" content="SHS Marketing - Premium Network Platform for Financial Freedom">
+    <title>SHS Marketing - Premium Network Platform</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="style_SHS.css">
 </head>
-
 <body>
-
-    <header class="header">
-        <h1 class="site-title">SHS Marketing Pvt. Ltd.</h1>
-        <p class="site-tagline">Grow Your Business With Our Network</p>
-    </header>
-
-    <nav>
-        <a href="#">Home</a>
-        <a href="#" onclick="register()">Register</a>
-        <a href="#" onclick="login()">Login</a>
-        <!-- <a href="#" onclick="dashboard()">Dashboard</a> -->
+    <!-- Navbar -->
+    <nav class="navbar navbar-transparent">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">
+                <i class="fas fa-network-wired"></i>
+                <span>SHS Marketing</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="#benefits" class="nav-link">Benefits</a></li>
+                <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+                <li><a href="#pricing" class="nav-link">Pricing</a></li>
+            </ul>
+            <div class="nav-auth">
+                <button class="btn-outline small nav-login-btn" data-action="signin">Sign In</button>
+                <button class="btn-primary small nav-register-btn" data-action="getstarted">Get Started</button>
+            </div>
+        </div>
     </nav>
 
-    <section class="hero">
-        <h2>Grow Your Business With Our Network</h2>
-        <p>Join our team.</p>
-        <a class="btn" href="#" onclick="register()">Join Now</a>
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="hero-background">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Build Your Empire With SHS Marketing</h1>
+                <p class="hero-subtitle">Join a global network of successful entrepreneurs. Earn unlimited commissions, build your team, and create generational wealth.</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-value">50K+</span>
+                        <span class="stat-label">Active Members</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">₹100Cr+</span>
+                        <span class="stat-label">Paid Out</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">50+</span>
+                        <span class="stat-label">Countries</span>
+                    </div>
+                </div>
+                <div class="hero-buttons">
+                    <button class="btn-primary large" data-action="getstarted">Join Free Today</button>
+                    <button class="btn-secondary large" onclick="alert('Demo video coming soon!')">
+                        <i class="fas fa-play-circle"></i>
+                        Watch Demo
+                    </button>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="float-card card-1">
+                    <i class="fas fa-chart-line"></i>
+                    <p>Real-time Analytics</p>
+                </div>
+                <div class="float-card card-2">
+                    <i class="fas fa-users"></i>
+                    <p>Team Management</p>
+                </div>
+                <div class="float-card card-3">
+                    <i class="fas fa-wallet"></i>
+                    <p>Instant Payouts</p>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <!-- <section class="features">
-
-        <div class="card">
-            <h3>Referral System</h3>
-            <p>Invite friends and grow your downline.</p>
+    <!-- Stats Banner -->
+    <div class="stats-banner">
+        <div class="stats-item">
+            <div class="stats-icon">
+                <i class="fas fa-award"></i>
+            </div>
+            <h3>Industry Leading</h3>
+            <p>25+ years of excellence</p>
         </div>
-
-        <div class="card">
-            <h3>Commission</h3>
-            <p>Earn commissions from multiple levels.</p>
+        <div class="stats-item">
+            <div class="stats-icon">
+                <i class="fas fa-rocket"></i>
+            </div>
+            <h3>Fast Growth</h3>
+            <p>Double your income annually</p>
         </div>
-
-        <div class="card">
-            <h3>Secure Wallet</h3>
-            <p>Track your earnings easily.</p>
+        <div class="stats-item">
+            <div class="stats-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h3>Secure Platform</h3>
+            <p>Bank-level encryption</p>
         </div>
+        <div class="stats-item">
+            <div class="stats-icon">
+                <i class="fas fa-headset"></i>
+            </div>
+            <h3>24/7 Support</h3>
+            <p>Dedicated support team</p>
+        </div>
+    </div>
 
-    </section> -->
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <h2 class="section-title">How It Works</h2>
+        <div class="steps-container">
+            <div class="step-item">
+                <div class="step-number">1</div>
+                <i class="fas fa-user-plus step-icon"></i>
+                <h3>Register</h3>
+                <p>Sign up in under 2 minutes and get instant access to your personal dashboard</p>
+            </div>
+            <div class="step-item">
+                <div class="step-number">2</div>
+                <i class="fas fa-share-alt step-icon"></i>
+                <h3>Invite Friends</h3>
+                <p>Share your unique referral link and start building your network</p>
+            </div>
+            <div class="step-item">
+                <div class="step-number">3</div>
+                <i class="fas fa-coins step-icon"></i>
+                <h3>Earn Commissions</h3>
+                <p>Get commissions from your referrals and their referrals (unlimited levels)</p>
+            </div>
+            <div class="step-item">
+                <div class="step-number">4</div>
+                <i class="fas fa-trophy step-icon"></i>
+                <h3>Reach Milestones</h3>
+                <p>Unlock bonus rewards, special privileges, and higher commission rates</p>
+            </div>
+        </div>
+    </section>
 
-    <footer>
-        <p>© 2026 SHS Marketing Pvt. Ltd.</p>
+    <!-- Premium Features -->
+    <section id="features" class="premium-features">
+        <h2 class="section-title">Premium Features</h2>
+        <div class="features-container">
+            <div class="feature-box">
+                <div class="feature-header">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>Advanced Analytics</h3>
+                </div>
+                <p>Track your earnings, downline growth, and performance metrics in real-time with interactive dashboards.</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check"></i> Real-time earning tracking</li>
+                    <li><i class="fas fa-check"></i> Network visualization</li>
+                    <li><i class="fas fa-check"></i> Performance reports</li>
+                </ul>
+            </div>
+            <div class="feature-box">
+                <div class="feature-header">
+                    <i class="fas fa-users-cog"></i>
+                    <h3>Team Management</h3>
+                </div>
+                <p>Manage your entire team, track members, communicate instantly, and provide training materials.</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check"></i> Team hierarchy view</li>
+                    <li><i class="fas fa-check"></i> Member profiles</li>
+                    <li><i class="fas fa-check"></i> Communication tools</li>
+                </ul>
+            </div>
+            <div class="feature-box">
+                <div class="feature-header">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <h3>Instant Payouts</h3>
+                </div>
+                <p>Get paid instantly to your bank account, e-wallet, or cryptocurrency with zero transaction fees.</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check"></i> Multiple payment methods</li>
+                    <li><i class="fas fa-check"></i> 0% fees</li>
+                    <li><i class="fas fa-check"></i> 24/7 availability</li>
+                </ul>
+            </div>
+            <div class="feature-box">
+                <div class="feature-header">
+                    <i class="fas fa-store"></i>
+                    <h3>Replicated Stores</h3>
+                </div>
+                <p>Get your own branded store with personalized links, product recommendations, and social proof.</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check"></i> Personalized storefront</li>
+                    <li><i class="fas fa-check"></i> Custom domain</li>
+                    <li><i class="fas fa-check"></i> Product management</li>
+                </ul>
+            </div>
+            <div class="feature-box">
+                <div class="feature-header">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h3>Mobile App</h3>
+                </div>
+                <p>Access your entire network and earnings from anywhere with our native mobile applications.</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check"></i> iOS & Android</li>
+                    <li><i class="fas fa-check"></i> Push notifications</li>
+                    <li><i class="fas fa-check"></i> Offline access</li>
+                </ul>
+            </div>
+            <div class="feature-box">
+                <div class="feature-header">
+                    <i class="fas fa-brain"></i>
+                    <h3>AI Training Hub</h3>
+                </div>
+                <p>Access personalized training content, webinars, and coaching from top earners in the platform.</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check"></i> Video tutorials</li>
+                    <li><i class="fas fa-check"></i> Live webinars</li>
+                    <li><i class="fas fa-check"></i> Mentorship</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Commission Section -->
+    <section class="commission-section">
+        <h2 class="section-title">Unlimited Commission Structure</h2>
+        <div class="commission-grid">
+            <div class="commission-card">
+                <div class="commission-level">Level 1</div>
+                <div class="commission-rate">20%</div>
+                <p>Direct Referrals</p>
+                <div class="commission-badge">Unlimited</div>
+            </div>
+            <div class="commission-card">
+                <div class="commission-level">Level 2</div>
+                <div class="commission-rate">10%</div>
+                <p>Your Team's Referrals</p>
+                <div class="commission-badge">Unlimited</div>
+            </div>
+            <div class="commission-card">
+                <div class="commission-level">Level 3</div>
+                <div class="commission-rate">5%</div>
+                <p>Extended Network</p>
+                <div class="commission-badge">Unlimited</div>
+            </div>
+            <div class="commission-card">
+                <div class="commission-level">Level 4+</div>
+                <div class="commission-rate">2%</div>
+                <p>Passive Income</p>
+                <div class="commission-badge">Unlimited Levels</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Preview -->
+    <section id="benefits" class="dashboard-section">
+        <h2 class="section-title">Your Personal Dashboard</h2>
+        <div class="dashboard-preview">
+            <div class="dashboard-card earnings">
+                <h4>Total Earnings</h4>
+                <div class="earnings-value">₹2,45,890</div>
+                <div class="earnings-growth">↑ 25% this month</div>
+            </div>
+            <div class="dashboard-card members">
+                <h4>Active Members</h4>
+                <div class="members-value">342</div>
+                <div class="members-info">+45 this week</div>
+            </div>
+            <div class="dashboard-card payout">
+                <h4>Available Payout</h4>
+                <div class="payout-value">₹54,320</div>
+                <button class="btn-small" data-action="getstarted">Withdraw Now</button>
+            </div>
+            <div class="dashboard-card network">
+                <h4>Network Level</h4>
+                <div class="network-badge">Gold Member</div>
+                <p>Next: Platinum (500 members)</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials-section">
+        <h2 class="section-title">Success Stories</h2>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="testimonial-header">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=1" alt="Raj Kumar">
+                    <div>
+                        <h4>Raj Kumar</h4>
+                        <span class="role">Platinum Member</span>
+                    </div>
+                </div>
+                <div class="rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p>"I started with nothing and built a network of 2000+ members. Now I earn ₹5 lakhs monthly!"</p>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-header">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=2" alt="Priya Singh">
+                    <div>
+                        <h4>Priya Singh</h4>
+                        <span class="role">Diamond Member</span>
+                    </div>
+                </div>
+                <div class="rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p>"The support team is amazing! They helped me grow from 0 to 5000 members in just one year."</p>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-header">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=3" alt="Ahmed Hassan">
+                    <div>
+                        <h4>Ahmed Hassan</h4>
+                        <span class="role">Gold Member</span>
+                    </div>
+                </div>
+                <div class="rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p>"Best platform ever! The commission structure is transparent and the payouts are instant."</p>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-header">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=4" alt="Neha Patel">
+                    <div>
+                        <h4>Neha Patel</h4>
+                        <span class="role">Silver Member</span>
+                    </div>
+                </div>
+                <div class="rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p>"Started earning from day one. Their training materials are top-notch!"</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing-section">
+        <h2 class="section-title">Simple, Transparent Pricing</h2>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3>Starter</h3>
+                <div class="price">FREE</div>
+                <p class="price-desc">Get started immediately</p>
+                <ul class="pricing-list">
+                    <li><i class="fas fa-check"></i> Basic Dashboard</li>
+                    <li><i class="fas fa-check"></i> Referral Links</li>
+                    <li><i class="fas fa-check"></i> Commission Tracking</li>
+                    <li><i class="fas fa-times"></i> Advanced Analytics</li>
+                    <li><i class="fas fa-times"></i> Team Management</li>
+                </ul>
+                <button class="btn-primary full" data-action="getstarted">Get Started</button>
+            </div>
+            <div class="pricing-card featured">
+                <div class="badge">Most Popular</div>
+                <h3>Professional</h3>
+                <div class="price">₹500 <span>/-</span></div>
+                <p class="price-desc">For serious entrepreneurs</p>
+                <ul class="pricing-list">
+                    <li><i class="fas fa-check"></i> Advanced Dashboard</li>
+                    <li><i class="fas fa-check"></i> Referral Links</li>
+                    <li><i class="fas fa-check"></i> Commission Tracking</li>
+                    <li><i class="fas fa-check"></i> Advanced Analytics</li>
+                    <li><i class="fas fa-check"></i> Team Management</li>
+                </ul>
+                <button class="btn-primary full" data-action="getstarted">Upgrade Now</button>
+            </div>
+            <div class="pricing-card">
+                <h3>Elite</h3>
+                <div class="price">₹1,000 <span>/-</span></div>
+                <p class="price-desc">Premium experience</p>
+                <ul class="pricing-list">
+                    <li><i class="fas fa-check"></i> Everything in Pro</li>
+                    <li><i class="fas fa-check"></i> Priority Support</li>
+                    <li><i class="fas fa-check"></i> Personal Mentor</li>
+                    <li><i class="fas fa-check"></i> Exclusive Events</li>
+                    <li><i class="fas fa-check"></i> Custom Store</li>
+                </ul>
+                <button class="btn-primary full" data-action="getstarted">Upgrade Now</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <div class="faq-container">
+            <div class="faq-item">
+                <button class="faq-question">
+                    Is SHS Marketing legitimate?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Yes, we are a registered company with 25+ years of history, operating in 50+ countries with transparent commission structures and compliance with all regulations.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    How much can I earn?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Your earnings depend on your effort and network size. Some members earn ₹50,000 monthly, while top earners make ₹10+ lakhs monthly from commissions alone.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    Is there a registration fee?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>No! Basic registration is completely free. You can upgrade to Pro or Elite plans anytime to unlock advanced features.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    How do I get my first referral?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>You get a unique referral link immediately after registration. Share it on social media, via email, or with friends and family to start earning.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    When do I get paid?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Payouts are processed instantly to your bank account, wallet, or crypto address. You can withdraw anytime without minimum limits.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Final -->
+    <section class="cta-final">
+        <h2>Ready to Transform Your Financial Future?</h2>
+        <p>Join thousands of successful entrepreneurs building their dreams with SHS Marketing</p>
+        <button class="btn-secondary large journey-link" data-action="journey">
+            Start Your Journey Today
+            <i class="fas fa-arrow-right"></i>
+        </button>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h4>About SHS Marketing</h4>
+                <p>Building the world's most trusted network platform for entrepreneurs worldwide.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#contact">Contact Us</a></li>
+                    <li><a href="#help">Help Center</a></li>
+                    <li><a href="#terms">Terms of Service</a></li>
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Contact Info</h4>
+                <ul>
+                    <li><i class="fas fa-envelope"></i> support@shsmarketing.com</li>
+                    <li><i class="fas fa-phone"></i> +91 1234-567-890</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Mumbai, India</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 SHS Marketing Pvt. Ltd. All rights reserved.</p>
+        </div>
     </footer>
+
+    <!-- Registration Modal -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('register-modal').style.display='none'">&times;</span>
+            <h2>Join SHS Marketing Today</h2>
+            <form id="registration-form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Enter 10-digit mobile number" maxlength="10" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create password" required>
+                </div>
+                <div class="form-group checkbox">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">I agree to the Terms of Service and Privacy Policy</label>
+                </div>
+                <button type="submit" class="btn-primary full">Create Account</button>
+            </form>
+            <p style="text-align: center; margin-top: 20px; color: var(--text-secondary);">
+                Already have an account? <a href="login.html" style="color: var(--primary); font-weight: 600;">Login here</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
     <script src="script.js"></script>
 </body>
-
 </html>

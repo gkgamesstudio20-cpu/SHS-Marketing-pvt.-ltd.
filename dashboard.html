@@ -1,80 +1,563 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dashboard - SHS Marketing Pvt. Ltd.</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- CSS -->
     <link rel="stylesheet" href="dashboard.css">
 </head>
-
 <body>
-
-    <div class="dashboard">
+    <div class="dashboard-container">
         <!-- Sidebar -->
-        <div class="sidebar">
-            <a href="#" onclick="home()">
-                <h2>SHS Marketing Pvt. Ltd.</h2>
-            </a>
-            <ul>
-                <li onclick="dashboard()">Dashboard</li>
-                <li onclick="Myteam()">My Team</li>
-                <!-- <li>Earnings</li> -->
-                <!-- <li>Withdraw</li> -->
-                <li onclick="referal()">Referral Link</li>
-                <li onclick="profile()">Profile</li>
-                <li onclick="logout()">Logout</li>
-            </ul>
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-chart-line"></i>
+                    <div>
+                        <h2>SHS Marketing</h2>
+                        <p>Premium Network</p>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="nav-item active">
+                        <a href="#dashboard" onclick="showDashboard()">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#myteam" onclick="Myteam()">
+                            <i class="fas fa-users"></i>
+                            <span>My Team</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#earnings" onclick="showEarnings()">
+                            <i class="fas fa-wallet"></i>
+                            <span>Earnings</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#withdraw" onclick="showWithdraw()">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span>Withdraw</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#referral" onclick="referal()">
+                            <i class="fas fa-share-alt"></i>
+                            <span>Referral Link</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#profile" onclick="profile()">
+                            <i class="fas fa-user"></i>
+                            <span>Profile</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
 
-        </div>
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
 
         <!-- Main Content -->
-        <div class="main">
+        <main class="main-content">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <h1 id="page-title">Dashboard</h1>
+                    <div class="breadcrumb">Good morning, <strong>User</strong>! 👋</div>
+                </div>
+                <div class="header-right">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search...">
+                    </div>
+                    <div class="header-icons">
+                        <button class="icon-btn">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge">3</span>
+                        </button>
+                        <button class="icon-btn">
+                            <i class="fas fa-envelope"></i>
+                        </button>
+                    </div>
+                    <div class="user-profile">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user" alt="User Profile">
+                    </div>
+                </div>
+            </header>
 
-            <h1>Dashboard</h1>
-
-            <div class="cards">
-
-                <div class="card">
-                    <h3>Total Earnings</h3>
-                    <p>₹500</p>
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <div class="section-header">
+                    <h1>Welcome back, <span id="user-name">User</span>! 👋</h1>
+                    <p>Here's what's happening with your account today</p>
                 </div>
 
-                <div class="card">
-                    <h3>Team Members</h3>
-                    <p>25</p>
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card card-primary">
+                        <div class="card-icon">
+                            <i class="fas fa-rupee-sign"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Total Earnings</h3>
+                            <div class="card-value">₹500</div>
+                            <div class="card-info">+12% from last month</div>
+                        </div>
+                    </div>
+                    <div class="stat-card card-success">
+                        <div class="card-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Team Members</h3>
+                            <div class="card-value">25</div>
+                            <div class="card-info">+5 new this month</div>
+                        </div>
+                    </div>
+                    <div class="stat-card card-warning">
+                        <div class="card-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Direct Referrals</h3>
+                            <div class="card-value">10</div>
+                            <div class="card-info">+2 pending</div>
+                        </div>
+                    </div>
+                    <div class="stat-card card-info">
+                        <div class="card-icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>Wallet Balance</h3>
+                            <div class="card-value">₹120</div>
+                            <div class="card-info">Ready to withdraw</div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="card">
-                    <h3>Direct Referrals</h3>
-                    <p>10</p>
+                <!-- Dashboard Grid -->
+                <div class="dashboard-grid">
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <h2>Earnings Overview</h2>
+                            <div class="chart-controls">
+                                <button class="active">Week</button>
+                                <button>Month</button>
+                                <button>Year</button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="earningsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="activity-card">
+                        <div class="card-header">
+                            <h2>Recent Activity</h2>
+                            <a href="#" class="view-all">View All</a>
+                        </div>
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-icon success">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <div class="activity-title">New referral added</div>
+                                    <div class="activity-time">2 hours ago</div>
+                                </div>
+                                <div class="activity-value">+₹150</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon info">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <div class="activity-title">Commission credited</div>
+                                    <div class="activity-time">5 hours ago</div>
+                                </div>
+                                <div class="activity-value">+₹300</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon warning">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <div class="activity-title">Withdrawal processed</div>
+                                    <div class="activity-time">1 day ago</div>
+                                </div>
+                                <div class="activity-value">-₹500</div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon warning">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="activity-details">
+                                    <div class="activity-title">Pending verification</div>
+                                    <div class="activity-time">3 days ago</div>
+                                </div>
+                                <div class="activity-value">Pending</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="card">
-                    <h3>Wallet Balance</h3>
-                    <p>₹120</p>
+                <!-- Referral Section -->
+                <div class="referral-section">
+                    <div class="referral-card">
+                        <div class="referral-header">
+                            <h2>Your Referral ID</h2>
+                            <p>Share this ID with your friends to earn commissions</p>
+                        </div>
+                        <div class="referral-content">
+                            <div class="referral-input-group">
+                                <input type="text" id="referralID" class="referral-input" value="USER_123456" readonly>
+                                <button class="copy-btn" onclick="copyReferralID()">
+                                    <i class="fas fa-copy"></i>
+                                    Copy
+                                </button>
+                            </div>
+                            <div class="referral-url">
+                                <strong>Full Referral Link:</strong>
+                                <code id="referral-link">https://shsmarketing.com/ref/USER_123456</code>
+                                <button class="copy-btn" onclick="copyReferralLink()" style="margin-top: 10px;">
+                                    <i class="fas fa-link"></i>
+                                    Copy Link
+                                </button>
+                            </div>
+                        </div>
+                        <div class="referral-stats">
+                            <div class="referral-stat">
+                                <span class="label">Total Referrals</span>
+                                <span class="value">25</span>
+                            </div>
+                            <div class="referral-stat">
+                                <span class="label">Active Referrals</span>
+                                <span class="value">22</span>
+                            </div>
+                            <div class="referral-stat">
+                                <span class="label">Earnings from Referrals</span>
+                                <span class="value">₹4,500</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- My Team Section -->
+            <section id="myteam" class="content-section">
+                <div class="section-header">
+                    <h1>My Team</h1>
+                    <p>Manage and track your team members</p>
                 </div>
 
-            </div>
+                <div class="team-stats">
+                    <div class="team-stat-item">
+                        <h3>Total Members</h3>
+                        <div class="team-stat-value">25</div>
+                    </div>
+                    <div class="team-stat-item">
+                        <h3>Active Members</h3>
+                        <div class="team-stat-value">22</div>
+                    </div>
+                    <div class="team-stat-item">
+                        <h3>Team Earnings</h3>
+                        <div class="team-stat-value">₹8,500</div>
+                    </div>
+                    <div class="team-stat-item">
+                        <h3>Pending Approvals</h3>
+                        <div class="team-stat-value">3</div>
+                    </div>
+                </div>
 
-            <div class="referral">
+                <div class="table-card">
+                    <div class="table-header">
+                        <h2>Team Members List</h2>
+                        <input type="text" class="search-input" placeholder="Search members...">
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Status</th>
+                                    <th>Earnings</th>
+                                    <th>Joined</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Raj Kumar</td>
+                                    <td>raj@example.com</td>
+                                    <td>+91-9876543210</td>
+                                    <td><span class="status-badge active">Active</span></td>
+                                    <td>₹2,500</td>
+                                    <td>Jan 15, 2024</td>
+                                    <td><button class="action-btn">View</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Priya Singh</td>
+                                    <td>priya@example.com</td>
+                                    <td>+91-8765432109</td>
+                                    <td><span class="status-badge active">Active</span></td>
+                                    <td>₹1,800</td>
+                                    <td>Jan 10, 2024</td>
+                                    <td><button class="action-btn">View</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Ahmed Hassan</td>
+                                    <td>ahmed@example.com</td>
+                                    <td>+91-7654321098</td>
+                                    <td><span class="status-badge pending">Pending</span></td>
+                                    <td>₹0</td>
+                                    <td>Jan 20, 2024</td>
+                                    <td><button class="action-btn">Approve</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
 
-                <h2>Your Referral Link</h2>
+            <!-- Earnings Section -->
+            <section id="earnings" class="content-section">
+                <div class="section-header">
+                    <h1>Earnings Report</h1>
+                    <p>View your detailed earnings and commission breakdown</p>
+                </div>
 
-                <input type="text" id="refeeralID" value="https://SHS-Marketing-Pvt.Ltd.com/register?ref=USER123"
-                    readonly>
+                <div class="earnings-grid">
+                    <div class="earnings-card">
+                        <h3>Commission Income</h3>
+                        <div class="earnings-amount">₹3,500</div>
+                        <div class="earnings-detail">From 25 referrals</div>
+                    </div>
+                    <div class="earnings-card">
+                        <h3>Bonus Income</h3>
+                        <div class="earnings-amount">₹1,000</div>
+                        <div class="earnings-detail">Monthly bonus</div>
+                    </div>
+                    <div class="earnings-card">
+                        <h3>Total Withdrawn</h3>
+                        <div class="earnings-amount">₹2,000</div>
+                        <div class="earnings-detail">Till date</div>
+                    </div>
+                    <div class="earnings-card">
+                        <h3>Pending Balance</h3>
+                        <div class="earnings-amount">₹2,500</div>
+                        <div class="earnings-detail">Available to withdraw</div>
+                    </div>
+                </div>
 
-                <button onclick="copyrefeeralID()">Copy</button>
+                <div class="table-card">
+                    <div class="table-header">
+                        <h2>Earnings History</h2>
+                        <input type="text" class="search-input" placeholder="Search transactions...">
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2024-01-25</td>
+                                    <td>Commission from referral</td>
+                                    <td>Commission</td>
+                                    <td style="color: var(--success);">+₹150</td>
+                                    <td><span class="status-badge active">Credited</span></td>
+                                </tr>
+                                <tr>
+                                    <td>2024-01-24</td>
+                                    <td>Monthly bonus</td>
+                                    <td>Bonus</td>
+                                    <td style="color: var(--success);">+₹500</td>
+                                    <td><span class="status-badge active">Credited</span></td>
+                                </tr>
+                                <tr>
+                                    <td>2024-01-20</td>
+                                    <td>Withdrawal processed</td>
+                                    <td>Withdrawal</td>
+                                    <td style="color: var(--danger);">-₹1,000</td>
+                                    <td><span class="status-badge active">Processed</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
 
-            </div>
+            <!-- Withdraw Section -->
+            <section id="withdraw" class="content-section">
+                <div class="section-header">
+                    <h1>Withdraw Funds</h1>
+                    <p>Request withdrawal to your bank account</p>
+                </div>
 
-        </div>
+                <div class="withdraw-container">
+                    <div class="withdraw-card">
+                        <h2>Withdrawal Request</h2>
+                        <form id="withdraw-form" class="withdraw-form">
+                            <div class="form-group">
+                                <label>Available Balance</label>
+                                <input type="text" value="₹2,500" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="withdraw-amount">Withdrawal Amount</label>
+                                <input type="number" id="withdraw-amount" placeholder="Enter amount" min="100" max="2500">
+                                <small>Minimum: ₹100 | Maximum: ₹2,500</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Withdrawal Method</label>
+                                <select>
+                                    <option>Bank Transfer</option>
+                                    <option>UPI</option>
+                                    <option>Wallet</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Bank Account</label>
+                                <select>
+                                    <option>Select account...</option>
+                                    <option>State Bank (***9876)</option>
+                                    <option>HDFC Bank (***5432)</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="submit-btn">
+                                <i class="fas fa-paper-plane"></i>
+                                Request Withdrawal
+                            </button>
+                        </form>
+                    </div>
 
+                    <div class="withdrawal-history">
+                        <h2>Withdrawal History</h2>
+                        <div class="history-list">
+                            <div class="history-item">
+                                <div class="history-info">
+                                    <div class="history-title">Withdrawal Processed</div>
+                                    <div class="history-date">2024-01-20</div>
+                                </div>
+                                <div class="history-amount">-₹1,000</div>
+                                <span class="status-badge active">Completed</span>
+                            </div>
+                            <div class="history-item">
+                                <div class="history-info">
+                                    <div class="history-title">Withdrawal Requested</div>
+                                    <div class="history-date">2024-01-15</div>
+                                </div>
+                                <div class="history-amount">-₹500</div>
+                                <span class="status-badge pending">Pending</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Profile Section -->
+            <section id="profile" class="content-section">
+                <div class="section-header">
+                    <h1>My Profile</h1>
+                    <p>Manage your personal information</p>
+                </div>
+
+                <div class="profile-container">
+                    <div class="profile-header">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user" alt="Profile" class="profile-image">
+                        <div class="profile-info">
+                            <h2 id="profile-name">John Doe</h2>
+                            <p id="profile-email">john@example.com</p>
+                            <span class="member-badge">Gold Member</span>
+                        </div>
+                    </div>
+
+                    <form class="profile-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input type="text" value="John">
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input type="text" value="Doe">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" value="john@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="tel" value="+91-9876543210">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>City</label>
+                                <input type="text" value="Mumbai">
+                            </div>
+                            <div class="form-group">
+                                <label>State</label>
+                                <input type="text" value="Maharashtra">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Address</label>
+                            <textarea rows="3">123 Main Street, Mumbai</textarea>
+                        </div>
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-save"></i>
+                            Save Changes
+                        </button>
+                    </form>
+                </div>
+            </section>
+        </main>
     </div>
 
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-    <script src="script.js"></script>
-
+    <!-- JavaScript -->
+    <script src="dashboard.js"></script>
 </body>
-
 </html>

@@ -1,31 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logout</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Logout - SHS Marketing Pvt. Ltd.</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS -->
     <link rel="stylesheet" href="logout.css">
 </head>
-
 <body>
-
-    <div class="login-container">
-
-        <h2>Logout</h2>
-
-        <p style="text-align:center;">Are you sure you want to logout?</p>
-
-        <button onclick="login()">Logout</button>
-
-        <div class="register-link">
-            <a href="dashboard.html">Cancel</a>
+    <div class="logout-container">
+        <div class="logout-card">
+            <div class="logout-icon">
+                <i class="fas fa-sign-out-alt"></i>
+            </div>
+            
+            <h1>Logout</h1>
+            <p>Are you sure you want to logout from your account?</p>
+            
+            <div class="logout-info">
+                <div class="info-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Your session will be ended</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-redo"></i>
+                    <span>You'll need to login again to access dashboard</span>
+                </div>
+            </div>
+            
+            <div class="logout-actions">
+                <a href="dashboard.html" class="btn-cancel">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </a>
+                <button class="btn-logout" onclick="confirmLogout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Yes, Logout
+                </button>
+            </div>
+            
+            <div class="logout-footer">
+                <p>Need help? <a href="mailto:support@shsmarketing.com">Contact Support</a></p>
+            </div>
         </div>
-
     </div>
-
-   
-    <script src="script.js"></script>
+    
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
+    
+    <!-- JavaScript -->
+    <script src="logout.js"></script>
 </body>
-
 </html>

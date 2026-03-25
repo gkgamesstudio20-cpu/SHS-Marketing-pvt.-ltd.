@@ -10,12 +10,27 @@
     <link rel="stylesheet" href="profile.css">
 </head>
 
+<script>var isLoggedIn = localStorage.getItem("isLoggedIn");
+
+    if (isLoggedIn !== "true") {
+        alert("Please login first");
+        window.location.href = "Login.html";
+
+    }
+
+
+</script>
+
+
+
+
+
 <body>
     <div class="dashboard">
 
         <!-- Sidebar -->
         <div class="sidebar">
-          <a href="#" onclick="home()">
+            <a href="#" onclick="home()">
                 <h2>SHS Marketing Pvt. Ltd.</h2>
             </a>
 
@@ -34,9 +49,8 @@
 
 
         <!-- <h2>User Profile</h2> -->
+        <form class="profile-form" id="profileForm" action="https://sheetdb.io/api/v1/1vusgww3lbhtc" method="post">
 
-
-        <form class="profile-form">
 
 
             <h3>Personal Information</h3>
@@ -47,45 +61,47 @@
 
                 <div class="form-group">
                     <label>Full Name</label>
-                    <input type="text" placeholder="Enter full name">
+                    <input type="text" id="fullName" placeholder="Enter full name" name="data[Full Name]" required>
                 </div>
 
                 <div class="form-group">
                     <label>Gender</label>
-                    <select>
+                    <select type="text" id="gender" name="data[Gender]" required>
                         <option>Male</option>
                         <option>Female</option>
+                        <option>Other</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label>Mobile Number</label>
-                    <input type="tel" placeholder="Enter mobile number">
+                    <input type="tel" id="mobile" maxlength="10" pattern="[0-9]{10}" inputmode="numeric"
+                        placeholder="Enter mobile number" name="data[Mobile Number]" required>
                 </div>
 
                 <div class="form-group">
                     <label>Email ID</label>
-                    <input type="email" placeholder="Enter email">
+                    <input type="email" id="email" placeholder="Enter email" name="data[Email]" required>
                 </div>
 
                 <div class="form-group">
                     <label>State</label>
-                    <input type="text" placeholder="Enter state">
+                    <input type="text" id="state" placeholder="Enter state" name="data[State]" required>
                 </div>
 
                 <div class="form-group">
                     <label>District</label>
-                    <input type="text" placeholder="Enter district">
+                    <input type="text" id="district" placeholder="Enter district" name="data[District]" required>
                 </div>
 
                 <div class="form-group">
                     <label>City</label>
-                    <input type="text" placeholder="Enter city">
+                    <input type="text" id="city" placeholder="Enter city" name="data[City]" required>
                 </div>
 
                 <div class="form-group">
                     <label>Sponsor ID</label>
-                    <input type="text" placeholder="Sponsor ID">
+                    <input type="text" id="sponsorId" placeholder="Sponsor ID" name="data[Sponsor ID]" readonly>
                 </div>
 
             </div>
@@ -97,17 +113,19 @@
 
                 <div class="form-group">
                     <label>Nominee Name</label>
-                    <input type="text">
+                    <input type="text" id="nomineename" placeholder="Nominee Name" name="data[Nominee Name]" required>
                 </div>
 
                 <div class="form-group">
                     <label>Relation With Nominee</label>
-                    <input type="text">
+                    <input type="text" id="nomineerelation" placeholder="Relation With Nominee"
+                        name="data[Relation With Nominee]" required>
                 </div>
 
                 <div class="form-group">
                     <label>Nominee Mobile Number</label>
-                    <input type="text">
+                    <input type="text" id="nomineemobile" maxlength="10" pattern="[0-9]{10}" inputmode="numeric"
+                        placeholder="Nominee Mobile Number" name="data[Nominee Mobile Number]" required>
                 </div>
 
             </div>
@@ -119,27 +137,27 @@
 
                 <div class="form-group">
                     <label>Account Holder Name</label>
-                    <input type="text">
+                    <input type="text" placeholder="Account Holder Name" name="data[Account Holder Name]" required>
                 </div>
 
                 <div class="form-group">
                     <label>Bank Name</label>
-                    <input type="text">
+                    <input type="text" placeholder="Bank Name" name="data[Bank Name]" required>
                 </div>
 
                 <div class="form-group">
                     <label>Account Number</label>
-                    <input type="text">
+                    <input type="text" placeholder="Account Number" name="data[Account Number]" required>
                 </div>
 
                 <div class="form-group">
                     <label>IFSC Code</label>
-                    <input type="text">
+                    <input type="text" placeholder="IFSC Code" name="data[IFSC Code]" required>
                 </div>
 
                 <div class="form-group">
                     <label>Branch</label>
-                    <input type="text">
+                    <input type="text" placeholder="Branch" name="data[Branch]" required>
                 </div>
 
             </div>
@@ -151,23 +169,291 @@
 
                 <div class="form-group">
                     <label>PAN Number</label>
-                    <input type="text">
+                    <input type="text" style="text-transform: uppercase" placeholder="PAN Number"
+                        name="data[PAN Number]" required>
                 </div>
 
                 <div class="form-group">
                     <label>Aadhar Card Number</label>
-                    <input type="text">
+                    <input type="text" placeholder="Aadhar Card Number" name="data[Aadhar Card Number]" required>
                 </div>
 
             </div>
 
-            <button class="save-btn" onclick="dashboard()">Save Profile</button>
+            <button type="submit" class="save-btn">
+                Save Profile
+            </button>
+
+            <!-- <button class="save-btn" onclick="dashboard()">Save Profile</button> -->
 
         </form>
 
+
+
+
+
+
+        <!-- 
+        <script>
+            var form = document.getElementById("profileForm");
+
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                var formData = new FormData(form);
+
+                fetch(form.action, {
+                    method: "POST",
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert("Profile saved successfully!");
+                        window.location.href = "dashboard.html";
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert("Error saving profile.");
+                    });
+
+            });
+        </script> -->
+
+
+        <script>
+            const apiURL = "https://sheetdb.io/api/v1/1vusgww3lbhtc";
+
+            var form = document.getElementById("profileForm");
+
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                var mobile = localStorage.getItem("loggedInMobile");
+
+                if (!mobile) {
+                    alert("Please login first");
+                    window.location.href = "Login.html";
+                    return;
+                }
+
+                var formData = new FormData(form);
+
+                // Step 1 — Check if user exists
+                fetch(apiURL)
+                    .then(response => response.json())
+                    .then(data => {
+
+                        var userExists = data.some(function (item) {
+                            return item["Mobile Number"] === mobile;
+                        });
+
+                        // Step 2 — If exists → UPDATE
+                        if (userExists) {
+
+                            fetch(apiURL + "/Mobile Number/" + mobile, {
+                                method: "PATCH",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({
+                                    data: Object.fromEntries(formData)
+                                })
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    alert("Profile Updated Successfully");
+                                    window.location.href = "dashboard.html";
+                                });
+
+                        }
+
+                        // Step 3 — If not exists → CREATE
+                        else {
+
+                            fetch(apiURL, {
+                                method: "POST",
+                                body: formData
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    alert("Profile Saved Successfully");
+                                    window.location.href = "dashboard.html";
+                                });
+
+                        }
+
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert("Server error");
+                    });
+
+            });
+        </script>
+
+
+
     </div>
 
+
+
+
+
+
+
+
+
+
+
+
+    <!-- <script>
+        const apiURL = "https://sheetdb.io/api/v1/1vusgww3lbhtc";
+
+        var mobile = localStorage.getItem("loggedInMobile");
+
+        if (!mobile) {
+            alert("Please login first");
+            window.location.href = "Login.html";
+        }
+
+        fetch(apiURL)
+            .then(response => response.json())
+            .then(data => {
+
+                var user = data.find(function (item) {
+                    return item["Mobile Number"] === mobile;
+                });
+
+                if (user) {
+                    
+                    // document.getElementById("User ID").value =
+                    //     user["User ID"] || "";
+
+                    document.getElementById("fullName").value =
+                        user["Full Name"] || "";
+
+                    document.getElementById("gender").value =
+                        user["Gender"] || "";
+
+                    document.getElementById("mobile").value =
+                        user["Mobile Number"] || "";
+
+                    document.getElementById("email").value =
+                        user["Email"] || "";
+
+                    document.getElementById("state").value =
+                        user["State"] || "";
+
+                    document.getElementById("district").value =
+                        user["District"] || "";
+
+                    document.getElementById("city").value =
+                        user["City"] || "";
+
+                    document.getElementById("sponsorId").value =
+                        user["Sponsor ID"] || "";
+
+                    document.getElementById("nomineename").value =
+                        user["Nominee Name"] || "";
+
+                    document.getElementById("nomineerelation").value =
+                        user["Relation With Nominee"] || "";
+
+                    document.getElementById("nomineemobile").value =
+                        user["Nominee Mobile Number"] || "";
+
+                }
+
+            });
+
+
+
+
+
+
+
+
+
+    </script>
+
+
+ -->
+
+
     <script src="script.js"></script>
+
+
+
+
+    <script>
+        const apiURL = "https://sheetdb.io/api/v1/1vusgww3lbhtc";
+
+        // Get logged-in mobile
+        var mobile = localStorage.getItem("loggedInMobile");
+
+        if (!mobile) {
+            alert("Please login first");
+            window.location.href = "Login.html";
+        }
+
+        // Fetch user data
+        fetch(apiURL)
+            .then(response => response.json())
+            .then(data => {
+
+                // Find user by Mobile Number
+                var user = data.find(function (item) {
+                    return item["Mobile Number"] === mobile;
+                });
+
+                if (user) {
+
+                    document.getElementById("fullName").value =
+                        user["Full Name"] || "";
+
+                    document.getElementById("gender").value =
+                        user["Gender"] || "";
+
+                    document.getElementById("mobile").value =
+                        user["Mobile Number"] || "";
+
+                    document.getElementById("email").value =
+                        user["Email"] || "";
+
+                    document.getElementById("state").value =
+                        user["State"] || "";
+
+                    document.getElementById("district").value =
+                        user["District"] || "";
+
+                    document.getElementById("city").value =
+                        user["City"] || "";
+
+                    document.getElementById("sponsorId").value =
+                        user["Sponsor ID"] || "";
+
+                    document.getElementById("nomineename").value =
+                        user["Nominee Name"] || "";
+
+                    document.getElementById("nomineerelation").value =
+                        user["Relation With Nominee"] || "";
+
+                    document.getElementById("nomineemobile").value =
+                        user["Nominee Mobile Number"] || "";
+
+                } else {
+
+                    console.log("User not found");
+
+                }
+
+            })
+            .catch(error => {
+                console.error("Fetch error:", error);
+            });
+    </script>
+
+
 </body>
 
 </html>

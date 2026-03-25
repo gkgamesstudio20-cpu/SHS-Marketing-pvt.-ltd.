@@ -1,139 +1,323 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Register with SHS Marketing Pvt. Ltd. - Start your journey to financial freedom">
     <title>Register - SHS Marketing Pvt. Ltd.</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="style_SHS.css">
     <link rel="stylesheet" href="register.css">
 </head>
-
 <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">
+                <i class="fas fa-network-wired"></i>
+                <span>SHS Marketing</span>
+            </a>
+            <div class="nav-auth">
+                <a href="login.html" class="btn-outline small">Login</a>
+                <a href="register.html" class="btn-primary small">Register</a>
+            </div>
+        </div>
+    </nav>
 
+    <!-- Registration Section -->
+    <section class="register-section">
+        <div class="register-container">
+            <!-- Left Side - Info -->
+            <div class="register-info">
+                <div class="info-content">
+                    <h1>Join SHS Marketing Today!</h1>
+                    <p>Start your journey to financial freedom with India's most trusted MLM platform</p>
+                    
+                    <div class="info-features">
+                        <div class="info-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Instant Account Activation</span>
+                        </div>
+                        <div class="info-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>24/7 Support</span>
+                        </div>
+                        <div class="info-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Secure Payments</span>
+                        </div>
+                        <div class="info-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Easy Withdrawals</span>
+                        </div>
+                        <div class="info-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Referral Bonuses</span>
+                        </div>
+                        <div class="info-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Mobile Dashboard</span>
+                        </div>
+                    </div>
 
+                    <div class="info-stats">
+                        <div class="info-stat">
+                            <span class="stat-number">50K+</span>
+                            <span class="stat-label">Active Members</span>
+                        </div>
+                        <div class="info-stat">
+                            <span class="stat-number">₹10Cr+</span>
+                            <span class="stat-label">Paid Out</span>
+                        </div>
+                        <div class="info-stat">
+                            <span class="stat-number">25+</span>
+                            <span class="stat-label">Cities</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Right Side - Form -->
+            <div class="register-form-container">
+                <div class="form-header">
+                    <h2>Create Your Account</h2>
+                    <p>Fill in the details below to get started</p>
+                </div>
 
-    <div class="container">
-        <header class="header">
-            <h1 class="site-title">SHS Marketing Pvt. Ltd.</h1>
-            <p class="site-tagline">Grow Your Business With Our Network</p>
-        </header>
+                <form id="registerForm" class="register-form" novalidate>
+                    <!-- Personal Information -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-user"></i> Personal Information</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName">First Name <span class="required">*</span></label>
+                                <input type="text" id="firstName" name="firstName" placeholder="Enter first name" required>
+                                <span class="error-message" id="firstNameError"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name <span class="required">*</span></label>
+                                <input type="text" id="lastName" name="lastName" placeholder="Enter last name" required>
+                                <span class="error-message" id="lastNameError"></span>
+                            </div>
+                        </div>
 
-        <h2>Create Account</h2>
+                        <div class="form-group">
+                            <label for="email">Email Address <span class="required">*</span></label>
+                            <input type="email" id="email" name="email" placeholder="Enter email address" required>
+                            <span class="error-message" id="emailError"></span>
+                        </div>
 
-        <form action="https://sheetdb.io/api/v1/v1ab6fqkrxpry" method="post" id="sheetdb">
+                        <div class="form-group">
+                            <label for="phone">Phone Number <span class="required">*</span></label>
+                            <input type="tel" id="phone" name="phone" placeholder="Enter 10-digit mobile number" maxlength="10" required>
+                            <span class="error-message" id="phoneError"></span>
+                        </div>
 
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="dob">Date of Birth <span class="required">*</span></label>
+                                <input type="date" id="dob" name="dob" required>
+                                <span class="error-message" id="dobError"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="gender">Gender <span class="required">*</span></label>
+                                <select id="gender" name="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                                <span class="error-message" id="genderError"></span>
+                            </div>
+                        </div>
+                    </div>
 
+                    <!-- Address Information -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-map-marker-alt"></i> Address Information</h3>
+                        
+                        <div class="form-group">
+                            <label for="address">Address <span class="required">*</span></label>
+                            <textarea id="address" name="address" placeholder="Enter your full address" rows="3" required></textarea>
+                            <span class="error-message" id="addressError"></span>
+                        </div>
 
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="city">City <span class="required">*</span></label>
+                                <input type="text" id="city" name="city" placeholder="Enter city" required>
+                                <span class="error-message" id="cityError"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="state">State <span class="required">*</span></label>
+                                <input type="text" id="state" name="state" placeholder="Enter state" required>
+                                <span class="error-message" id="stateError"></span>
+                            </div>
+                        </div>
 
-            <label>Mobile Number</label>
-            <input type="tel" id="mobile" maxlength="10" pattern="[0-9]{10}" inputmode="numeric"
-                placeholder="Enter your Mobile Number" name="data[Mobile Number]" required>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="pincode">PIN Code <span class="required">*</span></label>
+                                <input type="text" id="pincode" name="pincode" placeholder="Enter 6-digit PIN" maxlength="6" required>
+                                <span class="error-message" id="pincodeError"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="country">Country</label>
+                                <input type="text" id="country" name="country" value="India" readonly>
+                            </div>
+                        </div>
+                    </div>
 
-            <!-- <input type="tel" placeholder="Enter your Mobile Number" name="data[Mobile Number]" required> -->
+                    <!-- Account Information -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-lock"></i> Account Information</h3>
+                        
+                        <div class="form-group">
+                            <label for="username">Username <span class="required">*</span></label>
+                            <input type="text" id="username" name="username" placeholder="Choose a username" required>
+                            <span class="error-message" id="usernameError"></span>
+                            <small>Minimum 6 characters</small>
+                        </div>
 
-            <label>Password</label>
-            <input type="password" id="password" placeholder="Enter password" name="data[Password]" required>
+                        <div class="form-group">
+                            <label for="password">Password <span class="required">*</span></label>
+                            <div class="password-input">
+                                <input type="password" id="password" name="password" placeholder="Create password" required>
+                                <button type="button" class="toggle-password" onclick="togglePassword('password')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <span class="error-message" id="passwordError"></span>
+                            <div class="password-strength">
+                                <div class="strength-bar">
+                                    <div class="strength-fill" id="strengthFill"></div>
+                                </div>
+                                <span id="strengthText">Password Strength</span>
+                            </div>
+                        </div>
 
-            <label>Confirm Password</label>
-            <input type="password" id="confirmPassword" placeholder="Confirm password" name="data[Confirm Password]"
-                required>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password <span class="required">*</span></label>
+                            <div class="password-input">
+                                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" required>
+                                <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <span class="error-message" id="confirmPasswordError"></span>
+                        </div>
 
-            <label>Referral ID</label>
-            <input type="text" id="referralId" placeholder="Enter referral ID" name="data[Referral ID]">
+                        <div class="form-group">
+                            <label for="referralCode">Referral Code (Optional)</label>
+                            <input type="text" id="referralCode" name="referralCode" placeholder="Enter referrer's ID">
+                            <small>Have a referral code? Enter it here</small>
+                        </div>
+                    </div>
 
-            <button type="submit">Register</button>
+                    <!-- Terms & Conditions -->
+                    <div class="form-section">
+                        <div class="form-group checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="terms" name="terms" required>
+                                <span>I agree to the <a href="#" class="link">Terms & Conditions</a> and <a href="#" class="link">Privacy Policy</a> <span class="required">*</span></span>
+                            </label>
+                            <span class="error-message" id="termsError"></span>
+                        </div>
 
+                        <div class="form-group checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="newsletter" name="newsletter">
+                                <span>Subscribe to newsletter for updates and offers</span>
+                            </label>
+                        </div>
+                    </div>
 
-            <p class="login-link">
-                Already have an account? <a href="#" onclick="login()">Login</a>
-            </p>
+                    <!-- Submit Button -->
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <span>Create Account</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
 
-        </form>
+                    <!-- Login Link -->
+                    <div class="login-link">
+                        <p>Already have an account? <a href="login.html">Login here</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
 
-        <script>
-            var form = document.getElementById('sheetdb');
-
-            form.addEventListener("submit", function (e) {
-                e.preventDefault();
-
-                var mobile = document.getElementById("mobile").value.trim();
-                var password = document.getElementById("password").value;
-                var confirmPassword = document.getElementById("confirmPassword").value;
-                var referralId = document.getElementById("referralId").value.trim();
-
-                var mobilePattern = /^[0-9]{10}$/;
-
-                // 1. Mobile validation
-                if (!mobilePattern.test(mobile)) {
-                    alert("Mobile number must be exactly 10 digits.");
-                    return;
-                }
-
-                // 2. Password match validation
-                if (password !== confirmPassword) {
-                    alert("Password and Confirm Password must be the same.");
-                    return;
-                }
-
-                // Get all users from SheetDB
-                fetch("https://sheetdb.io/api/v1/v1ab6fqkrxpry")
-                    .then(response => response.json())
-                    .then(data => {
-
-                        // 3. Check duplicate mobile
-                        var mobileExists = data.some(function (item) {
-                            return item["Mobile Number"] === mobile;
-                        });
-
-                        if (mobileExists) {
-                            alert("This mobile number is already registered.");
-                            return;
-                        }
-
-                        // 4. Check referral ID exists (if entered)
-                        if (referralId !== "") {
-
-                            var referralExists = data.some(function (item) {
-                                return item["User ID"] === referralId;
-                            });
-
-                            if (!referralExists) {
-                                alert("Invalid Referral ID.");
-                                return;
-                            }
-                        }
-
-                        // 5. Generate new User ID
-                        var userId = "SHS" + Date.now();
-
-                        var formData = new FormData(form);
-
-                        formData.append("data[User ID]", userId);
-
-                        // Submit data
-                        fetch(form.action, {
-                            method: "POST",
-                            body: formData,
-                        })
-                            .then(response => response.json())
-                            .then((data) => {
-                                alert("Registration Successful! Your User ID is: " + userId);
-                                window.location.href = "Login.html";
-                            });
-
-                    })
-                    .catch(error => {
-                        console.error(error);
-                        alert("Server error.");
-                    });
-
-            });
-        </script>
-
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content success-modal">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Registration Successful!</h2>
+            <p>Your account has been created successfully. Please check your email for verification.</p>
+            <button class="btn-primary" onclick="redirectToLogin()">
+                <i class="fas fa-sign-in-alt"></i>
+                Go to Login
+            </button>
+        </div>
     </div>
 
-    <script src="script.js"></script>
-</body>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h4>SHS Marketing</h4>
+                <p>India's most trusted MLM platform for financial freedom and passive income.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="plans.html">Plans</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Terms & Conditions</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Refund Policy</a></li>
+                    <li><a href="#">Disclaimer</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Contact</h4>
+                <ul>
+                    <li><i class="fas fa-envelope"></i> support@shsmarketing.com</li>
+                    <li><i class="fas fa-phone"></i> +91-9876543210</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Mumbai, India</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 SHS Marketing Pvt. Ltd. All rights reserved.</p>
+        </div>
+    </footer>
 
+    <!-- JavaScript -->
+    <script src="register.js"></script>
+</body>
 </html>
