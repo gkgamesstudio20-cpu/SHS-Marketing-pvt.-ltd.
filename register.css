@@ -225,7 +225,8 @@ body {
 
 .stat-label {
     font-size: 13px;
-    opacity: 0.8;
+    opacity: 1;
+    color: var(--white);
 }
 
 /* Right Side - Form */

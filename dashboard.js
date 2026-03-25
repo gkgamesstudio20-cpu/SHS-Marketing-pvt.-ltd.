@@ -1,5 +1,7 @@
-// Dashboard JavaScript
-const apiURL = "https://script.google.com/macros/s/AKfycbx53TbxaZcGQz64474vrcGf4xIqhn0iQrgFYBAK5rb3uIIH4mPL5sP_qzahbbIWSpVz/exec";
+// Dashboard JavaScript - Fixed Version
+// Use the SAME API URL as registration and login
+const apiURL = "https://script.google.com/macros/s/AKfycbyUtAL05TBgZYUfuNdgG1iVamjIvWec424ap0o8d-9iD87aAvNaptp3pKWV8WC3TUx5mg/exec";
+
 let loggedInMobile = localStorage.getItem("loggedInMobile");
 let currentUser = JSON.parse(localStorage.getItem("userData")) || null;
 
@@ -21,15 +23,18 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   setViewportHeight();
-  console.log('Dashboard initialized successfully!');
+  console.log('✅ Dashboard initialized successfully!');
 });
 
+// ===== Authentication Check =====
 function checkAuth() {
   if (localStorage.getItem('isLoggedIn') !== 'true') {
+    console.warn('⚠️ User not authenticated, redirecting to login');
     window.location.href = 'login.html';
   }
 }
 
+// ===== Viewport Height for Mobile =====
 function setViewportHeight() {
   let vh = window.innerHeight * 0.01;
   document.documentElement.style.setProperty('--vh', `${vh}px`);
@@ -37,17 +42,16 @@ function setViewportHeight() {
 
 window.addEventListener('resize', setViewportHeight);
 
+// ===== Fetch User Data from Apps Script =====
 function fetchUserData() {
   if (!loggedInMobile) {
+    console.warn('⚠️ No mobile number found');
     updateDashboardUI();
     return;
   }
   
   fetch(apiURL, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
     body: JSON.stringify({
       action: 'getUserData',
       mobile: loggedInMobile
@@ -58,45 +62,56 @@ function fetchUserData() {
     if (data.success && data.user) {
       currentUser = data.user;
       localStorage.setItem('userData', JSON.stringify(currentUser));
+      console.log('✅ User data fetched:', currentUser);
+    } else {
+      console.warn('⚠️ Could not fetch user data');
     }
     updateDashboardUI();
   })
   .catch(error => {
-    console.error("Error fetching user data:", error);
+    console.error('❌ Error fetching user data:', error);
     updateDashboardUI();
   });
 }
 
+// ===== Update Dashboard UI with User Data =====
 function updateDashboardUI() {
+  // Update Referral ID
   const referralIDElement = document.getElementById("referralID");
-  const referralLinkElement = document.getElementById("referral-link");
-  
   if (referralIDElement) {
     referralIDElement.value = currentUser?.userId || "USER_123456";
   }
   
+  // Update Referral Link
+  const referralLinkElement = document.getElementById("referral-link");
   if (referralLinkElement) {
     referralLinkElement.textContent = `https://shsmarketing.com/ref/${currentUser?.userId || "USER_123456"}`;
   }
   
-  const userName = currentUser?.fullName || "User";
-  const userNameElement = document.getElementById("user-name");
-  const profileNameElement = document.getElementById("profile-name");
-  const profileEmailElement = document.getElementById("profile-email");
+  // Get user name (handle different formats)
+  const userName = currentUser?.name || currentUser?.fullName || "User";
+  const firstName = userName.split(" ")[0];
   
+  // Update user name in various places
+  const userNameElement = document.getElementById("user-name");
   if (userNameElement) {
-    userNameElement.textContent = userName.split(" ")[0];
+    userNameElement.textContent = firstName;
   }
   
+  const profileNameElement = document.getElementById("profile-name");
   if (profileNameElement) {
     profileNameElement.textContent = userName;
   }
   
+  const profileEmailElement = document.getElementById("profile-email");
   if (profileEmailElement) {
     profileEmailElement.textContent = currentUser?.email || "email@example.com";
   }
+  
+  console.log('✅ Dashboard UI updated with user data');
 }
 
+// ===== Display Welcome Message =====
 function displayWelcomeMessage() {
   const hour = new Date().getHours();
   let greeting = "Good morning";
@@ -105,11 +120,12 @@ function displayWelcomeMessage() {
   
   const breadcrumb = document.querySelector(".breadcrumb");
   if (breadcrumb) {
-    const userName = currentUser?.fullName?.split(" ")[0] || "User";
+    const userName = (currentUser?.name || currentUser?.fullName || "User").split(" ")[0];
     breadcrumb.innerHTML = `${greeting}, <strong>${userName}</strong>! 👋`;
   }
 }
 
+// ===== Initialize Chart.js =====
 function initializeChart() {
   const ctx = document.getElementById('earningsChart');
   if (ctx && typeof Chart !== 'undefined') {
@@ -145,11 +161,18 @@ function initializeChart() {
   }
 }
 
-function showNotification(message) {
+// ===== Show Notification =====
+function showNotification(message, type = 'success') {
   const existingNotification = document.querySelector('.custom-notification');
   if (existingNotification) {
     existingNotification.remove();
   }
+  
+  const colors = {
+    success: 'linear-gradient(135deg, #10b981, #059669)',
+    error: 'linear-gradient(135deg, #ef4444, #dc2626)',
+    info: 'linear-gradient(135deg, #3b82f6, #1d4ed8)'
+  };
   
   const notification = document.createElement('div');
   notification.className = 'custom-notification';
@@ -157,7 +180,7 @@ function showNotification(message) {
     position: fixed;
     top: 20px;
     right: 20px;
-    background: linear-gradient(135deg, #10b981, #059669);
+    background: ${colors[type] || colors.success};
     color: white;
     padding: 16px 24px;
     border-radius: 8px;
@@ -174,7 +197,9 @@ function showNotification(message) {
   }, 3000);
 }
 
+// ===== Setup Event Listeners =====
 function setupEventListeners() {
+  // Navigation
   const navItems = document.querySelectorAll('.nav-item');
   navItems.forEach(item => {
     item.addEventListener('click', function(e) {
@@ -184,67 +209,68 @@ function setupEventListeners() {
     });
   });
   
+  // Withdraw Form
   const withdrawForm = document.getElementById('withdraw-form');
   if (withdrawForm) {
     withdrawForm.addEventListener('submit', function(e) {
       e.preventDefault();
       const amount = document.getElementById('withdraw-amount')?.value;
       if (amount && amount >= 100 && amount <= 2500) {
-        showNotification(`Withdrawal request of ₹${amount} submitted successfully!`);
+        showNotification(`✅ Withdrawal request of ₹${amount} submitted successfully!`, 'success');
         this.reset();
       } else {
-        alert('Please enter an amount between ₹100 and ₹2,500');
+        showNotification('Please enter an amount between ₹100 and ₹2,500', 'error');
       }
     });
   }
   
+  // Profile Form
   const profileForm = document.querySelector('.profile-form');
   if (profileForm) {
     profileForm.addEventListener('submit', function(e) {
       e.preventDefault();
-      showNotification('Profile updated successfully!');
+      showNotification('✅ Profile updated successfully!', 'success');
     });
   }
 }
 
-function logout() {
-  if (confirm('Are you sure you want to logout?')) {
-    // Call logout API
-    fetch(apiURL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        action: 'logout',
-        mobile: loggedInMobile
-      })
-    })
-    .then(() => {
-      localStorage.removeItem('isLoggedIn');
-      localStorage.removeItem('loggedInMobile');
-      localStorage.removeItem('userData');
-      showNotification('Logged out successfully!');
-      setTimeout(() => {
-        window.location.href = 'login.html';
-      }, 1000);
-    })
-    .catch(() => {
-      localStorage.removeItem('isLoggedIn');
-      localStorage.removeItem('loggedInMobile');
-      localStorage.removeItem('userData');
-      window.location.href = 'login.html';
-    });
-  }
+// ===== Navigation Functions =====
+// All these functions switch sections and update active nav
+
+function showDashboard() {
+  switchSection('dashboard');
+  updateActiveNav('dashboard');
+  document.getElementById('page-title').textContent = 'Dashboard';
 }
 
-function toggleSidebar() {
-  const sidebar = document.querySelector('.sidebar');
-  const overlay = document.querySelector('.sidebar-overlay');
-  if (sidebar && overlay) {
-    sidebar.classList.toggle('active');
-    overlay.classList.toggle('active');
-  }
+function Myteam() {
+  switchSection('myteam');
+  updateActiveNav('myteam');
+  document.getElementById('page-title').textContent = 'My Team';
+}
+
+function showEarnings() {
+  switchSection('earnings');
+  updateActiveNav('earnings');
+  document.getElementById('page-title').textContent = 'Earnings';
+}
+
+function showWithdraw() {
+  switchSection('withdraw');
+  updateActiveNav('withdraw');
+  document.getElementById('page-title').textContent = 'Withdraw';
+}
+
+function referal() {
+  switchSection('referral');
+  updateActiveNav('referral');
+  document.getElementById('page-title').textContent = 'Referral Link';
+}
+
+function profile() {
+  switchSection('profile');
+  updateActiveNav('profile');
+  document.getElementById('page-title').textContent = 'Profile';
 }
 
 function switchSection(sectionId) {
@@ -258,11 +284,67 @@ function switchSection(sectionId) {
   
   window.scrollTo({ top: 0, behavior: 'smooth' });
   
+  // Close sidebar on mobile
   if (window.innerWidth <= 1024) {
     toggleSidebar();
   }
 }
 
+function updateActiveNav(sectionId) {
+  const navItems = document.querySelectorAll('.nav-item');
+  navItems.forEach(item => {
+    const link = item.querySelector('a');
+    if (link && link.getAttribute('onclick').includes(sectionId === 'myteam' ? 'Myteam' : sectionId === 'referral' ? 'referal' : sectionId)) {
+      item.classList.add('active');
+    } else {
+      item.classList.remove('active');
+    }
+  });
+}
+
+// ===== Logout =====
+function logout() {
+  if (confirm('Are you sure you want to logout?')) {
+    // Optional: Call logout API
+    fetch(apiURL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'logout',
+        mobile: loggedInMobile
+      })
+    })
+    .then(() => {
+      clearAuthData();
+    })
+    .catch(() => {
+      clearAuthData();
+    });
+  }
+}
+
+function clearAuthData() {
+  localStorage.removeItem('isLoggedIn');
+  localStorage.removeItem('loggedInMobile');
+  localStorage.removeItem('userData');
+  localStorage.removeItem('rememberMe');
+  localStorage.removeItem('savedMobile');
+  showNotification('✅ Logged out successfully!', 'success');
+  setTimeout(() => {
+    window.location.href = 'login.html';
+  }, 1000);
+}
+
+// ===== Toggle Sidebar (Mobile) =====
+function toggleSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.querySelector('.sidebar-overlay');
+  if (sidebar && overlay) {
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+  }
+}
+
+// ===== CSS Animations =====
 const style = document.createElement('style');
 style.textContent = `
   @keyframes slideIn { 
@@ -275,3 +357,5 @@ style.textContent = `
   }
 `;
 document.head.appendChild(style);
+
+console.log('✅ Dashboard script loaded successfully!');
