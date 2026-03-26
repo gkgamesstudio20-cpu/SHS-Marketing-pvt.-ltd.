@@ -1,6 +1,6 @@
 // ===== Login Page JavaScript - Google Sheets Backend =====
 // IMPORTANT: Update this URL to match your registration Apps Script deployment
-const apiURL = "https://script.google.com/macros/s/AKfycbyUtAL05TBgZYUfuNdgG1iVamjIvWec424ap0o8d-9iD87aAvNaptp3pKWV8WC3TUx5mg/exec";
+const apiURL = "https://script.google.com/macros/s/AKfycbwfciFmUJm132SOTEXKrNSgk7Ts2bvUd2oBio49LHS5XUS99zTcCsHTM9F5qsMFvwPfgg/exec";
 
 document.addEventListener('DOMContentLoaded', function() {
   // Redirect if already logged in

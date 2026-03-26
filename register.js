@@ -503,7 +503,7 @@ function submitForm() {
     console.log('Sending data:', userData);
     
     // Your Google Apps Script URL - UPDATE THIS!
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUtAL05TBgZYUfuNdgG1iVamjIvWec424ap0o8d-9iD87aAvNaptp3pKWV8WC3TUx5mg/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfciFmUJm132SOTEXKrNSgk7Ts2bvUd2oBio49LHS5XUS99zTcCsHTM9F5qsMFvwPfgg/exec";
     
     fetch(SCRIPT_URL, {
         method: 'POST',

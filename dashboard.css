@@ -1194,3 +1194,46 @@ body {
         justify-content: center;
     }
 }
+
+
+/* Add to dashboard.css */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Optional highlight animation for better UX */
+.highlight-section {
+    animation: pulse-highlight 2s ease;
+}
+
+@keyframes pulse-highlight {
+    0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+}
+
+/* For mobile: account for fixed header offset */
+@media (max-width: 768px) {
+    #referral-id-section {
+        scroll-margin-top: 80px; /* Adjust based on your header height */
+    }
+}
+
+.nav-brand {
+    color: #ffffff;           /* Change to your preferred color */
+    text-decoration: none;    /* Removes underline */
+    font-weight: 600;         /* Optional: makes text bolder */
+    transition: color 0.3s ease; /* Smooth hover effect */
+}
+
+/* Hover state (optional but recommended) */
+.nav-brand:hover {
+    color: #ffffff;           /* Darker shade on hover */
+    text-decoration: none;    /* Ensures underline stays removed on hover */
+}
+
+/* Visited state (optional) */
+.nav-brand:visited {
+    color: #ffffff;           /* Same color after clicking */
+    text-decoration: none;
+}
