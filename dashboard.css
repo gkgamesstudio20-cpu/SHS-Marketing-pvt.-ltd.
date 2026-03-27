@@ -1,7 +1,8 @@
-/* Professional Dashboard Styling */
+/* Professional Dashboard Styling - FIXED & OPTIMIZED */
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
+    /* Colors */
     --primary: #6366f1;
     --primary-dark: #4f46e5;
     --primary-light: #818cf8;
@@ -17,14 +18,31 @@
     --gray-lighter: #f9fafb;
     --white: #ffffff;
     --border: #e5e7eb;
+
+    /* Shadows */
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+    /* Transitions & Animation */
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* ✅ NEW: Spacing Variables for Consistency */
+    --spacing-xs: 8px;
+    --spacing-sm: 12px;
+    --spacing-md: 16px;
+    --spacing-lg: 20px;
+    --spacing-xl: 24px;
+    --spacing-2xl: 32px;
+    --spacing-3xl: 40px;
+
+    /* Layout */
+    --sidebar-width: 280px;
+    --header-height: 70px;
 }
 
-/* FIX: Added missing universal selector */
+/* Universal Reset */
 * {
     margin: 0;
     padding: 0;
@@ -42,12 +60,20 @@ body {
     line-height: 1.6;
 }
 
-/* Dashboard Container */
+/* =========================================
+   DASHBOARD LAYOUT - FIXED ALIGNMENT
+   ========================================= */
 .dashboard-container {
     display: grid;
-    grid-template-columns: 280px 1fr;
+    /* padding: 100px; */
+    /* grid-template-columns; */
+    /* padding: 80px; */
+    grid-auto-columns: auto;
+    /* grid-template-columns: 90%; */
+
+    /* grid-template-columns: var(--sidebar-width) 1fr; */
     min-height: 100vh;
-    gap: 0;
+    /* gap: 10px; */
     overflow-x: hidden;
 }
 
@@ -60,7 +86,7 @@ body {
     left: 0;
     top: 0;
     height: 100vh;
-    width: 280px;
+    width: var(--sidebar-width);
     overflow-y: auto;
     box-shadow: var(--shadow-lg);
     z-index: 1000;
@@ -69,7 +95,7 @@ body {
 }
 
 .sidebar-header {
-    padding: 30px 20px;
+    padding: var(--spacing-lg) var(--spacing-md);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(0, 0, 0, 0.2);
 }
@@ -101,8 +127,7 @@ body {
 }
 
 .sidebar-nav {
-
-    padding: 30px 0;
+    padding: var(--spacing-lg);
     flex: 1;
 }
 
@@ -124,6 +149,7 @@ body {
     transition: var(--transition);
     font-size: 14px;
     font-weight: 500;
+    border-radius: 8px;
 }
 
 .nav-item a i {
@@ -143,9 +169,8 @@ body {
     padding-left: 17px;
 }
 
-/* FIX: Sidebar footer positioning */
 .sidebar-footer {
-    padding: 0 20px 20px;
+    padding: 0 var(--spacing-md) var(--spacing-md);
     margin-top: auto;
 }
 
@@ -170,17 +195,23 @@ body {
     color: #fecaca;
 }
 
-/* Main Content */
+/* =========================================
+   MAIN CONTENT - FIXED PADDING & MARGIN
+   ========================================= */
 .main-content {
-    padding: 30px;
-    margin-left: 280px;
+    /* ✅ FIXED: Match sidebar width exactly */
+    margin-left: var(--sidebar-width);
+    /* ✅ FIXED: Consistent padding, no double-spacing */
+    padding: var(--spacing-md) var(--spacing-2xl) var(--spacing-2xl);
     background: var(--gray-lighter);
+    min-height: 100vh;
+    transition: var(--transition);
 }
 
 /* Dashboard Header */
 .dashboard-header {
     background: white;
-    padding: 25px 40px;
+    padding: var(--spacing-lg) var(--spacing-xl);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -189,6 +220,8 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
+    border-radius: 12px;
+    margin-bottom: var(--spacing-lg);
 }
 
 .header-left h1 {
@@ -205,7 +238,7 @@ body {
 
 .header-right {
     display: flex;
-    gap: 30px;
+    gap: var(--spacing-lg);
     align-items: center;
 }
 
@@ -279,12 +312,20 @@ body {
     height: 40px;
     border-radius: 50%;
     border: 2px solid var(--border);
+    cursor: pointer;
+    transition: var(--transition);
 }
 
-/* Content Sections */
+.user-profile img:hover {
+    border-color: var(--primary);
+}
+
+/* =========================================
+   CONTENT SECTIONS - NO REDUNDANT PADDING
+   ========================================= */
 .content-section {
     display: none;
-    padding: 40px;
+    /* ✅ FIXED: Padding handled by main-content, not nested */
 }
 
 .content-section.active {
@@ -295,7 +336,7 @@ body {
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(20px);
     }
 
     to {
@@ -305,7 +346,7 @@ body {
 }
 
 .section-header {
-    margin-bottom: 40px;
+    margin-bottom: var(--spacing-lg);
 }
 
 .section-header h1 {
@@ -319,21 +360,24 @@ body {
     font-size: 14px;
 }
 
-/* Stats Grid */
+/* =========================================
+   STATS GRID - STANDARDIZED
+   ========================================= */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
-    margin-bottom: 40px;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
 }
 
 .stat-card {
     background: white;
-    padding: 25px;
+    padding: var(--spacing-xl);
+    /* ✅ Standardized from 25px */
     border-radius: 12px;
     box-shadow: var(--shadow-md);
     display: flex;
-    gap: 20px;
+    gap: var(--spacing-lg);
     align-items: flex-start;
     transition: var(--transition);
     border-left: 4px solid;
@@ -407,23 +451,28 @@ body {
     margin: 5px 0;
 }
 
-.card-info {
+.card-info-text {
     font-size: 12px;
     color: var(--gray);
 }
 
-/* Dashboard Grid */
+/* =========================================
+   DASHBOARD GRID
+   ========================================= */
 .dashboard-grid {
     display: grid;
     grid-template-columns: 2fr 1fr;
-    gap: 25px;
-    margin-bottom: 40px;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
 }
 
 .chart-card,
 .activity-card {
-    background: white;
-    padding: 25px;
+    background: rgb(255, 255, 255);
+    width: 100;
+
+    /* align-items: center; */
+    padding: var(--spacing-x1);
     border-radius: 12px;
     box-shadow: var(--shadow-md);
 }
@@ -432,12 +481,13 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 25px;
-    padding-bottom: 15px;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
     border-bottom: 1px solid var(--border);
 }
 
 .card-header h2 {
+    
     font-size: 18px;
     font-weight: 700;
 }
@@ -483,14 +533,14 @@ body {
 .activity-list {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: var(--spacing-md);
 }
 
 .activity-item {
     display: flex;
-    gap: 15px;
+    gap: var(--spacing-md);
     align-items: center;
-    padding: 12px 0;
+    padding: var(--spacing-sm) 0;
     border-bottom: 1px solid var(--border);
 }
 
@@ -545,16 +595,19 @@ body {
     text-align: right;
 }
 
-/* Referral Section */
+/* =========================================
+   REFERRAL SECTION - OPTIMIZED PADDING
+   ========================================= */
 .referral-section {
-    margin-top: 40px;
+    margin-top: var(--spacing-2xl);
 }
 
 .referral-card {
     background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 40px;
+    padding: var(--spacing-2xl);
+    /* ✅ Standardized from 40px */
 }
 
 .referral-header h2 {
@@ -566,20 +619,20 @@ body {
 .referral-header p {
     color: var(--gray);
     font-size: 14px;
-    margin-bottom: 25px;
+    margin-bottom: var(--spacing-lg);
 }
 
 .referral-content {
     background: white;
-    padding: 25px;
+    padding: var(--spacing-xl);
     border-radius: 12px;
-    margin-bottom: 25px;
+    margin-bottom: var(--spacing-lg);
 }
 
 .referral-input-group {
     display: flex;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: var(--spacing-md);
 }
 
 .referral-input {
@@ -630,12 +683,12 @@ body {
 .referral-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
+    gap: var(--spacing-md);
 }
 
 .referral-stat {
     background: white;
-    padding: 20px;
+    padding: var(--spacing-lg);
     border-radius: 12px;
     border: 1px solid var(--border);
     text-align: center;
@@ -657,23 +710,43 @@ body {
     color: var(--primary);
 }
 
-/* Team Grid */
+/* =========================================
+   ✅ TEAM SECTION - FIXED PADDING
+   ========================================= */
+.team-section {
+    /* ✅ No extra padding - let cards handle spacing */
+}
+
+.a {
+    text-decoration: none;
+    color: #000;
+}
+
+
 .team-grid {
-    margin-bottom: 40px;
+    margin-bottom: var(--spacing-2xl);
+    /* ✅ Consistent spacing */
 }
 
 .team-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
+    gap: var(--spacing-md);
 }
 
 .team-stat-item {
     background: white;
-    padding: 25px;
+    padding: var(--spacing-xl);
+    /* ✅ Standardized to 24px */
     border-radius: 12px;
     box-shadow: var(--shadow-md);
     text-align: center;
+    transition: var(--transition);
+}
+
+.team-stat-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
 }
 
 .team-stat-item h3 {
@@ -685,32 +758,87 @@ body {
 }
 
 .team-stat-value {
-    font-size: 36px;
+    font-size: 30px;
     font-weight: 800;
     color: var(--primary);
 }
 
-/* Tables */
+/* =========================================
+   ✅ EARNINGS SECTION - FIXED PADDING
+   ========================================= */
+.earnings-section {
+    /* ✅ No extra padding - let cards handle spacing */
+}
+
+.earnings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-2xl);
+    /* ✅ Consistent with other sections */
+}
+
+.earnings-card {
+    background: white;
+    padding: var(--spacing-xl);
+    /* ✅ Standardized to 24px */
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
+    border-left: 4px solid var(--primary);
+    transition: var(--transition);
+}
+
+.earnings-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.earnings-card h3 {
+    font-size: 13px;
+    color: var(--gray);
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.earnings-amount {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--primary);
+    margin: 10px 0;
+}
+
+.earnings-detail {
+    font-size: 13px;
+    color: var(--gray);
+}
+
+/* =========================================
+   TABLES - OPTIMIZED
+   ========================================= */
 .table-card {
     background: white;
     border-radius: 12px;
     box-shadow: var(--shadow-md);
     overflow: hidden;
+    margin-bottom: var(--spacing-2xl);
 }
 
 .table-header {
-    padding: 25px;
+    padding: var(--spacing-xl);
     border-bottom: 1px solid var(--border);
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: var(--spacing-md);
 }
 
 .table-header h2 {
+    
     font-size: 18px;
     font-weight: 700;
+   
 }
 
 .search-input {
@@ -721,9 +849,16 @@ body {
     width: 300px;
 }
 
+.table-wrapper {
+    overflow-x: auto;
+}
+
 .data-table {
+     
     width: 100%;
+    position: relative;
     border-collapse: collapse;
+    
 }
 
 .data-table thead {
@@ -731,7 +866,7 @@ body {
 }
 
 .data-table th {
-    padding: 15px 20px;
+    padding: var(--spacing-md) var(--spacing-lg);
     text-align: left;
     font-weight: 600;
     font-size: 13px;
@@ -740,7 +875,7 @@ body {
 }
 
 .data-table td {
-    padding: 15px 20px;
+    padding: var(--spacing-md) var(--spacing-lg);
     border-top: 1px solid var(--border);
     font-size: 14px;
 }
@@ -790,52 +925,19 @@ body {
     transform: translateY(-2px);
 }
 
-/* Earnings Section */
-.earnings-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    margin-bottom: 40px;
-}
-
-.earnings-card {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: var(--shadow-md);
-    border-left: 4px solid var(--primary);
-}
-
-.earnings-card h3 {
-    font-size: 13px;
-    color: var(--gray);
-    font-weight: 600;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-}
-
-.earnings-amount {
-    font-size: 32px;
-    font-weight: 800;
-    color: var(--primary);
-    margin: 10px 0;
-}
-
-.earnings-detail {
-    font-size: 13px;
-    color: var(--gray);
-}
-
-/* Withdraw Container */
+/* =========================================
+   WITHDRAW SECTION
+   ========================================= */
 .withdraw-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 30px;
+    gap: var(--spacing-lg);
 }
 
 .withdraw-card {
     background: white;
-    padding: 30px;
+    padding: var(--spacing-xl);
+    /* ✅ Standardized from 30px */
     border-radius: 12px;
     box-shadow: var(--shadow-md);
 }
@@ -843,13 +945,13 @@ body {
 .withdraw-card h2 {
     font-size: 20px;
     font-weight: 700;
-    margin-bottom: 25px;
+    margin-bottom: var(--spacing-lg);
 }
 
 .withdraw-form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: var(--spacing-md);
 }
 
 .form-group {
@@ -891,7 +993,7 @@ body {
 .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    gap: var(--spacing-md);
 }
 
 .submit-btn {
@@ -914,7 +1016,7 @@ body {
 
 .withdrawal-history {
     background: white;
-    padding: 30px;
+    padding: var(--spacing-xl);
     border-radius: 12px;
     box-shadow: var(--shadow-md);
 }
@@ -922,20 +1024,20 @@ body {
 .withdrawal-history h2 {
     font-size: 20px;
     font-weight: 700;
-    margin-bottom: 25px;
+    margin-bottom: var(--spacing-lg);
 }
 
 .history-list {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: var(--spacing-md);
 }
 
 .history-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px;
+    padding: var(--spacing-md);
     background: var(--gray-lighter);
     border-radius: 8px;
     border-left: 3px solid var(--primary);
@@ -959,23 +1061,32 @@ body {
     font-weight: 700;
     font-size: 16px;
     color: var(--danger);
-    margin-right: 15px;
+    margin-right: var(--spacing-md);
 }
 
-/* Profile Container */
+/* =========================================
+   ✅ PROFILE SECTION - FIXED PADDING
+   ========================================= */
+.profile-section {
+    /* ✅ No extra padding - let container handle spacing */
+}
+
 .profile-container {
     background: white;
     border-radius: 12px;
     box-shadow: var(--shadow-md);
-    padding: 40px;
+    /* ✅ FIXED: Remove outer padding, control via children */
+    padding: 0;
+    overflow: hidden;
 }
 
 .profile-header {
     display: flex;
-    gap: 25px;
+    gap: var(--spacing-lg);
     align-items: flex-start;
-    margin-bottom: 40px;
-    padding-bottom: 30px;
+    padding: var(--spacing-xl) var(--spacing-xl) 0;
+    /* ✅ Controlled inner padding */
+    margin-bottom: var(--spacing-lg);
     border-bottom: 1px solid var(--border);
 }
 
@@ -1011,17 +1122,17 @@ body {
 .profile-form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: var(--spacing-md);
+    padding: 0 var(--spacing-xl) var(--spacing-xl);
+    /* ✅ Controlled padding */
 }
 
-/* Table Wrapper */
-.table-wrapper {
-    overflow-x: auto;
-}
-
-/* Scrollbar Styling */
+/* =========================================
+   SCROLLBAR & UTILITIES
+   ========================================= */
 ::-webkit-scrollbar {
     width: 8px;
+    height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -1037,7 +1148,48 @@ body {
     background: var(--dark-light);
 }
 
-/* Responsive Design */
+/* Highlight animation for UX */
+.highlight-section {
+    animation: pulse-highlight 2s ease;
+}
+
+@keyframes pulse-highlight {
+    0% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+    }
+}
+
+/* Nav brand link */
+.nav-brand {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.nav-brand:hover {
+    color: var(--primary-light);
+    text-decoration: none;
+}
+
+.nav-brand:visited {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+/* =========================================
+   ✅ RESPONSIVE DESIGN - OPTIMIZED PADDING
+   ========================================= */
+
+/* Tablet: 1024px and below */
 @media (max-width: 1024px) {
     .dashboard-container {
         grid-template-columns: 1fr;
@@ -1048,11 +1200,13 @@ body {
         width: 100%;
         height: auto;
         box-shadow: var(--shadow-md);
-        margin-bottom: 20px;
+        margin-bottom: var(--spacing-md);
     }
 
     .main-content {
+        /* ✅ FIXED: Reset margin for mobile layout */
         margin-left: 0;
+        padding: var(--spacing-md);
     }
 
     .dashboard-grid {
@@ -1064,38 +1218,48 @@ body {
     }
 }
 
+/* Mobile: 768px and below */
 @media (max-width: 768px) {
     .dashboard-header {
         flex-direction: column;
-        gap: 20px;
-        padding: 20px;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md);
     }
 
     .header-right {
         width: 100%;
-        gap: 15px;
+        gap: var(--spacing-sm);
+        flex-wrap: wrap;
     }
 
     .search-bar {
         flex: 1;
+        min-width: 200px;
     }
 
     .header-icons {
         justify-content: flex-end;
-        gap: 10px;
+        gap: var(--spacing-xs);
     }
 
     .main-content {
-        padding: 20px;
+        padding: var(--spacing-sm);
     }
 
-    .content-section {
-        padding: 20px;
+    .content-section.active {
+        padding: 0;
     }
 
     .stats-grid {
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 15px;
+        gap: var(--spacing-sm);
+    }
+
+    .stat-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: var(--spacing-lg);
     }
 
     .card-value {
@@ -1105,6 +1269,7 @@ body {
     .table-header {
         flex-direction: column;
         align-items: flex-start;
+        padding: var(--spacing-lg);
     }
 
     .search-input {
@@ -1117,32 +1282,44 @@ body {
 
     .data-table th,
     .data-table td {
-        padding: 10px 12px;
+        padding: var(--spacing-sm) var(--spacing-md);
     }
 
     .profile-header {
         flex-direction: column;
         align-items: center;
         text-align: center;
+        padding: var(--spacing-lg) var(--spacing-lg) 0;
     }
 
     .profile-form {
-        gap: 15px;
+        padding: 0 var(--spacing-lg) var(--spacing-lg);
+        gap: var(--spacing-sm);
     }
 
     .form-row {
         grid-template-columns: 1fr;
     }
 
-    .referral-stats {
-        grid-template-columns: 1fr;
-    }
-
+    .referral-stats,
     .team-stats {
         grid-template-columns: 1fr;
     }
+
+    .referral-card {
+        padding: var(--spacing-lg);
+    }
+
+    /* ✅ Mobile: Adjust scroll margin for fixed header */
+    #referral-id-section,
+    #team-section,
+    #earnings-section,
+    #profile-section {
+        scroll-margin-top: 100px;
+    }
 }
 
+/* Small Mobile: 480px and below */
 @media (max-width: 480px) {
     .dashboard-container {
         grid-template-columns: 1fr;
@@ -1156,7 +1333,7 @@ body {
     }
 
     .dashboard-header {
-        padding: 15px;
+        padding: var(--spacing-sm);
         flex-direction: column;
     }
 
@@ -1166,13 +1343,14 @@ body {
 
     .stats-grid {
         grid-template-columns: 1fr;
-        gap: 12px;
+        gap: var(--spacing-sm);
     }
 
     .stat-card {
         flex-direction: column;
         align-items: center;
         text-align: center;
+        padding: var(--spacing-md);
     }
 
     .card-value {
@@ -1194,64 +1372,65 @@ body {
 
     .copy-btn {
         justify-content: center;
+        width: 100%;
+    }
+
+    /* ✅ Extra small: Reduce all card padding */
+    .stat-card,
+    .chart-card,
+    .activity-card,
+    .team-stat-item,
+    .earnings-card,
+    .withdraw-card,
+    .referral-card,
+    .profile-container {
+        padding: var(--spacing-md);
+    }
+
+    .card-header,
+    .table-header,
+    .withdraw-card h2,
+    .profile-header {
+        padding-bottom: var(--spacing-sm);
+        margin-bottom: var(--spacing-md);
+    }
+
+    .section-header h1 {
+        font-size: 24px;
     }
 }
 
+/* =========================================
+   PRINT STYLES (Optional Bonus)
+   ========================================= */
+@media print {
 
-/* Add to dashboard.css */
-html {
-    scroll-behavior: smooth;
-}
-
-/* Optional highlight animation for better UX */
-.highlight-section {
-    animation: pulse-highlight 2s ease;
-}
-
-@keyframes pulse-highlight {
-    0% {
-        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+    .sidebar,
+    .dashboard-header,
+    .icon-btn,
+    .action-btn,
+    .submit-btn,
+    .copy-btn {
+        display: none !important;
+         width: 100%;
     }
 
-    70% {
-        box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+    .main-content {
+        margin-left: 0 !important;
+        padding: 0 !important;
+        background: white !important;
     }
 
-    100% {
-        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+    .stat-card,
+    .chart-card,
+    .activity-card,
+    .table-card,
+    .earnings-card,
+    .withdraw-card,
+    .profile-container {
+        width: 100%;
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+        page-break-inside: avoid;
     }
-}
-
-/* For mobile: account for fixed header offset */
-@media (max-width: 768px) {
-    #referral-id-section {
-        scroll-margin-top: 80px;
-        /* Adjust based on your header height */
-    }
-}
-
-.nav-brand {
-    color: #ffffff;
-    /* Change to your preferred color */
-    text-decoration: none;
-    /* Removes underline */
-    font-weight: 600;
-    /* Optional: makes text bolder */
-    transition: color 0.3s ease;
-    /* Smooth hover effect */
-}
-
-/* Hover state (optional but recommended) */
-.nav-brand:hover {
-    color: #ffffff;
-    /* Darker shade on hover */
-    text-decoration: none;
-    /* Ensures underline stays removed on hover */
-}
-
-/* Visited state (optional) */
-.nav-brand:visited {
-    color: #ffffff;
-    /* Same color after clicking */
-    text-decoration: none;
 }

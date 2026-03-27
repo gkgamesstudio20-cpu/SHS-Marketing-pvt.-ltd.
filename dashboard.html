@@ -115,7 +115,7 @@
 
         <!-- Mobile Menu Toggle -->
         <button class="mobile-menu-toggle" onclick="toggleSidebar()">
-            <i class="fas fa-bars"></i>
+            <!-- <i class="fas fa-bars"></i> -->
         </button>
 
         <!-- Main Content -->
@@ -132,16 +132,16 @@
                         <input type="text" placeholder="Search...">
                     </div>
                     <div class="header-icons">
-                        <button class="icon-btn">
+                        <!-- <button class="icon-btn">
                             <i class="fas fa-bell"></i>
                             <span class="notification-badge">3</span>
-                        </button>
+                        </button> -->
                         <button class="icon-btn">
                             <i class="fas fa-envelope"></i>
                         </button>
                     </div>
                     <div class="user-profile">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user" alt="User Profile">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user1" alt="User Profile">
                     </div>
                 </div>
             </header>
@@ -155,27 +155,32 @@
 
                 <!-- Stats Grid -->
                 <div class="stats-grid">
-                    <div class="stat-card card-primary">
-                        <div class="card-icon">
-                            <i class="fas fa-rupee-sign"></i>
-                            
+
+                    <a href="#earnings" onclick="showEarnings()" class="a">
+                        <div class="stat-card card-primary">
+                            <div class="card-icon">
+                                <i class="fas fa-rupee-sign"></i>
+
+                            </div>
+                            <div class="card-content">
+                                <h3>Total Earnings</h3>
+                                <div class="card-value">₹500</div>
+                                <div class="card-info">+12% from last month</div>
+                            </div>
                         </div>
-                        <div class="card-content">
-                            <h3>Total Earnings</h3>
-                            <div class="card-value">₹500</div>
-                            <div class="card-info">+12% from last month</div>
+                    </a>
+                    <a href="#myteam" onclick="Myteam()" class="a">
+                        <div class="stat-card card-success">
+                            <div class="card-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>Team Members</h3>
+                                <div class="card-value">25</div>
+                                <div class="card-info">+5 new this month</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="stat-card card-success">
-                        <div class="card-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="card-content">
-                            <h3>Team Members</h3>
-                            <div class="card-value">25</div>
-                            <div class="card-info">+5 new this month</div>
-                        </div>
-                    </div>
+                    </a>
                     <!-- <div class="stat-card card-warning">
                         <div class="card-icon">
                             <i class="fas fa-user-plus"></i>
@@ -213,7 +218,7 @@
                             <canvas id="earningsChart"></canvas>
                         </div>
                     </div>
-                    <div class="activity-card">
+                    <!-- <div class="activity-card">
                         <div class="card-header">
                             <h2>Recent Activity</h2>
                             <a href="#" class="view-all">View All</a>
@@ -260,7 +265,7 @@
                                 <div class="activity-value">Pending</div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
 
                 <!-- Referral Section -->
@@ -280,10 +285,13 @@
                             </div>
                             <div class="referral-url">
                                 <strong>Full Referral Link:</strong>
-                                <code id="referral-link" style="cursor: pointer; padding: 10px; border-radius: 6px; background-color: #f3f4f6; display: inline-block; max-width: 100%; overflow-wrap: break-word;" onclick="clickReferralLink()" title="Click to register with this referral link">
+                                <code id="referral-link"
+                                    style="cursor: pointer; padding: 10px; border-radius: 6px; background-color: #f3f4f6; display: inline-block; max-width: 100%; overflow-wrap: break-word;"
+                                    onclick="clickReferralLink()" title="Click to register with this referral link">
                                     https://gkgamesstudio20-cpu.github.io/SHS-Marketing-pvt.-ltd./register.html
                                 </code>
-                                <small style="display: block; margin-top: 8px; color: #666;">Click the link to register with your referral ID</small>
+                                <small style="display: block; margin-top: 8px; color: #666;">Click the link to register
+                                    with your referral ID</small>
                                 <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
                                     <button class="copy-btn" onclick="copyReferralLink()">
                                         <i class="fas fa-link"></i>
@@ -357,10 +365,11 @@
                                 <tr>
                                     <!-- <th>Name</th> -->
                                     <th>userId</th>
-                                    <th>mobile</th>
-                                    <th>Joined</th>
-                                    <th>status</th>
+                                    <!-- <th>mobile</th>
+                                    <th>Joined</th> -->
                                     <th>currentlevel</th>
+                                    <th>status</th>
+
 
                                 </tr>
                             </thead>
@@ -691,7 +700,7 @@
 
     <!-- JavaScript -->
     <script src="dashboard.js"></script>
-    
+
     <!-- JavaScript
     <script src="script.js"></script> -->
 </body>
