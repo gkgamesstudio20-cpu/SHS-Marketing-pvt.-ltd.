@@ -729,3 +729,21 @@ function scrollToReferralSection() {
         }, 100);
     }
 }
+
+// ===== Go to Registration with Referral ID =====
+function goToRegistrationWithReferral() {
+    const userId = currentUser?.userId || "USER_123456";
+    const referralCode = currentUser?.referralCode || "";
+    
+    // Create URL with referral ID and referral code as parameters
+    const registrationUrl = `register.html?referralId=${encodeURIComponent(userId)}&referralCode=${encodeURIComponent(referralCode)}`;
+    
+    console.log('Opening registration with referral:', registrationUrl);
+    window.location.href = registrationUrl;
+}
+
+// ===== Click Referral Link to Register =====
+function clickReferralLink() {
+    // Same as goToRegistrationWithReferral but triggered by clicking the link
+    goToRegistrationWithReferral();
+}

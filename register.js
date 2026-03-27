@@ -2,7 +2,38 @@
 // INITIALIZATION
 // ============================================
 
+// Get URL parameters for referral tracking
+function getURLParameter(param) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(param);
+}
+
+// Auto-fill referral ID from URL parameter
+function autoFillReferralId() {
+    const referralId = getURLParameter('referralId');
+    const referralCode = getURLParameter('referralCode');
+    
+    if (referralId) {
+        const referralIdField = document.getElementById('referralId');
+        if (referralIdField) {
+            referralIdField.value = decodeURIComponent(referralId);
+            console.log('✅ Referral ID auto-filled:', referralId);
+        }
+    }
+    
+    if (referralCode) {
+        const referralCodeField = document.getElementById('referralCode');
+        if (referralCodeField) {
+            referralCodeField.value = decodeURIComponent(referralCode);
+            console.log('✅ Referral Code auto-filled:', referralCode);
+        }
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Auto-fill referral ID from URL parameters
+    autoFillReferralId();
+    
     const form = document.getElementById('registerForm');
     const submitBtn = document.getElementById('submitBtn');
     
@@ -29,6 +60,8 @@ document.addEventListener('DOMContentLoaded', function() {
         isValid &= validateUsername();
         isValid &= validatePassword();
         isValid &= validateConfirmPassword();
+        isValid &= validateReferralId();
+        isValid &= validateReferralCode();
         isValid &= validateTerms();
         
         if (isValid) {
@@ -52,6 +85,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('username').addEventListener('blur', validateUsername);
     document.getElementById('password').addEventListener('input', validatePassword);
     document.getElementById('confirmPassword').addEventListener('input', validateConfirmPassword);
+    document.getElementById('referralId').addEventListener('blur', validateReferralId);
+    document.getElementById('referralCode').addEventListener('blur', validateReferralCode);
     document.getElementById('terms').addEventListener('change', validateTerms);
 });
 
@@ -496,8 +531,9 @@ function submitForm() {
         state: document.getElementById('state').value.trim(),
         pincode: document.getElementById('pincode').value.trim(),
         username: document.getElementById('username').value.trim(),
-        password: document.getElementById('password').value
-        // referralCode: document.getElementById('referralCode').value
+        password: document.getElementById('password').value,
+        referralId: document.getElementById('referralId').value.trim(),
+        referralCode: document.getElementById('referralCode').value.trim()
     };
     
     console.log('Sending data:', userData);
@@ -544,6 +580,60 @@ function submitForm() {
 
 function redirectToLogin() {
     window.location.href = 'login.html';
+}
+
+// ===== Validate Referral ID =====
+function validateReferralId() {
+    const referralId = document.getElementById('referralId').value.trim();
+    const errorElement = document.getElementById('referralIdError');
+    
+    if (!errorElement) {
+        console.warn('⚠️ referralIdError element not found');
+        return true;
+    }
+    
+    if (!referralId) {
+        errorElement.textContent = 'Referral ID is required';
+        return false;
+    }
+    
+    // Check if referral ID format is valid (should start with SHS-)
+    if (!referralId.startsWith('SHS-') && referralId !== 'USER_123456') {
+        // Allow any format for flexibility, but warn if not SHS format
+        console.warn('⚠️ Referral ID might not be in correct format');
+    }
+    
+    if (referralId.length < 5) {
+        errorElement.textContent = 'Referral ID must be at least 5 characters';
+        return false;
+    }
+    
+    errorElement.textContent = '';
+    return true;
+}
+
+// ===== Validate Referral Code =====
+function validateReferralCode() {
+    const referralCode = document.getElementById('referralCode').value.trim();
+    const errorElement = document.getElementById('referralCodeError');
+    
+    if (!errorElement) {
+        console.warn('⚠️ referralCodeError element not found');
+        return true;
+    }
+    
+    if (!referralCode) {
+        errorElement.textContent = 'Referral Code is required (Mandatory)';
+        return false;
+    }
+    
+    if (referralCode.length < 3) {
+        errorElement.textContent = 'Referral Code must be at least 3 characters';
+        return false;
+    }
+    
+    errorElement.textContent = '';
+    return true;
 }
 
 window.addEventListener('click', function(e) {
