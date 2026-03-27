@@ -10,7 +10,7 @@
     --warning: #f59e0b;
     --danger: #ef4444;
     --info: #3b82f6;
-    --dark: #1f2937;
+    --dark: #25264d;
     --dark-light: #374151;
     --gray: #6b7280;
     --gray-light: #f3f4f6;
@@ -101,7 +101,8 @@ body {
 }
 
 .sidebar-nav {
-    padding: 20px 0;
+
+    padding: 30px 0;
     flex: 1;
 }
 
@@ -154,8 +155,8 @@ body {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    background: rgba(239, 68, 68, 0.2);
-    color: #fca5a5;
+    background: hsla(0, 34%, 49%, 0.233);
+    color: #ffffff;
     border: 1px solid rgba(167, 131, 131, 0.3);
     padding: 12px 16px;
     border-radius: 8px;
@@ -296,6 +297,7 @@ body {
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1040,7 +1042,7 @@ body {
     .dashboard-container {
         grid-template-columns: 1fr;
     }
-    
+
     .sidebar {
         position: relative;
         width: 100%;
@@ -1048,15 +1050,15 @@ body {
         box-shadow: var(--shadow-md);
         margin-bottom: 20px;
     }
-    
+
     .main-content {
         margin-left: 0;
     }
-    
+
     .dashboard-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .withdraw-container {
         grid-template-columns: 1fr;
     }
@@ -1068,74 +1070,74 @@ body {
         gap: 20px;
         padding: 20px;
     }
-    
+
     .header-right {
         width: 100%;
         gap: 15px;
     }
-    
+
     .search-bar {
         flex: 1;
     }
-    
+
     .header-icons {
         justify-content: flex-end;
         gap: 10px;
     }
-    
+
     .main-content {
         padding: 20px;
     }
-    
+
     .content-section {
         padding: 20px;
     }
-    
+
     .stats-grid {
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 15px;
     }
-    
+
     .card-value {
         font-size: 24px;
     }
-    
+
     .table-header {
         flex-direction: column;
         align-items: flex-start;
     }
-    
+
     .search-input {
         width: 100%;
     }
-    
+
     .data-table {
         font-size: 13px;
     }
-    
+
     .data-table th,
     .data-table td {
         padding: 10px 12px;
     }
-    
+
     .profile-header {
         flex-direction: column;
         align-items: center;
         text-align: center;
     }
-    
+
     .profile-form {
         gap: 15px;
     }
-    
+
     .form-row {
         grid-template-columns: 1fr;
     }
-    
+
     .referral-stats {
         grid-template-columns: 1fr;
     }
-    
+
     .team-stats {
         grid-template-columns: 1fr;
     }
@@ -1145,51 +1147,51 @@ body {
     .dashboard-container {
         grid-template-columns: 1fr;
     }
-    
+
     .sidebar {
         display: flex;
         flex-direction: column;
         width: 100%;
         height: auto;
     }
-    
+
     .dashboard-header {
         padding: 15px;
         flex-direction: column;
     }
-    
+
     .header-left h1 {
         font-size: 22px;
     }
-    
+
     .stats-grid {
         grid-template-columns: 1fr;
         gap: 12px;
     }
-    
+
     .stat-card {
         flex-direction: column;
         align-items: center;
         text-align: center;
     }
-    
+
     .card-value {
         font-size: 20px;
     }
-    
+
     .chart-container {
         height: 200px;
     }
-    
+
     .data-table {
         font-size: 12px;
         overflow-x: auto;
     }
-    
+
     .referral-input-group {
         flex-direction: column;
     }
-    
+
     .copy-btn {
         justify-content: center;
     }
@@ -1207,33 +1209,49 @@ html {
 }
 
 @keyframes pulse-highlight {
-    0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
-    70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+    0% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+    }
 }
 
 /* For mobile: account for fixed header offset */
 @media (max-width: 768px) {
     #referral-id-section {
-        scroll-margin-top: 80px; /* Adjust based on your header height */
+        scroll-margin-top: 80px;
+        /* Adjust based on your header height */
     }
 }
 
 .nav-brand {
-    color: #ffffff;           /* Change to your preferred color */
-    text-decoration: none;    /* Removes underline */
-    font-weight: 600;         /* Optional: makes text bolder */
-    transition: color 0.3s ease; /* Smooth hover effect */
+    color: #ffffff;
+    /* Change to your preferred color */
+    text-decoration: none;
+    /* Removes underline */
+    font-weight: 600;
+    /* Optional: makes text bolder */
+    transition: color 0.3s ease;
+    /* Smooth hover effect */
 }
 
 /* Hover state (optional but recommended) */
 .nav-brand:hover {
-    color: #ffffff;           /* Darker shade on hover */
-    text-decoration: none;    /* Ensures underline stays removed on hover */
+    color: #ffffff;
+    /* Darker shade on hover */
+    text-decoration: none;
+    /* Ensures underline stays removed on hover */
 }
 
 /* Visited state (optional) */
 .nav-brand:visited {
-    color: #ffffff;           /* Same color after clicking */
+    color: #ffffff;
+    /* Same color after clicking */
     text-decoration: none;
 }
