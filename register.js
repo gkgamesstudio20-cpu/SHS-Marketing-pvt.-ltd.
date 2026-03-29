@@ -11,7 +11,7 @@ function getURLParameter(param) {
 // Auto-fill referral ID from URL parameter
 function autoFillReferralId() {
     const referralId = getURLParameter('referralId');
-    // const referralCode = getURLParameter('referralCode');
+    const referralCode = getURLParameter('referralCode');
     
     if (referralId) {
         const referralIdField = document.getElementById('referralId');
