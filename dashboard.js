@@ -136,7 +136,7 @@ function updateDashboardUI() {
     // Update Referral Link
     const referralLinkElement = document.getElementById("referral-link");
     if (referralLinkElement) {
-      referralLinkElement.textContent = `https://shsmarketing.com/ref/${currentUser?.userId || "USER_123456"}`;
+      referralLinkElement.textContent = `https://shsmarketing.in/register.html/${currentUser?.userId || "USER_123456"}`;
     }
 
     // Get user name (handle different formats)
