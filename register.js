@@ -12,20 +12,25 @@ function getURLParameter(param) {
 function autoFillReferralId() {
     const referralId = getURLParameter('referralId');
     const referralCode = getURLParameter('referralCode');
+    const refParam = getURLParameter('ref'); // NEW: From full referral link
     
+    // Handle referralId parameter (optional)
     if (referralId) {
         const referralIdField = document.getElementById('referralId');
         if (referralIdField) {
             referralIdField.value = decodeURIComponent(referralId);
-            console.log('✅ Referral ID auto-filled:', referralId);
+            console.log('✅ Referral ID auto-filled from URL:', referralId);
         }
     }
     
-    if (referralCode) {
+    // Handle referralCode and ref parameters (REQUIRED)
+    // Support both names: referralCode and ref
+    const codeValue = referralCode || refParam;
+    if (codeValue) {
         const referralCodeField = document.getElementById('referralCode');
         if (referralCodeField) {
-            referralCodeField.value = decodeURIComponent(referralCode);
-            console.log('✅ Referral Code auto-filled:', referralCode);
+            referralCodeField.value = decodeURIComponent(codeValue);
+            console.log('✅ Referral Code auto-filled from URL:', codeValue);
         }
     }
 }

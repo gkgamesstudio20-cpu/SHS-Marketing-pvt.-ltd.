@@ -133,10 +133,15 @@ function updateDashboardUI() {
       referralIDElement.value = currentUser?.userId || "USER_123456";
     }
 
-    // Update Referral Link
+    // ===== UPDATE REFERRAL LINK WITH CODE PARAMETER =====
     const referralLinkElement = document.getElementById("referral-link");
-    if (referralLinkElement) {
-      referralLinkElement.textContent = `http://shsmarketing.in/register.html/${currentUser?.userId || "USER_123456"}`;
+    if (referralLinkElement && currentUser) {
+      const referralCode = currentUser.referralCode || "USER_CODE";
+      // Create full working URL with referral code parameter
+      const fullUrl = `http://shsmarketing.in/register.html?ref=${encodeURIComponent(referralCode)}`;
+      referralLinkElement.textContent = fullUrl;
+      referralLinkElement.setAttribute('data-url', fullUrl);
+      console.log('✅ Full referral link updated:', fullUrl);
     }
 
     // Get user name (handle different formats)
@@ -401,7 +406,9 @@ function copyReferralLink() {
 function goToReferralLink() {
   const referralLink = document.getElementById('referral-link');
   if (referralLink) {
-    const link = referralLink.textContent;
+    // Get full URL from data attribute or textContent
+    const link = referralLink.getAttribute('data-url') || referralLink.textContent;
+    console.log('🔗 Opening referral link:', link);
     window.open(link, '_blank');
   }
 }
@@ -744,6 +751,6 @@ function goToRegistrationWithReferral() {
 
 // ===== Click Referral Link to Register =====
 function clickReferralLink() {
-    // Same as goToRegistrationWithReferral but triggered by clicking the link
-    goToRegistrationWithReferral();
+    // Open the full referral link (same as "Go to Link" button)
+    goToReferralLink();
 }

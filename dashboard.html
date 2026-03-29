@@ -286,12 +286,14 @@
                             <div class="referral-url">
                                 <strong>Full Referral Link:</strong>
                                 <code id="referral-link"
-                                    style="cursor: pointer; padding: 10px; border-radius: 6px; background-color: #f3f4f6; display: inline-block; max-width: 100%; overflow-wrap: break-word;"
-                                    onclick="clickReferralLink()" title="Click to register with this referral link">
-                                    http://shsmarketing.in
+                                    style="cursor: pointer; padding: 10px; border-radius: 6px; background-color: #f3f4f6; display: inline-block; max-width: 100%; overflow-wrap: break-word; word-break: break-all;"
+                                    onclick="clickReferralLink()" title="Click to open registration with your referral code">
+                                    http://shsmarketing.in/register.html?ref=USER_CODE
                                 </code>
-                                <small style="display: block; margin-top: 8px; color: #666;">Click the link to register
-                                    with your referral ID</small>
+                                <small style="display: block; margin-top: 8px; color: #666;">
+                                    <i class="fas fa-info-circle"></i> 
+                                    Share this link - new users will register under you!
+                                </small>
                                 <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
                                     <button class="copy-btn" onclick="copyReferralLink()">
                                         <i class="fas fa-link"></i>
@@ -300,7 +302,7 @@
                                     <button class="copy-btn" onclick="goToReferralLink()"
                                         style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
                                         <i class="fas fa-external-link-alt"></i>
-                                        Go to Link
+                                        Open Link
                                     </button>
                                     <button class="copy-btn" onclick="goToRegistrationWithReferral()"
                                         style="background: linear-gradient(135deg, #10b981, #059669);">
