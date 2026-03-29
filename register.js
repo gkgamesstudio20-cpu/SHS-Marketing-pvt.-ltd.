@@ -615,28 +615,28 @@ function validateReferralId() {
 }
 
 // ===== Validate Referral Code =====
-// function validateReferralCode() {
-//     const referralCode = document.getElementById('referralCode').value.trim();
-//     const errorElement = document.getElementById('referralCodeError');
+function validateReferralCode() {
+    const referralCode = document.getElementById('referralCode').value.trim();
+    const errorElement = document.getElementById('referralCodeError');
     
-//     if (!errorElement) {
-//         console.warn('⚠️ referralCodeError element not found');
-//         return true;
-//     }
+    if (!errorElement) {
+        console.warn('⚠️ referralCodeError element not found');
+        return true;
+    }
     
-//     if (!referralCode) {
-//         errorElement.textContent = 'Referral Code is required (Mandatory)';
-//         return false;
-//     }
+    if (!referralCode) {
+        errorElement.textContent = 'Referral Code is required (Mandatory)';
+        return false;
+    }
     
-//     if (referralCode.length < 3) {
-//         errorElement.textContent = 'Referral Code must be at least 3 characters';
-//         return false;
-//     }
+    if (referralCode.length < 3) {
+        errorElement.textContent = 'Referral Code must be at least 3 characters';
+        return false;
+    }
     
-//     errorElement.textContent = '';
-//     return true;
-// }
+    errorElement.textContent = '';
+    return true;
+}
 
 window.addEventListener('click', function(e) {
     const modal = document.getElementById('successModal');
