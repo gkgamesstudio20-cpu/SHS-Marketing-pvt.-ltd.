@@ -125,6 +125,45 @@ function fetchUserData() {
 }
 
 // ===== Update Dashboard UI with User Data =====
+
+
+// function updateDashboardUI() {
+//   try {
+//     // Update Referral ID input field
+//     const referralIDElement = document.getElementById("referralID");
+//     if (referralIDElement && currentUser?.userId) {
+//       referralIDElement.value = currentUser.userId;
+//     }
+
+//     // ===== UPDATE REFERRAL LINK WITH CODE PARAMETER =====
+//     const referralLinkElement = document.getElementById("referralLink");
+//     if (referralLinkElement && currentUser?.userId) {
+//       const referralCode = currentUser.userId; // Use actual userId only
+//       const fullUrl = `http://shsmarketing.in/register.html?ref=${encodeURIComponent(referralCode)}`;
+
+//       // For <span>/<div> elements, use textContent
+//       referralLinkElement.textContent = fullUrl;
+//       referralLinkElement.setAttribute('data-url', fullUrl);
+
+//       // Optional: Make it clickable
+//       if (referralLinkElement.tagName === 'A') {
+//         referralLinkElement.href = fullUrl;
+//       }
+
+//       console.log('✅ Full referral link updated:', fullUrl);
+//     }
+//   } catch (error) {
+//     console.error('❌ Error updating dashboard UI:', error);
+//   }
+// }
+
+
+
+
+
+
+
+
 function updateDashboardUI() {
   try {
     // Update Referral ID (userId)
@@ -134,15 +173,33 @@ function updateDashboardUI() {
     }
 
     // ===== UPDATE REFERRAL LINK WITH CODE PARAMETER =====
-    const referralLinkElement = document.getElementById("referral-link");
+    const referralLinkElement = document.getElementById("referralLink");
     if (referralLinkElement && currentUser) {
+
       const referralCode = currentUser.referralCode || "USER_CODE";
+      const referralID = currentUser?.userId || "USER_123456";
       // Create full working URL with referral code parameter
-      const fullUrl = `http://shsmarketing.in/register.html?ref=${encodeURIComponent(referralCode)}`;
+      const fullUrl = `http://shsmarketing.in/register.html?referralId=${encodeURIComponent(referralID)}&referralCode=${encodeURIComponent(referralCode)}`;
       referralLinkElement.textContent = fullUrl;
       referralLinkElement.setAttribute('data-url', fullUrl);
       console.log('✅ Full referral link updated:', fullUrl);
     }
+
+
+
+    //  const referralLinkElement = document.getElementById("referral-link");
+    // if (referralLinkElement && currentUser) {
+    //   const referralCode = currentUser.referralCode || "USER_CODE";
+    //   // Create full working URL with referral code parameter
+    //   const fullUrl = `http://shsmarketing.in/register.html?ref=${encodeURIComponent(referralCode)}`;
+    //   referralLinkElement.textContent = fullUrl;
+    //   referralLinkElement.setAttribute('data-url', fullUrl);
+    //   console.log('✅ Full referral link updated:', fullUrl);
+    // }
+
+
+
+
 
     // Get user name (handle different formats)
     const firstName = currentUser?.firstName || "User";
@@ -263,7 +320,7 @@ function initializeChart() {
     }
 
     const totalEarning = parseFloat(currentUser?.totalearning || 0);
-    
+
     new Chart(ctx, {
       type: 'line',
       data: {
@@ -384,7 +441,8 @@ function copyReferralID() {
 
 // ===== Copy Referral Link =====
 function copyReferralLink() {
-  const referralLink = document.getElementById('referral-link');
+  const referralLink = document.getElementById('referralLink');
+  //  const referralLink = document.getElementById('referral-link');
   if (referralLink) {
     const text = referralLink.textContent;
     navigator.clipboard.writeText(text).then(() => {
@@ -699,58 +757,58 @@ console.log('✅ Dashboard script loaded successfully!');
 
 
 function navigateToReferral(e) {
-    e.preventDefault();
-    
-    // Show dashboard first if not already visible
-    showDashboard();
-    
-    // Scroll to referral section
-    setTimeout(() => {
-        document.getElementById('referral-id-section')?.scrollIntoView({ 
-            behavior: 'smooth',
-            block: 'start'
-        });
-    }, 100);
-    
-    // Optional: Update URL hash without page jump
-    history.pushState(null, null, '#referral-id-section');
+  e.preventDefault();
+
+  // Show dashboard first if not already visible
+  showDashboard();
+
+  // Scroll to referral section
+  setTimeout(() => {
+    document.getElementById('referral-id-section')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  }, 100);
+
+  // Optional: Update URL hash without page jump
+  history.pushState(null, null, '#referral-id-section');
 }
 
 
 function scrollToReferralSection() {
-    const section = document.getElementById('referral-id-section');
-    if (section) {
-        // Ensure dashboard section is visible first
-        showDashboard(); // Your existing function to show dashboard
-        
-        // Smooth scroll after a tiny delay to allow section render
-        setTimeout(() => {
-            section.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'start' 
-            });
-            
-            // Optional: Add highlight effect
-            section.classList.add('highlight-section');
-            setTimeout(() => section.classList.remove('highlight-section'), 2000);
-        }, 100);
-    }
+  const section = document.getElementById('referral-id-section');
+  if (section) {
+    // Ensure dashboard section is visible first
+    showDashboard(); // Your existing function to show dashboard
+
+    // Smooth scroll after a tiny delay to allow section render
+    setTimeout(() => {
+      section.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+
+      // Optional: Add highlight effect
+      section.classList.add('highlight-section');
+      setTimeout(() => section.classList.remove('highlight-section'), 2000);
+    }, 100);
+  }
 }
 
 // ===== Go to Registration with Referral ID =====
 function goToRegistrationWithReferral() {
-    const userId = currentUser?.userId || "USER_123456";
-    const referralCode = currentUser?.referralCode || "";
-    
-    // Create URL with referral ID and referral code as parameters
-    const registrationUrl = `register.html?referralId=${encodeURIComponent(userId)}&referralCode=${encodeURIComponent(referralCode)}`;
-    
-    console.log('Opening registration with referral:', registrationUrl);
-    window.location.href = registrationUrl;
+  const userId = currentUser?.userId || "USER_123456";
+  const referralCode = currentUser?.referralCode || "";
+
+  // Create URL with referral ID and referral code as parameters
+  const registrationUrl = `register.html?referralId=${encodeURIComponent(userId)}&referralCode=${encodeURIComponent(referralCode)}`;
+
+  console.log('Opening registration with referral:', registrationUrl);
+  window.location.href = registrationUrl;
 }
 
 // ===== Click Referral Link to Register =====
 function clickReferralLink() {
-    // Open the full referral link (same as "Go to Link" button)
-    goToReferralLink();
+  // Open the full referral link (same as "Go to Link" button)
+  goToReferralLink();
 }
