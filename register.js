@@ -23,13 +23,13 @@ function autoFillReferralId() {
     
    
 
-    // if (referralCode) {
-    //     const referralCodeField = document.getElementById('referralCode');
-    //     if (referralCodeField) {
-    //         referralCodeField.value = decodeURIComponent(referralCode);
-    //         console.log('✅ Referral Code auto-filled:', referralCode);
-    //     }
-    // }
+    if (referralCode) {
+        const referralCodeField = document.getElementById('referralCode');
+        if (referralCodeField) {
+            referralCodeField.value = decodeURIComponent(referralCode);
+            console.log('✅ Referral Code auto-filled:', referralCode);
+        }
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
         isValid &= validatePassword();
         isValid &= validateConfirmPassword();
         isValid &= validateReferralId();
-        // isValid &= validateReferralCode();
+        isValid &= validateReferralCode();
         isValid &= validateTerms();
         
         if (isValid) {
@@ -535,7 +535,7 @@ function submitForm() {
         username: document.getElementById('username').value.trim(),
         password: document.getElementById('password').value,
         referralId: document.getElementById('referralId').value.trim(),
-        // referralCode: document.getElementById('referralCode').value.trim()
+        referralCode: document.getElementById('referralCode').value.trim()
     };
     
     console.log('Sending data:', userData);
