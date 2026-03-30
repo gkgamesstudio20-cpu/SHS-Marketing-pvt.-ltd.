@@ -1,6 +1,6 @@
 // Dashboard JavaScript - COMPLETE FIXED VERSION
 // Use the SAME API URL as registration and login
-const apiURL = "https://script.google.com/macros/s/AKfycbwfciFmUJm132SOTEXKrNSgk7Ts2bvUd2oBio49LHS5XUS99zTcCsHTM9F5qsMFvwPfgg/exec";
+const apiURL = "https://script.google.com/macros/s/AKfycbx5EYEhgaKWh9wPJaY2HYztmbEOD4uGkEKA7iToQb5Sq8NnVtkS3JFS6rAEOMqnal8yXg/exec";
 
 let loggedInMobile = localStorage.getItem("loggedInMobile");
 let currentUser = JSON.parse(localStorage.getItem("userData")) || null;

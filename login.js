@@ -1,6 +1,6 @@
 // ===== Login Page JavaScript - Google Sheets Backend =====
 // IMPORTANT: Update this URL to match your registration Apps Script deployment
-const apiURL = "https://script.google.com/macros/s/AKfycbwfciFmUJm132SOTEXKrNSgk7Ts2bvUd2oBio49LHS5XUS99zTcCsHTM9F5qsMFvwPfgg/exec";
+const apiURL = "https://script.google.com/macros/s/AKfycbx5EYEhgaKWh9wPJaY2HYztmbEOD4uGkEKA7iToQb5Sq8NnVtkS3JFS6rAEOMqnal8yXg/exec";
 
 document.addEventListener('DOMContentLoaded', function() {
   // Redirect if already logged in
@@ -161,7 +161,8 @@ function setupEventListeners() {
       const response = await fetchWithTimeout(apiURL, {
         method: 'POST',
         body: JSON.stringify({ 
-          action: 'login', 
+          // action: 'login', 
+          action: 'loginWithPaymentCheck', 
           mobile: mobileInput, 
           password: password 
         })

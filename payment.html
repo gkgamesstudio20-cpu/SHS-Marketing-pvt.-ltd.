@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SHS Payment verification</title>
+    <link rel="stylesheet" href="payment.css" />
+</head>
+
+<body>
+    <div class="container">
+        <h2>Payment verification</h2>
+        <form id="registrationForm" novalidate>
+
+            <!-- Full Name -->
+            <label for="fullName">Full Name *</label>
+            <input type="text" id="fullName" name="fullName" required placeholder="Enter your full name" />
+
+            <!-- Phone -->
+            <label for="phone">Phone Number *</label>
+            <input type="tel" id="phone" name="phone" required placeholder="+91 98765 43210" pattern="[0-9]{10}" maxlength="10" />
+
+            <!-- UPI QR Code Payment Section -->
+            <div class="upi-payment-section">
+                <label>Payment via UPI *</label>
+                <div class="upi-qr-container">
+                    <div class="upi-header">
+                        <!-- <div class="brand-logo"></div> -->
+                        <i class="fas fa-chart-line"></i>
+                        <span class="brand-name">SHS Marketing Pvt. Ltd.</span>
+                        <!-- <div class="brand-logo"></div> -->
+                    </div>
+
+                    <div class="qr-code-wrapper">
+                        <!-- Updated to use UPI.svg file -->
+                        <img src="UPI.svg" alt="UPI QR Code" class="qr-code-image" id="upiQRCode" />
+                        <div class="">
+                            <!-- <svg width="50" height="50" viewBox="0 0 48 48">
+                                <path fill="#4285F4"
+                                    d="M24 9.5c2.5 0 4.5 2 4.5 4.5s-2 4.5-4.5 4.5-4.5-2-4.5-4.5 2-4.5 4.5-4.5m0-2C20.4 7.5 17.5 10.4 17.5 14s2.9 6.5 6.5 6.5 6.5-2.9 6.5-6.5S27.6 7.5 24 7.5z" />
+                                <path fill="#34A853"
+                                    d="M24 17.5c-2.5 0-4.5-2-4.5-4.5s2-4.5 4.5-4.5 4.5 2 4.5 4.5-2 4.5-4.5 4.5zm0-15C14.3 2.5 6.5 10.3 6.5 20v8h6v-8c0-6.4 5.1-11.5 11.5-11.5S35.5 13.6 35.5 20v8h6v-8c0-9.7-7.8-17.5-17.5-17.5z" />
+                                <path fill="#FBBC05"
+                                    d="M24 32.5c-6.4 0-11.5-5.1-11.5-11.5v-1h-6v1c0 9.7 7.8 17.5 17.5 17.5S41.5 30.7 41.5 21v-1h-6v1c0 6.4-5.1 11.5-11.5 11.5z" />
+                                <path fill="#EA4335"
+                                    d="M24 45.5c-6.4 0-11.5-5.1-11.5-11.5v-1h-6v1c0 9.7 7.8 17.5 17.5 17.5S41.5 43.7 41.5 34v-1h-6v1c0 6.4-5.1 11.5-11.5 11.5z" />
+                            </svg> -->
+                        </div>
+                    </div>
+
+                    <div class="upi-id">
+                        <strong>UPI ID:</strong> shsbrandgroup@oksbi
+                    </div>
+
+                    <p class="upi-instruction">Scan to pay with any UPI app</p>
+
+                    <div class="upi-apps">
+                        <span>Accepted: </span>
+                        <span class="app-badge">Google Pay</span>
+                        <span class="app-badge">PhonePe</span>
+                        <span class="app-badge">Paytm</span>
+                        <!-- <span class="app-badge">BHIM</span> -->
+                    </div>
+                </div>
+
+                <!-- Transaction ID for verification -->
+                <label for="transactionId">Enter Transaction ID (after payment) *</label>
+                <input type="text" id="transactionId" name="transactionId" required placeholder="e.g., UPI-123456789"
+                    pattern="[A-Za-z0-9\-]{10,50}" />
+
+                <!-- <label for="paymentAmount">Payment Amount (₹) *</label>
+                <input type="number" id="paymentAmount" name="paymentAmount" required placeholder="Enter amount" min="1"
+                    step="0.01" /> -->
+            </div>
+            <!-- <div class="form-group">
+                <label for="referralId">Referral Code <span class="required">*</span></label>
+                <input type="text" id="referralId" name="referralId"
+                    placeholder="Enter your referral ID (e.g., SHS-1234567890)" readonly>
+                <small>Have a referral code? Enter it here</small>
+                <span class="error-message" id="referralIdError"></span>
+            </div> -->
+
+            <!-- Terms -->
+            <label style="margin-top:15px; font-weight:normal;">
+                <input type="checkbox" id="terms" name="terms" required />
+                I agree to the <a href="#" target="_blank">Terms & Conditions</a> *
+            </label>
+
+            <button type="submit">Submit Form & Verify Payment</button>
+            <p id="formMessage" class="message"></p>
+        </form>
+    </div>
+
+    <script src="payment.js"></script>
+</body>
+
+</html>
