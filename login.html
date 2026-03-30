@@ -3,29 +3,22 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- FIX: Removed user-scalable=no (accessibility violation) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - SHS Marketing Pvt. Ltd.</title>
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
-
-    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- CSS -->
     <link rel="stylesheet" href="login.css">
 </head>
 
 <body>
 
     <div class="login-container">
-        <!-- Background Elements -->
         <div class="bg-shape shape-1"></div>
-        <!-- <div class="bg-shape shape-2"></div> -->
         <div class="bg-shape shape-3"></div>
 
         <!-- Login Card -->
@@ -44,15 +37,22 @@
                 <p>Sign in to access your dashboard</p>
             </div>
 
-            <form class="login-form" id="loginForm">
+            <form class="login-form" id="loginForm" novalidate>
                 <div class="form-group">
                     <label for="mobile">
                         <i class="fas fa-mobile-alt"></i>
                         Mobile Number
                     </label>
                     <div class="input-wrapper">
-                        <input type="tel" id="mobile" name="mobile" placeholder="Enter your mobile number" required
-                            pattern="[0-9]{10}" maxlength="10">
+                        <!--
+                            FIX: Removed maxlength="10" — JS formatter outputs "+91 XXXXX XXXXX"
+                                 (15 chars) which was silently truncated to "+91 987" by maxlength.
+                            FIX: Removed pattern="[0-9]{10}" — browser rejected the +91 display format
+                                 before JS submission ran.
+                        -->
+                        <input type="tel" id="mobile" name="mobile"
+                            placeholder="Enter your mobile number" required
+                            autocomplete="tel">
                         <span class="input-icon">
                             <i class="fas fa-phone"></i>
                         </span>
@@ -65,18 +65,10 @@
                         <i class="fas fa-lock"></i>
                         Password
                     </label>
-
-                    <!-- <div class="form-group">
-                        <label>OTP</label>
-
-                        <input type="text" id="otp" placeholder="Enter OTP">
-
-                        <button type="button" onclick="sendOTP()">
-                            Send OTP
-                        </button>
-                    </div> -->
                     <div class="input-wrapper">
-                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                        <input type="password" id="password" name="password"
+                            placeholder="Enter your password" required
+                            autocomplete="current-password">
                         <span class="input-icon toggle-password" onclick="togglePassword()">
                             <i class="fas fa-eye" id="toggleIcon"></i>
                         </span>
@@ -90,10 +82,10 @@
                         <span class="checkmark"></span>
                         Remember me
                     </label>
-                    <!-- <a href="#" class="forgot-link">Forgot Password?</a> -->
+                    <a href="#" class="forgot-link">Forgot Password?</a>
                 </div>
 
-                <button type="submit" class="login-btn">
+                <button type="submit" class="login-btn" id="loginBtn">
                     <span class="btn-text">Sign In</span>
                     <span class="btn-icon"><i class="fas fa-arrow-right"></i></span>
                     <span class="btn-loader">
@@ -101,9 +93,7 @@
                     </span>
                 </button>
 
-                <div class="divider">
-                    <span>or</span>
-                </div>
+                <div class="divider"><span>or</span></div>
 
                 <div class="social-login">
                     <button type="button" class="social-btn google">
@@ -131,29 +121,16 @@
                 <h2>Grow Your Network</h2>
                 <p>Join thousands of successful marketers and start earning today</p>
                 <ul class="features-list">
-                    <li>
-                        <i class="fas fa-check-circle"></i>
-                        <span>Track your earnings in real-time</span>
-                    </li>
-                    <li>
-                        <i class="fas fa-check-circle"></i>
-                        <span>Manage your team effectively</span>
-                    </li>
-                    <li>
-                        <i class="fas fa-check-circle"></i>
-                        <span>Instant withdrawal support</span>
-                    </li>
-                    <li>
-                        <i class="fas fa-check-circle"></i>
-                        <span>24/7 customer support</span>
-                    </li>
+                    <li><i class="fas fa-check-circle"></i><span>Track your earnings in real-time</span></li>
+                    <li><i class="fas fa-check-circle"></i><span>Manage your team effectively</span></li>
+                    <li><i class="fas fa-check-circle"></i><span>Instant withdrawal support</span></li>
+                    <li><i class="fas fa-check-circle"></i><span>24/7 customer support</span></li>
                 </ul>
                 <div class="testimonial">
                     <div class="quote-icon">
                         <i class="fas fa-quote-left"></i>
                     </div>
-                    <p>"SHS Marketing helped me build a successful network and achieve financial freedom. Highly
-                        recommended!"</p>
+                    <p>"SHS Marketing helped me build a successful network and achieve financial freedom. Highly recommended!"</p>
                     <div class="testimonial-author">
                         <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user0" alt="User">
                         <div>
@@ -169,7 +146,6 @@
     <!-- Notification Container -->
     <div id="notificationContainer"></div>
 
-    <!-- JavaScript -->
     <script src="login.js"></script>
 </body>
 

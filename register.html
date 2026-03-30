@@ -79,7 +79,7 @@
                             <span class="stat-label">Active Members</span>
                         </div>
                         <div class="info-stat">
-                            <span class="stat-number">₹10Cr+</span>
+                            <span class="stat-number">&#8377;10Cr+</span>
                             <span class="stat-label">Paid Out</span>
                         </div>
                         <div class="info-stat">
@@ -98,6 +98,7 @@
                 </div>
 
                 <form id="registerForm" class="register-form" novalidate>
+
                     <!-- Personal Information -->
                     <div class="form-section">
                         <h3><i class="fas fa-user"></i> Personal Information</h3>
@@ -105,8 +106,7 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="firstName">First Name <span class="required">*</span></label>
-                                <input type="text" id="firstName" name="firstName" placeholder="Enter first name"
-                                    required>
+                                <input type="text" id="firstName" name="firstName" placeholder="Enter first name" required>
                                 <span class="error-message" id="firstNameError"></span>
                             </div>
                             <div class="form-group">
@@ -200,9 +200,9 @@
                         <div class="form-group">
                             <label for="password">Password <span class="required">*</span></label>
                             <div class="password-input">
-                                <input type="password" id="password" name="password" placeholder="Create password"
-                                    required>
-                                <button type="button" class="toggle-password" onclick="togglePassword('password')">
+                                <input type="password" id="password" name="password" placeholder="Create password" required>
+                                <!-- FIX: pass event explicitly so togglePassword works reliably -->
+                                <button type="button" class="toggle-password" onclick="togglePassword(event, 'password')">
                                     <i class="fas fa-eye"></i>
                                 </button>
                             </div>
@@ -221,35 +221,44 @@
                                 <input type="password" id="confirmPassword" name="confirmPassword"
                                     placeholder="Confirm password" required>
                                 <button type="button" class="toggle-password"
-                                    onclick="togglePassword('confirmPassword')">
+                                    onclick="togglePassword(event, 'confirmPassword')">
                                     <i class="fas fa-eye"></i>
                                 </button>
                             </div>
                             <span class="error-message" id="confirmPasswordError"></span>
                         </div>
 
+                        <!--
+                            FIX: Two separate fields to match Google Apps Script backend:
+                            1. referralId  = Sponsor's SHS-XXXXXXXXXX user ID (optional, auto-filled from URL)
+                            2. referralCode = Sponsor's 8-char referral code (REQUIRED by registerUser())
+                        -->
                         <div class="form-group">
-                            <label for="referralId">Referral Code <span class="required">*</span></label>
-                            <input type="text" id="referralId" name="referralId"  placeholder="Enter your referral ID (e.g., SHS-1234567890)" required  readonly> 
-                            <small>Have a referral code? Enter it here</small>
+                            <label for="referralId">Sponsor ID</label>
+                            <input type="text" id="referralId" name="referralId"
+                                placeholder="Sponsor's ID (e.g., SHS-1234567890)" readonly>
+                            <small>Auto-filled from your invite link (optional)</small>
                             <span class="error-message" id="referralIdError"></span>
                         </div>
 
                         <!-- <div class="form-group">
-                            <label for="referralCode">Referral Code (Mandatory) <span class="required">*</span></label>
-                            <input type="text" id="referralCode" name="referralCode" placeholder="Enter referrer's ID" required  >
-                            <small>Have a referral code? Enter it here</small>
+                            <label for="referralCode">Referral Code <span class="required">*</span></label>
+                            <input type="text" id="referralCode" name="referralCode"
+                                placeholder="Enter 8-character referral code" required
+                                maxlength="8" autocomplete="off">
+                            <small>The 8-character code provided by your sponsor (e.g., AB12CD34)</small>
                             <span class="error-message" id="referralCodeError"></span>
-                        </div>
-                    </div> -->
+                        </div> -->
+                    </div>
 
                     <!-- Terms & Conditions -->
                     <div class="form-section">
                         <div class="form-group checkbox-group">
                             <label class="checkbox-label">
                                 <input type="checkbox" id="terms" name="terms" required>
-                                <span>I agree to the <a href="#" class="link">Terms & Conditions</a> and <a href="#"
-                                        class="link">Privacy Policy</a> <span class="required">*</span></span>
+                                <span>I agree to the <a href="#" class="link">Terms &amp; Conditions</a> and
+                                    <a href="#" class="link">Privacy Policy</a>
+                                    <span class="required">*</span></span>
                             </label>
                             <span class="error-message" id="termsError"></span>
                         </div>
@@ -272,6 +281,7 @@
                     <div class="login-link">
                         <p>Already have an account? <a href="login.html">Login here</a></p>
                     </div>
+
                 </form>
             </div>
         </div>
@@ -284,10 +294,12 @@
                 <i class="fas fa-check-circle"></i>
             </div>
             <h2>Registration Successful!</h2>
-            <p>Your account has been created successfully. Please check your email for verification.</p>
-            <button class="btn-primary" onclick="redirectToLogin()">
-                <i class="fas fa-sign-in-alt"></i>
-                Go to Login
+            <p>Your account has been created. Please complete your payment to activate your account.</p>
+            <!-- FIX: Added missing userIdDisplay element referenced in register.js -->
+            <p id="userIdDisplay" style="font-weight: 600; color: #2563eb; margin: 8px 0;"></p>
+            <button class="btn-primary" onclick="redirectToPayment()">
+                <i class="fas fa-credit-card"></i>
+                Proceed to Payment
             </button>
         </div>
     </div>
@@ -317,7 +329,7 @@
             <div class="footer-column">
                 <h4>Legal</h4>
                 <ul>
-                    <li><a href="#">Terms & Conditions</a></li>
+                    <li><a href="#">Terms &amp; Conditions</a></li>
                     <li><a href="#">Privacy Policy</a></li>
                     <li><a href="#">Refund Policy</a></li>
                     <li><a href="#">Disclaimer</a></li>
@@ -326,19 +338,18 @@
             <div class="footer-column">
                 <h4>Contact</h4>
                 <ul>
-                    <li><i class="fas fa-envelope"></i> <a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                            data-cfemail="a4d7d1d4d4cbd6d0e4d7ccd7c9c5d6cfc1d0cdcac38ac7cbc9">[email&#160;protected]</a>
-                    </li>
+                    <li><i class="fas fa-envelope"></i> <a href="mailto:info@shsmarketing.in">info@shsmarketing.in</a></li>
                     <li><i class="fas fa-phone"></i> +91-9876543210</li>
                     <li><i class="fas fa-map-marker-alt"></i> Punjab, India</li>
                 </ul>
             </div>
         </div>
+        <!-- FIX: Completed truncated copyright line -->
         <div class="footer-bottom">
-            <p>&copy; 2026 SHS Marketing Pvt. Ltd. All rights res
-            </p>
+            <p>&copy; 2026 SHS Marketing Pvt. Ltd. All rights reserved.</p>
         </div>
     </footer>
+
     <script src="register.js"></script>
 </body>
 
