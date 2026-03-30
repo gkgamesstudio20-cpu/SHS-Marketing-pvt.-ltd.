@@ -586,33 +586,45 @@ function redirectToLogin() {
 
 // ===== Validate Referral ID =====
 function validateReferralId() {
+    const userId = document.getElementById('userId').value.trim();
     const referralId = document.getElementById('referralId').value.trim();
     const errorElement = document.getElementById('referralIdError');
 
-    if (referralId) {
+    // if (referralId) {
+    //      console.warn('⚠️ referralIdError element not found');
+    //         return true;
+    // }
 
-        if (!errorElement) {
-            console.warn('⚠️ referralIdError element not found');
-            return true;
-        }
 
-        if (!referralId) {
-            errorElement.textContent = 'Referral ID is required';
-            return false;
-        }
-
-        // Check if referral ID format is valid (should start with SHS-)
-        if (!referralId.startsWith('SHS-') && referralId !== 'USER_123456') {
-            // Allow any format for flexibility, but warn if not SHS format
-            console.warn('⚠️ Referral ID might not be in correct format');
-        }
-
-        if (referralId.length < 10) {
-            errorElement.textContent = 'Referral ID must be at least 10 characters';
-            return false;
-        }
-
+    if (!errorElement) {
+        console.warn('⚠️ referralIdError element not found');
+        return true;
     }
+
+    if (!referralId) {
+        errorElement.textContent = 'Referral ID is required';
+        return false;
+    }
+
+    // Check if referral ID format is valid (should start with SHS-)
+
+
+    if (!referralId.startsWith('SHS-') && userId !== 'USER_123456') {
+        // Allow any format for flexibility, but warn if not SHS format
+        console.warn('⚠️ Referral ID might not be in correct format');
+    }
+
+
+    if (!referralId.startsWith('SHS-') && referralId !== 'USER_123456') {
+        // Allow any format for flexibility, but warn if not SHS format
+        console.warn('⚠️ Referral ID might not be in correct format');
+    }
+
+    if (referralId.length < 10) {
+        errorElement.textContent = 'Referral ID must be at least 10 characters';
+        return false;
+    }
+
     errorElement.textContent = '';
     return true;
 }
