@@ -12,7 +12,7 @@ function getURLParameter(param) {
 function autoFillReferralId() {
     const referralId = getURLParameter('referralId');
     const referralCode = getURLParameter('referralCode');
-    
+
     if (referralId) {
         const referralIdField = document.getElementById('referralId');
         if (referralIdField) {
@@ -20,8 +20,8 @@ function autoFillReferralId() {
             console.log('✅ Referral ID auto-filled:', referralId);
         }
     }
-    
-   
+
+
 
     if (referralCode) {
         const referralCodeField = document.getElementById('referralCode');
@@ -32,21 +32,21 @@ function autoFillReferralId() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Auto-fill referral ID from URL parameters
     autoFillReferralId();
-    
+
     const form = document.getElementById('registerForm');
     const submitBtn = document.getElementById('submitBtn');
-    
+
     // Set DOB constraints
     setDOBConstraints();
-    
+
     // Form submission
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', function (e) {
         e.preventDefault();
         clearAllErrors();
-        
+
         // Run all validations
         let isValid = true;
         isValid &= validateFirstName();
@@ -65,12 +65,12 @@ document.addEventListener('DOMContentLoaded', function() {
         isValid &= validateReferralId();
         isValid &= validateReferralCode();
         isValid &= validateTerms();
-        
+
         if (isValid) {
             submitForm();
         }
     });
-    
+
     // Real-time validation
     document.getElementById('firstName').addEventListener('blur', validateFirstName);
     document.getElementById('lastName').addEventListener('blur', validateLastName);
@@ -99,11 +99,11 @@ document.addEventListener('DOMContentLoaded', function() {
 function setDOBConstraints() {
     const dobInput = document.getElementById('dob');
     if (!dobInput) return;
-    
+
     const today = new Date();
     const minDate = new Date(today.getFullYear() - 100, today.getMonth(), today.getDate());
     const maxDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
-    
+
     dobInput.min = minDate.toISOString().split('T')[0];
     dobInput.max = maxDate.toISOString().split('T')[0];
 }
@@ -133,7 +133,7 @@ function clearError(elementId) {
 function clearAllErrors() {
     const errorElements = document.querySelectorAll('.error-message');
     errorElements.forEach(el => el.textContent = '');
-    
+
     const inputElements = document.querySelectorAll('input, select, textarea');
     inputElements.forEach(el => el.classList.remove('error'));
 }
@@ -141,13 +141,13 @@ function clearAllErrors() {
 function togglePassword(fieldId) {
     const input = document.getElementById(fieldId);
     if (!input) return;
-    
+
     const button = event.target.closest('.toggle-password');
     if (!button) return;
-    
+
     const icon = button.querySelector('i');
     if (!icon) return;
-    
+
     if (input.type === 'password') {
         input.type = 'text';
         icon.classList.remove('fa-eye');
@@ -166,7 +166,7 @@ function togglePassword(fieldId) {
 function validateFirstName() {
     const input = document.getElementById('firstName');
     const value = input.value.trim();
-    
+
     if (!value) {
         showError('firstNameError', 'First name is required');
         input.classList.add('error');
@@ -182,7 +182,7 @@ function validateFirstName() {
         input.classList.add('error');
         return false;
     }
-    
+
     clearError('firstNameError');
     input.classList.remove('error');
     return true;
@@ -191,7 +191,7 @@ function validateFirstName() {
 function validateLastName() {
     const input = document.getElementById('lastName');
     const value = input.value.trim();
-    
+
     if (!value) {
         showError('lastNameError', 'Last name is required');
         input.classList.add('error');
@@ -207,7 +207,7 @@ function validateLastName() {
         input.classList.add('error');
         return false;
     }
-    
+
     clearError('lastNameError');
     input.classList.remove('error');
     return true;
@@ -217,7 +217,7 @@ function validateEmail() {
     const input = document.getElementById('email');
     const value = input.value.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    
+
     if (!value) {
         showError('emailError', 'Email is required');
         input.classList.add('error');
@@ -228,7 +228,7 @@ function validateEmail() {
         input.classList.add('error');
         return false;
     }
-    
+
     clearError('emailError');
     input.classList.remove('error');
     return true;
@@ -238,13 +238,13 @@ function validatePhone() {
     const input = document.getElementById('phone');
     const value = input.value.trim();
     const digitsOnly = value.replace(/\D/g, '');
-    
+
     if (!value) {
         showError('phoneError', 'Phone number is required');
         input.classList.add('error');
         return false;
     }
-    
+
     if (digitsOnly.length === 10) {
         if (!/^[6-9]/.test(digitsOnly)) {
             showError('phoneError', 'Indian mobile must start with 6-9');
@@ -263,7 +263,7 @@ function validatePhone() {
         input.classList.add('error');
         return false;
     }
-    
+
     clearError('phoneError');
     input.classList.remove('error');
     return true;
@@ -272,17 +272,17 @@ function validatePhone() {
 function validateDOB() {
     const input = document.getElementById('dob');
     const value = input.value;
-    
+
     if (!value) {
         showError('dobError', 'Date of birth is required');
         input.classList.add('error');
         return false;
     }
-    
+
     const birthDate = new Date(value);
     const today = new Date();
     const age = today.getFullYear() - birthDate.getFullYear();
-    
+
     if (age < 18) {
         showError('dobError', 'You must be at least 18 years old');
         input.classList.add('error');
@@ -293,7 +293,7 @@ function validateDOB() {
         input.classList.add('error');
         return false;
     }
-    
+
     clearError('dobError');
     input.classList.remove('error');
     return true;
@@ -302,13 +302,13 @@ function validateDOB() {
 function validateGender() {
     const input = document.getElementById('gender');
     const value = input.value;
-    
+
     if (!value) {
         showError('genderError', 'Please select your gender');
         input.classList.add('error');
         return false;
     }
-    
+
     clearError('genderError');
     input.classList.remove('error');
     return true;
@@ -317,7 +317,7 @@ function validateGender() {
 function validateAddress() {
     const input = document.getElementById('address');
     const value = input.value.trim();
-    
+
     if (!value) {
         showError('addressError', 'Address is required');
         input.classList.add('error');
@@ -328,7 +328,7 @@ function validateAddress() {
         input.classList.add('error');
         return false;
     }
-    
+
     clearError('addressError');
     input.classList.remove('error');
     return true;
@@ -337,13 +337,13 @@ function validateAddress() {
 function validateCity() {
     const input = document.getElementById('city');
     const value = input.value.trim();
-    
+
     if (!value) {
         showError('cityError', 'City is required');
         input.classList.add('error');
         return false;
     }
-    
+
     clearError('cityError');
     input.classList.remove('error');
     return true;
@@ -352,13 +352,13 @@ function validateCity() {
 function validateState() {
     const input = document.getElementById('state');
     const value = input.value.trim();
-    
+
     if (!value) {
         showError('stateError', 'State is required');
         input.classList.add('error');
         return false;
     }
-    
+
     clearError('stateError');
     input.classList.remove('error');
     return true;
@@ -367,7 +367,7 @@ function validateState() {
 function validatePincode() {
     const input = document.getElementById('pincode');
     const value = input.value.trim();
-    
+
     if (!value) {
         showError('pincodeError', 'PIN code is required');
         input.classList.add('error');
@@ -383,7 +383,7 @@ function validatePincode() {
         input.classList.add('error');
         return false;
     }
-    
+
     clearError('pincodeError');
     input.classList.remove('error');
     return true;
@@ -392,7 +392,7 @@ function validatePincode() {
 function validateUsername() {
     const input = document.getElementById('username');
     const value = input.value.trim();
-    
+
     if (!value) {
         showError('usernameError', 'Username is required');
         input.classList.add('error');
@@ -408,7 +408,7 @@ function validateUsername() {
         input.classList.add('error');
         return false;
     }
-    
+
     clearError('usernameError');
     input.classList.remove('error');
     return true;
@@ -417,7 +417,7 @@ function validateUsername() {
 function validatePassword() {
     const input = document.getElementById('password');
     const value = input.value;
-    
+
     if (!value) {
         showError('passwordError', 'Password is required');
         input.classList.add('error');
@@ -430,34 +430,34 @@ function validatePassword() {
         updatePasswordStrength(1);
         return false;
     }
-    
+
     let strength = 0;
     if (value.length >= 8) strength++;
     if (/[a-z]/.test(value)) strength++;
     if (/[A-Z]/.test(value)) strength++;
     if (/[0-9]/.test(value)) strength++;
     if (/[^a-zA-Z0-9]/.test(value)) strength++;
-    
+
     updatePasswordStrength(strength);
     clearError('passwordError');
     input.classList.remove('error');
-    
+
     const confirmPassword = document.getElementById('confirmPassword');
     if (confirmPassword.value) {
         validateConfirmPassword();
     }
-    
+
     return true;
 }
 
 function updatePasswordStrength(strength) {
     const strengthFill = document.getElementById('strengthFill');
     const strengthText = document.getElementById('strengthText');
-    
+
     if (!strengthFill || !strengthText) return;
-    
+
     strengthFill.className = 'strength-fill';
-    
+
     if (strength <= 1) {
         strengthFill.classList.add('weak');
         strengthText.textContent = 'Weak';
@@ -481,7 +481,7 @@ function validateConfirmPassword() {
     const input = document.getElementById('confirmPassword');
     const password = document.getElementById('password').value;
     const value = input.value;
-    
+
     if (!value) {
         showError('confirmPasswordError', 'Please confirm your password');
         input.classList.add('error');
@@ -492,7 +492,7 @@ function validateConfirmPassword() {
         input.classList.add('error');
         return false;
     }
-    
+
     clearError('confirmPasswordError');
     input.classList.remove('error');
     return true;
@@ -500,12 +500,12 @@ function validateConfirmPassword() {
 
 function validateTerms() {
     const input = document.getElementById('terms');
-    
+
     if (!input.checked) {
         showError('termsError', 'You must agree to the terms and conditions');
         return false;
     }
-    
+
     clearError('termsError');
     return true;
 }
@@ -518,7 +518,7 @@ function submitForm() {
     const submitBtn = document.getElementById('submitBtn');
     submitBtn.classList.add('loading');
     submitBtn.disabled = true;
-    
+
     // Collect all form field values manually to ensure they're included
     const userData = {
         action: 'register',
@@ -537,47 +537,47 @@ function submitForm() {
         referralId: document.getElementById('referralId').value.trim(),
         referralCode: document.getElementById('referralCode').value.trim()
     };
-    
+
     console.log('Sending data:', userData);
-    
+
     // Your Google Apps Script URL - UPDATE THIS!
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfciFmUJm132SOTEXKrNSgk7Ts2bvUd2oBio49LHS5XUS99zTcCsHTM9F5qsMFvwPfgg/exec";
-    
+
     fetch(SCRIPT_URL, {
         method: 'POST',
         body: JSON.stringify(userData)
     })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Server response:', data);
-        
-        submitBtn.classList.remove('loading');
-        submitBtn.disabled = false;
-        
-        if (data.success) {
-            const modal = document.getElementById('successModal');
-            const userIdDisplay = document.getElementById('userIdDisplay');
-            
-            if (userIdDisplay) {
-                userIdDisplay.textContent = 'User ID: ' + data.userId;
+        .then(response => response.json())
+        .then(data => {
+            console.log('Server response:', data);
+
+            submitBtn.classList.remove('loading');
+            submitBtn.disabled = false;
+
+            if (data.success) {
+                const modal = document.getElementById('successModal');
+                const userIdDisplay = document.getElementById('userIdDisplay');
+
+                if (userIdDisplay) {
+                    userIdDisplay.textContent = 'User ID: ' + data.userId;
+                }
+
+                if (modal) {
+                    modal.classList.add('active');
+                }
+
+                document.getElementById('registerForm').reset();
+                updatePasswordStrength(0);
+            } else {
+                alert('Registration failed: ' + (data.message || 'Unknown error'));
             }
-            
-            if (modal) {
-                modal.classList.add('active');
-            }
-            
-            document.getElementById('registerForm').reset();
-            updatePasswordStrength(0);
-        } else {
-            alert('Registration failed: ' + (data.message || 'Unknown error'));
-        }
-    })
-    .catch(error => {
-        console.error('Fetch error:', error);
-        submitBtn.classList.remove('loading');
-        submitBtn.disabled = false;
-        alert('Error: ' + error.message);
-    });
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+            submitBtn.classList.remove('loading');
+            submitBtn.disabled = false;
+            alert('Error: ' + error.message);
+        });
 }
 
 function redirectToLogin() {
@@ -588,57 +588,60 @@ function redirectToLogin() {
 function validateReferralId() {
     const referralId = document.getElementById('referralId').value.trim();
     const errorElement = document.getElementById('referralIdError');
-    
-    if (!errorElement) {
-        console.warn('⚠️ referralIdError element not found');
-        return true;
+
+    if (referralId) {
+
+        if (!errorElement) {
+            console.warn('⚠️ referralIdError element not found');
+            return true;
+        }
+
+        if (!referralId) {
+            errorElement.textContent = 'Referral ID is required';
+            return false;
+        }
+
+        // Check if referral ID format is valid (should start with SHS-)
+        if (!referralId.startsWith('SHS-') && referralId !== 'USER_123456') {
+            // Allow any format for flexibility, but warn if not SHS format
+            console.warn('⚠️ Referral ID might not be in correct format');
+        }
+
+        if (referralId.length < 10) {
+            errorElement.textContent = 'Referral ID must be at least 10 characters';
+            return false;
+        }
+
     }
-    
-    if (!referralId) {
-        errorElement.textContent = 'Referral ID is required';
-        return false;
-    }
-    
-    // Check if referral ID format is valid (should start with SHS-)
-    if (!referralId.startsWith('SHS-') && referralId !== 'USER_123456') {
-        // Allow any format for flexibility, but warn if not SHS format
-        console.warn('⚠️ Referral ID might not be in correct format');
-    }
-    
-    if (referralId.length < 5) {
-        errorElement.textContent = 'Referral ID must be at least 5 characters';
-        return false;
-    }
-    
     errorElement.textContent = '';
     return true;
 }
 
 // ===== Validate Referral Code =====
-function validateReferralCode() {
-    const referralCode = document.getElementById('referralCode').value.trim();
-    const errorElement = document.getElementById('referralCodeError');
-    
-    if (!errorElement) {
-        console.warn('⚠️ referralCodeError element not found');
-        return true;
-    }
-    
-    if (!referralCode) {
-        errorElement.textContent = 'Referral Code is required (Mandatory)';
-        return false;
-    }
-    
-    if (referralCode.length < 3) {
-        errorElement.textContent = 'Referral Code must be at least 3 characters';
-        return false;
-    }
-    
-    errorElement.textContent = '';
-    return true;
-}
+// function validateReferralCode() {
+//     const referralCode = document.getElementById('referralCode').value.trim();
+//     const errorElement = document.getElementById('referralCodeError');
 
-window.addEventListener('click', function(e) {
+//     if (!errorElement) {
+//         console.warn('⚠️ referralCodeError element not found');
+//         return true;
+//     }
+
+//     if (!referralCode) {
+//         errorElement.textContent = 'Referral Code is required (Mandatory)';
+//         return false;
+//     }
+
+//     if (referralCode.length < 3) {
+//         errorElement.textContent = 'Referral Code must be at least 3 characters';
+//         return false;
+//     }
+
+//     errorElement.textContent = '';
+//     return true;
+// }
+
+window.addEventListener('click', function (e) {
     const modal = document.getElementById('successModal');
     if (modal && e.target === modal) {
         modal.classList.remove('active');
