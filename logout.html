@@ -4,59 +4,352 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Logout - SHS Marketing Pvt. Ltd.</title>
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- CSS -->
-    <link rel="stylesheet" href="logout.css">
+
+    <style>
+        /* ===== RESET & BASE ===== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #6c63ff;
+            --primary-dark: #5a52d5;
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --success: #10b981;
+            --cancel-bg: #f1f5f9;
+            --cancel-hover: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --card-bg: #ffffff;
+            --page-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--page-bg);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        /* ===== CONTAINER ===== */
+        .logout-container {
+            width: 100%;
+            max-width: 420px;
+            animation: fadeUp 0.4s ease;
+        }
+
+        /* ===== CARD ===== */
+        .logout-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px 32px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        /* ===== ICON ===== */
+        .logout-icon {
+            width: 72px;
+            height: 72px;
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .logout-icon i {
+            font-size: 28px;
+            color: var(--danger);
+        }
+
+        /* ===== BRAND ===== */
+        .brand-name {
+            font-family: 'Sora', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        /* ===== HEADING ===== */
+        .logout-card h1 {
+            font-family: 'Sora', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .logout-card > p {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        /* ===== USER BADGE ===== */
+        .user-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 8px 16px;
+            margin-bottom: 24px;
+            font-size: 13px;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .user-badge i {
+            color: var(--primary);
+        }
+
+        /* ===== INFO LIST ===== */
+        .logout-info {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 28px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .info-item i {
+            width: 18px;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        /* ===== ACTIONS ===== */
+        .logout-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-cancel,
+        .btn-logout {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 13px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Sora', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            text-decoration: none;
+            min-height: 48px;
+        }
+
+        .btn-cancel {
+            background: var(--cancel-bg);
+            color: var(--text-main);
+        }
+
+        .btn-cancel:hover {
+            background: var(--cancel-hover);
+        }
+
+        .btn-logout {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .btn-logout:hover:not(:disabled) {
+            background: var(--danger-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.35);
+        }
+
+        .btn-logout:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ===== FOOTER ===== */
+        .logout-footer {
+            margin-top: 24px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .logout-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .logout-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== NOTIFICATION ===== */
+        #notificationContainer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .notification {
+            color: white;
+            padding: 14px 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Sora', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            max-width: 320px;
+            animation: slideIn 0.3s ease;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(360px); opacity: 0; }
+            to   { transform: translateX(0);     opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0);     opacity: 1; }
+            to   { transform: translateX(360px); opacity: 0; }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .logout-card {
+                padding: 28px 20px;
+                border-radius: 16px;
+            }
+
+            .logout-actions {
+                flex-direction: column;
+            }
+
+            .btn-cancel,
+            .btn-logout {
+                width: 100%;
+            }
+
+            #notificationContainer {
+                top: 12px;
+                right: 12px;
+                left: 12px;
+            }
+
+            .notification {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .logout-card {
+                padding: 20px 20px;
+            }
+
+            .logout-info {
+                margin-bottom: 16px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="logout-container">
         <div class="logout-card">
+
+            <p class="brand-name">SHS Marketing Pvt. Ltd.</p>
+
             <div class="logout-icon">
                 <i class="fas fa-sign-out-alt"></i>
             </div>
-            
-            <h1>Logout</h1>
+
+            <h1>Logging Out?</h1>
             <p>Are you sure you want to logout from your account?</p>
-            
+
+            <!-- User badge (populated by JS) -->
+            <div class="user-badge" id="userBadge" style="display:none;">
+                <i class="fas fa-user-circle"></i>
+                <span id="userBadgeText">Loading...</span>
+            </div>
+
             <div class="logout-info">
                 <div class="info-item">
                     <i class="fas fa-shield-alt"></i>
-                    <span>Your session will be ended</span>
+                    <span>Your current session will be ended securely</span>
                 </div>
                 <div class="info-item">
                     <i class="fas fa-redo"></i>
-                    <span>You'll need to login again to access dashboard</span>
+                    <span>You'll need to login again to access the dashboard</span>
                 </div>
             </div>
-            
+
             <div class="logout-actions">
-                <a href="dashboard.html" class="btn-cancel">
+                <a href="dashboard.html" class="btn-cancel" id="btnCancel">
                     <i class="fas fa-times"></i>
                     Cancel
                 </a>
-                <button class="btn-logout" onclick="confirmLogout()">
+                <button class="btn-logout" id="btnLogout">
                     <i class="fas fa-sign-out-alt"></i>
                     Yes, Logout
                 </button>
             </div>
-            
+
             <div class="logout-footer">
                 <p>Need help? <a href="mailto:support@shsmarketing.com">Contact Support</a></p>
             </div>
         </div>
     </div>
-    
+
     <!-- Notification Container -->
     <div id="notificationContainer"></div>
-    
+
     <!-- JavaScript -->
     <script src="logout.js"></script>
 </body>

@@ -1,5 +1,5 @@
 // login.js - SHS Marketing Login System
-const API_URL = "https://script.google.com/macros/s/AKfycbx5EYEhgaKWh9wPJaY2HYztmbEOD4uGkEKA7iToQb5Sq8NnVtkS3JFS6rAEOMqnal8yXg/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzM7cHUc_jvP447AJUGCOPRXk78RdayAmdhPmUMjaKxy5Fn9_UiHqDVHSlr8YKOpREaGg/exec";
 
 // ─── INIT ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function () {

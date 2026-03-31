@@ -9,9 +9,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,12 +22,23 @@
 </head>
 
 <body>
+
+    <!-- Hamburger toggle (mobile only) -->
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Open menu">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar overlay (mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <div class="dashboard-container">
-        <!-- Sidebar -->
+
+        <!-- ═══════════════════════════════════════════
+             SIDEBAR
+        ════════════════════════════════════════════ -->
         <aside class="sidebar">
             <div class="nav-container">
                 <a href="index.html" class="nav-brand">
-
                     <div class="sidebar-header">
                         <div class="logo">
                             <i class="fas fa-chart-line"></i>
@@ -42,62 +51,34 @@
                 </a>
             </div>
 
-
-            <!-- <div class="sidebar-header">
-                <div class="logo">
-                    <i class="fas fa-chart-line"></i>
-                    <div>
-                        <h2>SHS Marketing</h2>
-                        <p>Grow your network</p>
-                    </div>
-                </div>
-            </div> -->
-
             <nav class="sidebar-nav">
                 <ul>
                     <li class="nav-item active">
-                        <a href="#dashboard" onclick="showDashboard()">
+                        <a href="#dashboard" onclick="showDashboard(); setMobileActive('mob-dashboard')">
                             <i class="fas fa-home"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#myteam" onclick="Myteam()">
+                        <a href="#myteam" onclick="Myteam(); setMobileActive('mob-myteam')">
                             <i class="fas fa-users"></i>
                             <span>My Team</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#earnings" onclick="showEarnings()">
+                        <a href="#earnings" onclick="showEarnings(); setMobileActive('mob-earnings')">
                             <i class="fas fa-wallet"></i>
                             <span>Earnings</span>
                         </a>
                     </li>
-                    <!-- <li class="nav-item">
-                        <a href="#withdraw" onclick="showWithdraw()">
-                            <i class="fas fa-money-bill-wave"></i>
-                            <span>Withdraw</span>
-                        </a>
-                    </li> -->
-
-                    <!-- <li class="nav-item">
-                        <a href="#referral" onclick="referal()">
-                            <i class="fas fa-share-alt"></i>
-                            <span>Referral Link</span>
-                        </a>
-                    </li> -->
-
-
-                    <!-- In sidebar nav -->
-                    <!-- <li class="nav-item">
-                        <a href="#referral-id-section" onclick="navigateToReferral(event)">
-                            <i class="fas fa-share-alt"></i>
-                            <span>Referral Link</span>
-                        </a>
-                    </li> -->
-
                     <li class="nav-item">
-                        <a href="#profile" onclick="profile()">
+                        <a href="#matrixtree" onclick="showMatrixTree(); setMobileActive('mob-tree')">
+                            <i class="fas fa-sitemap"></i>
+                            <span>My Tree</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#profile" onclick="profile(); setMobileActive('mob-profile')">
                             <i class="fas fa-user"></i>
                             <span>Profile</span>
                         </a>
@@ -113,13 +94,11 @@
             </div>
         </aside>
 
-        <!-- Mobile Menu Toggle -->
-        <button class="mobile-menu-toggle" onclick="toggleSidebar()">
-            <!-- <i class="fas fa-bars"></i> -->
-        </button>
-
-        <!-- Main Content -->
+        <!-- ═══════════════════════════════════════════
+             MAIN CONTENT
+        ════════════════════════════════════════════ -->
         <main class="main-content">
+
             <!-- Header -->
             <header class="dashboard-header">
                 <div class="header-left">
@@ -132,10 +111,6 @@
                         <input type="text" placeholder="Search...">
                     </div>
                     <div class="header-icons">
-                        <!-- <button class="icon-btn">
-                            <i class="fas fa-bell"></i>
-                            <span class="notification-badge">3</span>
-                        </button> -->
                         <button class="icon-btn">
                             <i class="fas fa-envelope"></i>
                         </button>
@@ -146,7 +121,9 @@
                 </div>
             </header>
 
-            <!-- Dashboard Section -->
+            <!-- ═══════════════════════════════════════
+                 DASHBOARD SECTION
+            ════════════════════════════════════════ -->
             <section id="dashboard" class="content-section active">
                 <div class="section-header">
                     <h1>Welcome back, <span id="user-name">User</span>! 👋</h1>
@@ -155,20 +132,20 @@
 
                 <!-- Stats Grid -->
                 <div class="stats-grid">
-
                     <a href="#earnings" onclick="showEarnings()" class="a">
                         <div class="stat-card card-primary">
                             <div class="card-icon">
                                 <i class="fas fa-rupee-sign"></i>
-
                             </div>
                             <div class="card-content">
                                 <h3>Total Earnings</h3>
-                                <div class="card-value">₹500</div>
-                                <div class="card-info">+12% from last month</div>
+                                <!-- FIX: was id="total-earning" — matches dashboard.js -->
+                                <div class="card-value" id="total-earning">₹0</div>
+                                <div class="card-info">Your total earnings</div>
                             </div>
                         </div>
                     </a>
+
                     <a href="#myteam" onclick="Myteam()" class="a">
                         <div class="stat-card card-success">
                             <div class="card-icon">
@@ -176,191 +153,143 @@
                             </div>
                             <div class="card-content">
                                 <h3>Team Members</h3>
-                                <div class="card-value">25</div>
-                                <div class="card-info">+5 new this month</div>
+                                <!-- FIX: was id="team-total-members" — matches dashboard.js -->
+                                <div class="card-value" id="total-team">0</div>
+                                <div class="card-info">Total team size</div>
                             </div>
                         </div>
                     </a>
-                    <!-- <div class="stat-card card-warning">
-                        <div class="card-icon">
-                            <i class="fas fa-user-plus"></i>
+
+                    <a href="#myteam" onclick="Myteam()" class="a">
+                        <div class="stat-card card-warning">
+                            <div class="card-icon">
+                                <i class="fas fa-user-check"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>Active Members</h3>
+                                <div class="card-value" id="active-members">0</div>
+                                <div class="card-info">Currently active</div>
+                            </div>
                         </div>
-                        <div class="card-content">
-                            <h3>Direct Referrals</h3>
-                            <div class="card-value">10</div>
-                            <div class="card-info">+2 pending</div>
+                    </a>
+
+                    <a href="#myteam" onclick="Myteam()" class="a">
+                        <div class="stat-card card-info">
+                            <div class="card-icon">
+                                <i class="fas fa-layer-group"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>Current Level</h3>
+                                <div class="card-value" id="current-level">0</div>
+                                <div class="card-info">Your level</div>
+                            </div>
                         </div>
-                    </div> -->
-                    <!-- <div class="stat-card card-info">
-                        <div class="card-icon">
-                            <i class="fas fa-wallet"></i>
-                        </div>
-                        <div class="card-content">
-                            <h3>Wallet Balance</h3>
-                            <div class="card-value">₹120</div>
-                            <div class="card-info">Ready to withdraw</div>
-                        </div>
-                    </div> -->
+                    </a>
                 </div>
 
-                <!-- Dashboard Grid -->
+                <!-- Chart -->
                 <div class="dashboard-grid">
                     <div class="chart-card">
                         <div class="card-header">
                             <h2>Earnings Overview</h2>
                             <div class="chart-controls">
-                                <button class="active">Week</button>
-                                <button>Month</button>
-                                <button>Year</button>
+                                <button class="active">Year</button>
                             </div>
                         </div>
                         <div class="chart-container">
                             <canvas id="earningsChart"></canvas>
                         </div>
                     </div>
-                    <!-- <div class="activity-card">
-                        <div class="card-header">
-                            <h2>Recent Activity</h2>
-                            <a href="#" class="view-all">View All</a>
-                        </div>
-                        <div class="activity-list">
-                            <div class="activity-item">
-                                <div class="activity-icon success">
-                                    <i class="fas fa-user-plus"></i>
-                                </div>
-                                <div class="activity-details">
-                                    <div class="activity-title">New referral added</div>
-                                    <div class="activity-time">2 hours ago</div>
-                                </div>
-                                <div class="activity-value">+₹150</div>
-                            </div>
-                            <div class="activity-item">
-                                <div class="activity-icon info">
-                                    <i class="fas fa-coins"></i>
-                                </div>
-                                <div class="activity-details">
-                                    <div class="activity-title">Commission credited</div>
-                                    <div class="activity-time">5 hours ago</div>
-                                </div>
-                                <div class="activity-value">+₹300</div>
-                            </div>
-                            <div class="activity-item">
-                                <div class="activity-icon warning">
-                                    <i class="fas fa-money-bill-wave"></i>
-                                </div>
-                                <div class="activity-details">
-                                    <div class="activity-title">Withdrawal processed</div>
-                                    <div class="activity-time">1 day ago</div>
-                                </div>
-                                <div class="activity-value">-₹500</div>
-                            </div>
-                            <div class="activity-item">
-                                <div class="activity-icon warning">
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                                <div class="activity-details">
-                                    <div class="activity-title">Pending verification</div>
-                                    <div class="activity-time">3 days ago</div>
-                                </div>
-                                <div class="activity-value">Pending</div>
-                            </div>
-                        </div>
-                    </div> -->
                 </div>
 
-                <!-- Referral Section -->
-                <div class="referral-section">
+                <!-- FIX: Added id="referral-id-section" so scrollToReferralSection() works -->
+                <div class="referral-section" id="referral-id-section">
                     <div class="referral-card">
                         <div class="referral-header">
                             <h2>Your Referral ID</h2>
                             <p>Share this ID with your friends to earn commissions</p>
                         </div>
                         <div class="referral-content">
-                            <div class="referral-input-group">
-                                <input type="text" id="referralID" class="referral-input" value="USER_123456" readonly>
-                                <button class="copy-btn" onclick="copyReferralID()">
-                                    <i class="fas fa-copy"></i>
-                                    Copy
-                                </button>
-                            </div>
-                            <div class="referral-url">
-                                <strong>Full Referral Link:</strong>
 
+                            <!-- Referral ID input + copy -->
+                            <div style="display:flex; gap:8px; width:100%; box-sizing:border-box;">
+                                <input type="text" id="referralID" class="referral-input"
+                                    value="" readonly placeholder="Loading..."
+                                    style="flex:1; min-width:0; font-size:14px;">
+                                    <p>
+                                <button class="copy-btn" onclick="copyReferralID()"
+                                    style="flex-shrink:0; white-space:nowrap;">
+                                    <i class="fas fa-copy"></i>
+                                    <span>Copy ID</span>
+                                </button>
+                                </p>
+                            </div>
+
+                            <!-- Full referral link -->
+                            <div class="referral-url" style="margin-top:16px;">
+                                <strong style="font-size:14px;">Full Referral Link:</strong>
 
                                 <code id="referralLink"
-                                    style="cursor: pointer; padding: 10px; border-radius: 6px; background-color: #f3f4f6; display: inline-block; max-width: 100%; overflow-wrap: break-word; word-break: break-all;"
                                     onclick="copyReferralLink()"
-                                    title="Click to open registration with your referral code">
-                                    http://shsmarketing.in/register.html?referralId=USER_123456&referralCode=USER_CODE
+                                    title="Click to copy referral link"
+                                    style="
+                                        cursor:pointer;
+                                        display:block;
+                                        margin-top:8px;
+                                        padding:10px 12px;
+                                        border-radius:6px;
+                                        background:#f3f4f6;
+                                        font-size:12px;
+                                        line-height:1.6;
+                                        word-break:break-all;
+                                        overflow-wrap:anywhere;
+                                        white-space:normal;
+                                        width:100%;
+                                        box-sizing:border-box;
+                                        color:#374151;
+                                    ">
+                                    Loading your referral link...
                                 </code>
 
-<!-- 
-                              <code id="referralLink"
-                                    style="cursor: pointer; padding: 10px; border-radius: 6px; background-color: #f3f4f6; display: inline-block; max-width: 100%; overflow-wrap: break-word; word-break: break-all;"
-                                    onclick="clickReferralLink()"
-                                    title="Click to open registration with your referral code">
-                                    http://shsmarketing.in/register.html?referralId=USER_123456&referralCode=USER_CODE
-                                </code> -->
-
-                                <small style="display: block; margin-top: 8px; color: #666;">
+                                <small style="display:block; margin-top:8px; color:#666; font-size:12px;">
                                     <i class="fas fa-info-circle"></i>
-                                    Share this link - new users will register under you!
+                                    Share this link — new users will register under you!
                                 </small>
-                                <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
-                                    <button class="copy-btn" onclick="copyReferralLink()">
-                                        <i class="fas fa-link"></i>
-                                        Copy Link
-                                    </button>
-                                    <!-- <button class="copy-btn" onclick="goToReferralLink()"
-                                        style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
-                                        <i class="fas fa-external-link-alt"></i>
-                                        Open Link
-                                    </button> -->
-                                    <!-- <button class="copy-btn" onclick="goToRegistrationWithReferral()"
-                                        style="background: linear-gradient(135deg, #10b981, #059669);">
-                                        <i class="fas fa-user-plus"></i>
-                                        Register with Referral
-                                    </button> -->
-                                </div>
+
+                                <button class="copy-btn" onclick="copyReferralLink()"
+                                    style="margin-top:12px; width:100%; justify-content:center;">
+                                    <i class="fas fa-link"></i>
+                                    Copy Link
+                                </button>
                             </div>
+
                         </div>
-                        <!-- <div class="referral-stats">
-                            <div class="referral-stat">
-                                <span class="label">Total Referrals</span>
-                                <span class="value">25</span>
-                            </div>
-                            <div class="referral-stat">
-                                <span class="label">Active Referrals</span>
-                                <span class="value">22</span>
-                            </div>
-                            <div class="referral-stat">
-                                <span class="label">Earnings from Referrals</span>
-                                <span class="value">₹4,500</span>
-                            </div>
-                        </div> -->
                     </div>
                 </div>
             </section>
 
-            <!-- My Team Section -->
+            <!-- ═══════════════════════════════════════
+                 MY TEAM SECTION
+            ════════════════════════════════════════ -->
             <section id="myteam" class="content-section">
                 <div class="section-header">
                     <h1>My Team</h1>
                     <p>Manage and track your team members</p>
                 </div>
 
+                <!-- FIX: team-total-members1 → team-total-members so JS can update it -->
                 <div class="team-stats">
                     <div class="team-stat-item">
                         <h3>Total Members</h3>
-                        <div class="team-stat-value" id="team-total-members">25</div>
+                        <div class="team-stat-value" id="team-total-members">0</div>
                     </div>
                     <div class="team-stat-item">
                         <h3>Active Members</h3>
-                        <div class="team-stat-value" id="team-active-members">22</div>
+                        <div class="team-stat-value" id="team-active-members">0</div>
                     </div>
                     <div class="team-stat-item">
                         <h3>Current Level</h3>
-                        <div class="team-stat-value" id="team-current-level">2</div>
+                        <div class="team-stat-value" id="team-current-level">0</div>
                     </div>
                     <div class="team-stat-item">
                         <h3>Sponsor ID</h3>
@@ -377,51 +306,30 @@
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <!-- <th>Name</th> -->
-                                    <th>userId</th>
-                                    <!-- <th>mobile</th>
-                                    <th>Joined</th> -->
-                                    <th>currentlevel</th>
-                                    <th>status</th>
-
-
+                                    <th>User ID</th>
+                                    <th>Level</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <!-- <tr>
-                                     <td>Raj Kumar</td> 
-                                    <td>raj@example.com</td>
-                                    <td>+91-9876543210</td>
-                                    <td><span class="status-badge active">Active</span></td>
-                                    <td>₹2,500</td>
-                                    <td>Jan 15, 2024</td>
-                                    <td><button class="action-btn">View</button></td>
-                                </tr> 
-                                 <tr>
-                                    <td>Priya Singh</td>
-                                    <td>priya@example.com</td>
-                                    <td>+91-8765432109</td>
-                                    <td><span class="status-badge active">Active</span></td>
-                                    <td>₹1,800</td>
-                                    <td>Jan 10, 2024</td>
-                                    <td><button class="action-btn">View</button></td>
-                                </tr> -->
-                                <!-- <tr>
-                                    <td>Ahmed Hassan</td>
-                                    <td>ahmed@example.com</td>
-                                    <td>+91-7654321098</td>
-                                    <td><span class="status-badge pending">Pending</span></td>
-                                    <td>₹0</td>
-                                    <td>Jan 20, 2024</td>
-                                    <td><button class="action-btn">Approve</button></td>
-                                </tr> -->
+                            <!-- FIX: Removed hardcoded placeholder row with duplicate IDs.
+                                 Team member rows should be injected by JS (loadTeamData).
+                                 Empty tbody shown until data is loaded. -->
+                            <tbody id="team-members-tbody">
+                                <tr>
+                                    <td colspan="3" style="text-align:center; color:#94a3b8; padding:24px;">
+                                        <i class="fas fa-users" style="font-size:24px; margin-bottom:8px; display:block;"></i>
+                                        Team data will appear here
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </section>
 
-            <!-- Earnings Section -->
+            <!-- ═══════════════════════════════════════
+                 EARNINGS SECTION
+            ════════════════════════════════════════ -->
             <section id="earnings" class="content-section">
                 <div class="section-header">
                     <h1>Earnings Report</h1>
@@ -429,27 +337,29 @@
                 </div>
 
                 <div class="earnings-grid">
+                    <!-- FIX: id="total-earning total-earning1" had a space → split into two valid IDs -->
                     <div class="earnings-card">
-                        <h3>Total Income</h3>
-                        <div class="earnings-amount">₹3,500</div>
+                        <h3>Total Earning</h3>
+                        <div class="earnings-amount" id="total-earning1">₹0</div>
                         <div class="earnings-detail">From referrals</div>
                     </div>
                     <div class="earnings-card">
                         <h3>Rewards</h3>
-                        <div class="earnings-amount">₹1,000</div>
-                        <div class="earnings-detail">Level Completion </div>
-                        <!-- <div class="earnings-detail">Monthly bonus</div> -->
+                        <div class="earnings-amount" id="reward-list">-</div>
+                        <div class="earnings-detail">Level completion</div>
                     </div>
-                    <!-- <div class="earnings-card">
-                        <h3>Total Withdrawn</h3>
-                        <div class="earnings-amount">₹2,000</div>
-                        <div class="earnings-detail">Till date</div>
+                    <!-- FIX: Added missing elements for rewards-date and account-status
+                         (dashboard.js updateEarningsData() writes to these IDs) -->
+                    <div class="earnings-card">
+                        <h3>Rewards Date</h3>
+                        <div class="earnings-amount" id="rewards-date">-</div>
+                        <div class="earnings-detail">Last reward credited</div>
                     </div>
                     <div class="earnings-card">
-                        <h3>Pending Balance</h3>
-                        <div class="earnings-amount">₹2,500</div>
-                        <div class="earnings-detail">Available to withdraw</div>
-                    </div> -->
+                        <h3>Account Status</h3>
+                        <div class="earnings-amount" id="account-status">Active</div>
+                        <div class="earnings-detail">Current account status</div>
+                    </div>
                 </div>
 
                 <div class="table-card">
@@ -462,113 +372,26 @@
                             <thead>
                                 <tr>
                                     <th>Date</th>
-                                    <!-- <th>Description</th> -->
                                     <th>Rewards</th>
-                                    <!-- <th>Amount</th> -->
                                     <th>Status</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <!-- <tr>
-                                    <td>2024-01-25</td>
-                                    <td>Commission from referral</td>
-                                    <td>Commission</td>
-                                    <td style="color: var(--success);">+₹150</td>
-                                    <td><span class="status-badge active">Credited</span></td>
-                                </tr> -->
-                                <!-- <tr>
-                                    <td>2024-01-24</td>
-                                    <td>Monthly bonus</td>
-                                    <td>Bonus</td>
-                                    <td style="color: var(--success);">+₹500</td>
-                                    <td><span class="status-badge active">Credited</span></td>
-                                </tr> -->
-                                <!-- <tr>
-                                    <td>2024-01-20</td>
-                                    <td>Withdrawal processed</td>
-                                    <td>Withdrawal</td>
-                                    <td style="color: var(--danger);">-₹1,000</td>
-                                    <td><span class="status-badge active">Processed</span></td>
-                                </tr> -->
+                            <tbody id="earnings-tbody">
+                                <tr>
+                                    <td colspan="3" style="text-align:center; color:#94a3b8; padding:24px;">
+                                        <i class="fas fa-wallet" style="font-size:24px; margin-bottom:8px; display:block;"></i>
+                                        Earnings history will appear here
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </section>
 
-            <!-- Withdraw Section -->
-            <section id="withdraw" class="content-section">
-                <div class="section-header">
-                    <h1>Withdraw Funds</h1>
-                    <p>Request withdrawal to your bank account</p>
-                </div>
-
-                <div class="withdraw-container">
-                    <div class="withdraw-card">
-                        <h2>Withdrawal Request</h2>
-                        <form id="withdraw-form" class="withdraw-form">
-                            <div class="form-group">
-                                <label>Available Balance</label>
-                                <input type="text" value="₹2,500" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label for="withdraw-amount">Withdrawal Amount</label>
-                                <input type="number" id="withdraw-amount" placeholder="Enter amount" min="100"
-                                    max="2500">
-                                <small>Minimum: ₹100 | Maximum: ₹2,500</small>
-                            </div>
-                            <div class="form-group">
-                                <label>Withdrawal Method</label>
-                                <select>
-                                    <option>Bank Transfer</option>
-                                    <option>UPI</option>
-                                    <option>Wallet</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Bank Account</label>
-                                <select>
-                                    <option>Select account...</option>
-                                    <option>State Bank (***9876)</option>
-                                    <option>HDFC Bank (***5432)</option>
-                                </select>
-                            </div>
-
-
-
-
-                            <button type="submit" class="submit-btn">
-                                <i class="fas fa-paper-plane"></i>
-                                Request Withdrawal
-                            </button>
-                        </form>
-                    </div>
-
-                    <div class="withdrawal-history">
-                        <h2>Withdrawal History</h2>
-                        <div class="history-list">
-                            <div class="history-item">
-                                <div class="history-info">
-                                    <div class="history-title">Withdrawal Processed</div>
-                                    <div class="history-date">2024-01-20</div>
-                                </div>
-                                <div class="history-amount">-₹1,000</div>
-                                <span class="status-badge active">Completed</span>
-                            </div>
-                            <div class="history-item">
-                                <div class="history-info">
-                                    <div class="history-title">Withdrawal Requested</div>
-                                    <div class="history-date">2024-01-15</div>
-                                </div>
-                                <div class="history-amount">-₹500</div>
-                                <span class="status-badge pending">Pending</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Profile Section -->
+            <!-- ═══════════════════════════════════════
+                 PROFILE SECTION
+            ════════════════════════════════════════ -->
             <section id="profile" class="content-section">
                 <div class="section-header">
                     <h1>My Profile</h1>
@@ -577,22 +400,23 @@
 
                 <div class="profile-container">
                     <div class="profile-header">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user3" alt="Profile"
-                            class="profile-image">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user3" alt="Profile" class="profile-image">
                         <div class="profile-info">
-                            <h2 id="profile-name">John Doe</h2>
-                            <p id="profile-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                    data-cfemail="f19b9e999fb19489909c819d94df929e9c">[email&#160;protected]</a></p>
+                            <h2 id="profile-name">Loading...</h2>
+                            <!-- FIX: was Cloudflare obfuscated email markup — replaced with clean empty span -->
+                            <p id="profile-email"></p>
                             <span class="member-badge">Member</span>
                         </div>
                     </div>
 
                     <form class="profile-form">
+
+                        <!-- Personal Details -->
+                        <h3>Personal Details</h3>
                         <div class="form-row">
                             <div class="form-group">
                                 <label>First Name</label>
-                                <input type="text" id="firstname" name="data[firstName]" placeholder="First Name"
-                                    readonly>
+                                <input type="text" id="firstname" name="data[firstName]" placeholder="First Name" readonly>
                             </div>
                             <div class="form-group">
                                 <label>Last Name</label>
@@ -602,12 +426,21 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Email Address</label>
-                                <input type="email" id="emailaddress" name="data[email]" placeholder="Email Address"
-                                    readonly>
+                                <input type="email" id="emailaddress" name="data[email]" placeholder="Email Address" readonly>
                             </div>
                             <div class="form-group">
                                 <label>Phone Number</label>
                                 <input type="tel" id="mobile" name="data[mobile]" placeholder="Phone Number" readonly>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Date of Birth</label>
+                                <input type="text" id="dob" name="data[dob]" placeholder="Date of Birth" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Gender</label>
+                                <input type="text" id="gender" name="data[gender]" placeholder="Gender" readonly>
                             </div>
                         </div>
                         <div class="form-row">
@@ -620,59 +453,51 @@
                                 <input type="text" id="state" name="data[state]" placeholder="State" readonly>
                             </div>
                         </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>PIN Code</label>
+                                <input type="text" id="pincode" name="data[pincode]" placeholder="PIN Code" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Sponsor ID</label>
+                                <input type="text" id="Sponsorid" placeholder="Sponsor ID" name="data[Sponsorid]" readonly>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label>Address</label>
-                            <textarea rows="3" id="address" name="data[address]" placeholder="Address"
-                                readonly></textarea>
+                            <textarea rows="3" id="address" name="data[address]" placeholder="Address" readonly></textarea>
                         </div>
 
-
+                        <!-- Nominee Details -->
                         <h3>Nominee Details</h3>
-
                         <div class="form-grid">
-
-
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Nominee Name</label>
-                                    <input type="text" id="nomineename" placeholder="Nominee Name"
-                                        name="data[nomineename]">
+                                    <input type="text" id="nomineename" placeholder="Nominee Name" name="data[nomineename]">
                                 </div>
-
                                 <div class="form-group">
                                     <label>Relation With Nominee</label>
-                                    <input type="text" id="nomineerelation" placeholder="Relation With Nominee"
-                                        name="data[nomineerelation]">
+                                    <input type="text" id="nomineerelation" placeholder="Relation With Nominee" name="data[nomineerelation]">
                                 </div>
                             </div>
-
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Nominee Mobile Number</label>
-                                    <input type="text" id="nomineemobile" maxlength="10" pattern="[0-9]{10}"
-                                        inputmode="numeric" placeholder="Nominee Mobile Number"
-                                        name="data[nomineemobile]">
-                                </div>
-                                <div class="form-group">
-                                    <label>Sponsor ID</label>
-                                    <input type="text" id="Sponsorid" placeholder="Sponsor ID" name="data[Sponsorid]"
-                                        readonly>
+                                    <input type="tel" id="nomineemobile" maxlength="10" pattern="[0-9]{10}"
+                                        inputmode="numeric" placeholder="Nominee Mobile Number" name="data[nomineemobile]">
                                 </div>
                             </div>
-
                         </div>
 
-
-
+                        <!-- Bank Details -->
                         <h3>Bank Details</h3>
                         <div class="form-grid">
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Account Holder Name</label>
-                                    <input type="text" id="accountholder" placeholder="Account Holder Name"
-                                        name="data[accountholder]">
+                                    <input type="text" id="accountholder" placeholder="Account Holder Name" name="data[accountholder]">
                                 </div>
-
                                 <div class="form-group">
                                     <label>Bank Name</label>
                                     <input type="text" id="bankname" placeholder="Bank Name" name="data[bankname]">
@@ -681,10 +506,8 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Account Number</label>
-                                    <input type="text" id="accountnumber" placeholder="Account Number"
-                                        name="data[accountnumber]">
+                                    <input type="text" id="accountnumber" placeholder="Account Number" name="data[accountnumber]">
                                 </div>
-
                                 <div class="form-group">
                                     <label>IFSC Code</label>
                                     <input type="text" id="IFSCCode" placeholder="IFSC Code" name="data[IFSCCode]">
@@ -694,10 +517,7 @@
                                 <label>Branch</label>
                                 <input type="text" id="branch" placeholder="Branch" name="data[branch]">
                             </div>
-
                         </div>
-
-
 
                         <button type="submit" class="submit-btn">
                             <i class="fas fa-save"></i>
@@ -706,17 +526,299 @@
                     </form>
                 </div>
             </section>
+
+            <!-- ═══════════════════════════════════════
+                 MATRIX TREE SECTION
+            ════════════════════════════════════════ -->
+            <section id="matrixtree" class="content-section">
+                <div class="section-header">
+                    <h1>Tree</h1>
+                    <p>Visualise your network — 7 levels deep</p>
+                    <!-- <p>Visualise your 5×5 network — 7 levels deep</p> -->
+                </div>
+
+                <!-- Search Panel -->
+                <!-- <div id="treeSearchPanel" class="tree-search-panel">
+                    <div class="tree-search-card">
+                        <h2><i class="fas fa-search"></i> View Matrix Tree</h2>
+                        <p>Search any user by User ID or Referral Code</p>
+                        <form id="treeSearchForm">
+                            <div class="tree-search-input-group">
+                                <input type="text" id="treeSearchInput"
+                                    placeholder="Enter User ID (SHS-XXXXXXXXXX) or Referral Code" />
+                                <select id="treeSearchType">
+                                    <option value="userId">User ID</option>
+                                    <option value="referralCode">Referral Code</option>
+                                </select>
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-search"></i> View Tree
+                                </button>
+                            </div>
+                        </form>
+                        <div class="tree-quick-info">
+                            <span><i class="fas fa-layer-group"></i> 7 Levels Max</span>
+                            <span><i class="fas fa-users"></i> 5×5 Matrix</span>
+                            <span><i class="fas fa-chart-line"></i> 97,655 Capacity</span>
+                        </div>
+                    </div>
+                </div> -->
+
+                <!-- Dashboard Panel (hidden until tree loads) -->
+                <div id="treeDashPanel" class="hidden">
+
+                    <!-- User info bar -->
+                    <div class="tree-user-bar">
+                        <div class="tree-user-details">
+                            <i class="fas fa-user-circle"></i>
+                            <span id="viewingUser">Viewing: —</span>
+                            <span class="user-level-badge" id="viewingLevel">Level: —</span>
+                        </div>
+                        <button id="newSearch" class="btn-secondary">
+                            <i class="fas fa-search"></i> New Search
+                        </button>
+                    </div>
+
+                    <!-- Stats cards -->
+                    <div class="tree-stats-grid">
+                        <div class="tree-stat-card">
+                            <i class="fas fa-users"></i>
+                            <div class="tree-stat-value" id="totalDownline">0</div>
+                            <div class="tree-stat-label">Total Downline</div>
+                        </div>
+                        <div class="tree-stat-card">
+                            <i class="fas fa-layer-group"></i>
+                            <div class="tree-stat-value" id="activeLevels">0/7</div>
+                            <div class="tree-stat-label">Active Levels</div>
+                        </div>
+                        <div class="tree-stat-card">
+                            <i class="fas fa-user-friends"></i>
+                            <div class="tree-stat-value" id="directReferrals">0/5</div>
+                            <div class="tree-stat-label">Direct Referrals</div>
+                        </div>
+                        <div class="tree-stat-card">
+                            <i class="fas fa-chart-pie"></i>
+                            <div class="tree-stat-value" id="matrixFill">0%</div>
+                            <div class="tree-stat-label">Matrix Fill Rate</div>
+                        </div>
+                    </div>
+
+                    <!-- Level breakdown -->
+                    <div class="tree-level-breakdown">
+                        <h3><i class="fas fa-chart-bar"></i> Level-wise Distribution</h3>
+                        <div id="levelBars"></div>
+                    </div>
+
+                    <!-- Tree controls -->
+                    <div class="tree-controls">
+                        <div class="tree-control-group">
+                            <label>View Depth:</label>
+                            <select id="depthSelector">
+                                <option value="2">2 Levels</option>
+                                <option value="3" selected>3 Levels</option>
+                                <option value="4">4 Levels</option>
+                                <option value="5">5 Levels</option>
+                                <option value="7">All 7 Levels</option>
+                            </select>
+                        </div>
+                        <div class="tree-control-group">
+                            <button id="refreshTree"  class="btn-icon" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+                            <button id="expandAll"    class="btn-icon" title="Expand All"><i class="fas fa-expand-arrows-alt"></i></button>
+                            <button id="collapseAll"  class="btn-icon" title="Collapse All"><i class="fas fa-compress-arrows-alt"></i></button>
+                            <button id="exportTree"   class="btn-icon" title="Export CSV"><i class="fas fa-download"></i></button>
+                            <button id="printTree"    class="btn-icon" title="Print"><i class="fas fa-print"></i></button>
+                        </div>
+                    </div>
+
+
+
+
+                    <!-- Tree render area -->
+                    <div class="tree-container">
+                        <div id="treeLoader" class="tree-loader hidden">
+                            <div class="spinner"></div>
+                            <p>Loading matrix tree…</p>
+                        </div>
+                        <div id="treeRoot" class="tree-root"></div>
+                        <div id="treeEmpty" class="tree-empty hidden">
+                            <i class="fas fa-tree"></i>
+                            <h3>No Downline Members</h3>
+                            <p>This user hasn't referred anyone yet</p>
+                        </div>
+                        <!-- <div id="treeError" class="tree-error hidden">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h3>Unable to Load Tree</h3>
+                            <p id="errorMessage">Please check the User ID or Referral Code</p>
+                        </div> -->
+                    </div>
+
+
+
+                    <!-- Member detail modal -->
+                    <div id="memberModal" class="modal hidden">
+                        <div class="modal-content">
+                            <span class="modal-close" id="modalClose">&times;</span>
+                            <div class="modal-header">
+                                <h3 id="modalTitle">Member Details</h3>
+                                <span class="modal-level" id="modalLevel">Level: —</span>
+                            </div>
+                            <div class="modal-body" id="modalBody"></div>
+                            <div class="modal-footer">
+                                <button class="btn-secondary" id="modalCopyReferral">
+                                    <i class="fas fa-copy"></i> Copy Referral Code
+                                </button>
+                                <button class="btn-primary" id="modalViewDownline">
+                                    <i class="fas fa-sitemap"></i> View This Downline
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
         </main>
     </div>
 
-    <!-- Overlay for mobile sidebar -->
-    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <!-- Mobile bottom nav bar -->
+    <nav class="mobile-nav" id="mobileNav">
+        <ul>
+            <li class="nav-item active" id="mob-dashboard">
+                <a href="#dashboard" onclick="showDashboard(); setMobileActive('mob-dashboard')">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+            </li>
+            <li class="nav-item" id="mob-myteam">
+                <a href="#myteam" onclick="Myteam(); setMobileActive('mob-myteam')">
+                    <i class="fas fa-users"></i>
+                    <span>Team</span>
+                </a>
+            </li>
+            <li class="nav-item" id="mob-earnings">
+                <a href="#earnings" onclick="showEarnings(); setMobileActive('mob-earnings')">
+                    <i class="fas fa-wallet"></i>
+                    <span>Earnings</span>
+                </a>
+            </li>
+            <li class="nav-item" id="mob-tree">
+                <a href="#matrixtree" onclick="showMatrixTree(); setMobileActive('mob-tree')">
+                    <i class="fas fa-sitemap"></i>
+                    <span>Tree</span>
+                </a>
+            </li>
+            <li class="nav-item" id="mob-profile">
+                <a href="#profile" onclick="profile(); setMobileActive('mob-profile')">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+            </li>
+            <li class="nav-item" id="">
+                <a href="logout.html">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>logout</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Toast container (shared by tree.js) -->
+    <div id="toastContainer" class="toast-container"></div>
 
     <!-- JavaScript -->
     <script src="dashboard.js"></script>
+    <script src="tree.js"></script>
 
-    <!-- JavaScript
-    <script src="script.js"></script> -->
+    <script>
+        /* ── Mobile sidebar toggle ── */
+        const _toggle  = document.getElementById('sidebarToggle');
+        const _overlay = document.getElementById('sidebarOverlay');
+        const _sidebar = document.querySelector('.sidebar');
+
+        function toggleSidebar() {
+            const open = document.body.classList.toggle('sidebar-open');
+            _overlay.classList.toggle('active', open);
+            _toggle.innerHTML = open
+                ? '<i class="fas fa-times"></i>'
+                : '<i class="fas fa-bars"></i>';
+        }
+
+        _toggle?.addEventListener('click', toggleSidebar);
+        _overlay?.addEventListener('click', toggleSidebar);
+
+        /* Close sidebar when any nav link is tapped on mobile */
+        document.querySelectorAll('.sidebar-nav .nav-item a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    document.body.classList.remove('sidebar-open');
+                    _overlay.classList.remove('active');
+                    _toggle.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+            });
+        });
+
+        /* ── Mobile bottom nav active state ── */
+        function setMobileActive(id) {
+            document.querySelectorAll('.mobile-nav .nav-item').forEach(li => li.classList.remove('active'));
+            document.getElementById(id)?.classList.add('active');
+        }
+
+        /* ── Show/hide mobile nav & adjust main padding ── */
+        function handleResize() {
+            const isMobile = window.innerWidth <= 768;
+            const mobileNav = document.getElementById('mobileNav');
+            const mainContent = document.querySelector('.main-content');
+            if (mobileNav) mobileNav.style.display = isMobile ? 'block' : 'none';
+            if (mainContent) mainContent.style.paddingBottom = isMobile ? '70px' : '';
+            document.getElementById('sidebarToggle').style.display = isMobile ? 'flex' : 'none';
+            if (!isMobile) {
+                document.body.classList.remove('sidebar-open');
+                _overlay.classList.remove('active');
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+        handleResize(); /* run on load */
+    </script>
+
+    <!-- Touch / mouse pan for the tree container -->
+    <script>
+        (function () {
+            function makeTreePannable(el) {
+                if (!el) return;
+                let isDown = false, startX, startY, scrollLeft, scrollTop;
+
+                el.addEventListener('mousedown', e => {
+                    isDown = true;
+                    el.style.cursor = 'grabbing';
+                    startX = e.pageX - el.offsetLeft;
+                    startY = e.pageY - el.offsetTop;
+                    scrollLeft = el.scrollLeft;
+                    scrollTop  = el.scrollTop;
+                });
+                el.addEventListener('mouseleave', () => { isDown = false; el.style.cursor = 'grab'; });
+                el.addEventListener('mouseup',    () => { isDown = false; el.style.cursor = 'grab'; });
+                el.addEventListener('mousemove',  e => {
+                    if (!isDown) return;
+                    e.preventDefault();
+                    el.scrollLeft = scrollLeft - (e.pageX - el.offsetLeft - startX);
+                    el.scrollTop  = scrollTop  - (e.pageY - el.offsetTop  - startY);
+                });
+            }
+
+            // Wait for the tree section to exist
+            function init() {
+                makeTreePannable(document.getElementById('treeRoot')?.closest('.tree-container')
+                    || document.querySelector('.tree-container'));
+            }
+
+            // Re-init whenever the tree re-renders (in case it's rebuilt dynamically)
+            const _orig = window.showMatrixTree;
+            window.showMatrixTree = function (...args) {
+                if (_orig) _orig.apply(this, args);
+                setTimeout(init, 400);
+            };
+            document.addEventListener('DOMContentLoaded', init);
+        })();
+    </script>
+
 </body>
-
 </html>

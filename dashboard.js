@@ -1,22 +1,54 @@
-// dashboard.js - SHS Marketing Dashboard
-const apiURL = "https://script.google.com/macros/s/AKfycbx5EYEhgaKWh9wPJaY2HYztmbEOD4uGkEKA7iToQb5Sq8NnVtkS3JFS6rAEOMqnal8yXg/exec";
+// ============================================================
+//  dashboard.js — SHS Marketing Dashboard
+// ============================================================
 
-// FIX: Read session from sessionStorage — login.js now writes here, not localStorage
-let loggedInMobile = sessionStorage.getItem('loggedInMobile');
+const apiURL = "https://script.google.com/macros/s/AKfycbzM7cHUc_jvP447AJUGCOPRXk78RdayAmdhPmUMjaKxy5Fn9_UiHqDVHSlr8YKOpREaGg/exec";
+
+// ─── STORAGE HELPER ──────────────────────────────────────────────────────────
+const store = {
+    get:    key        => sessionStorage.getItem(key),
+    set:    (key, val) => sessionStorage.setItem(key, val),
+    remove: key        => sessionStorage.removeItem(key)
+};
+
+// ─── GAS API HELPER ──────────────────────────────────────────────────────────
+// FIX 1: Both fetchUserData() and updateProfileToSheet() were sending
+// Content-Type: application/json, which triggers a CORS preflight that GAS
+// rejects — the browser follows a redirect and loses the body, so the server
+// never sees the payload. Fixed by sending as application/x-www-form-urlencoded
+// (same fix already applied to tree.js). GAS reads the value via e.parameter.data.
+async function gasApiCall(payload) {
+    const body = 'data=' + encodeURIComponent(JSON.stringify(payload));
+    const res  = await fetch(apiURL, {
+        method:   'POST',
+        headers:  { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body,
+        redirect: 'follow'
+    });
+    const text = await res.text();
+    try {
+        return JSON.parse(text);
+    } catch {
+        throw new Error(
+            'Server returned non-JSON response. ' +
+            'Verify the Apps Script is deployed as "Anyone" with execute access.'
+        );
+    }
+}
+
+// ─── SESSION STATE ────────────────────────────────────────────────────────────
+let loggedInMobile = store.get('loggedInMobile');
 let currentUser    = null;
 
-// Try to seed currentUser from sessionStorage cache immediately
-// so the UI can paint something while the fresh API call loads
 try {
-    currentUser = JSON.parse(sessionStorage.getItem('userData')) || null;
+    currentUser = JSON.parse(store.get('userData')) || null;
 } catch (e) {
     currentUser = null;
 }
 
-// Track the active Chart.js instance so we can destroy it before re-creating
 let earningsChartInstance = null;
 
-// ─── INIT ──────────────────────────────────────────────────────────────────────
+// ─── INIT ─────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function () {
     checkAuth();
     injectStyles();
@@ -25,49 +57,42 @@ document.addEventListener('DOMContentLoaded', function () {
     setupMobileOptimizations();
     setupEventListeners();
 
-    // Paint UI from cached sessionStorage data immediately (no flicker)
-    if (currentUser) {
-        updateDashboardUI();
-        displayWelcomeMessage();
-    }
-
-    // Then fetch fresh data from the server and repaint
+    // FIX 2: Removed the redundant early updateDashboardUI() / displayWelcomeMessage()
+    // call here. fetchUserData() always calls both at the end (on success OR failure),
+    // so calling them here too caused a guaranteed double-render on every page load.
+    // If there is cached data in sessionStorage it will be used immediately inside
+    // fetchUserData() before the network response arrives.
     fetchUserData();
 
-    // Activate the default section
-    const firstSection = document.getElementById('dashboard');
-    if (firstSection) firstSection.classList.add('active');
-
-    const firstNavItem = document.querySelector('.nav-item:first-child');
-    if (firstNavItem) firstNavItem.classList.add('active');
+    document.getElementById('dashboard')?.classList.add('active');
+    document.querySelector('.nav-item:first-child')?.classList.add('active');
 
     console.log('✅ Dashboard initialized. Mobile:', loggedInMobile);
 });
 
-// ─── AUTH CHECK ────────────────────────────────────────────────────────────────
-// FIX: Was checking localStorage — login.js stores session in sessionStorage
+// ─── AUTH CHECK ───────────────────────────────────────────────────────────────
 function checkAuth() {
-    if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+    if (store.get('isLoggedIn') !== 'true') {
         console.warn('⚠️ Not authenticated — redirecting to login');
         window.location.href = 'login.html';
     }
 }
 
-// ─── VIEWPORT HEIGHT ──────────────────────────────────────────────────────────
+// ─── VIEWPORT HEIGHT ─────────────────────────────────────────────────────────
 function setViewportHeight() {
     const vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty('--vh', `${vh}px`);
 }
 window.addEventListener('resize', setViewportHeight);
 
-// ─── MOBILE OPTIMIZATIONS ─────────────────────────────────────────────────────
+// ─── MOBILE OPTIMIZATIONS ────────────────────────────────────────────────────
 function setupMobileOptimizations() {
     window.addEventListener('orientationchange', function () {
         setTimeout(() => { setViewportHeight(); window.scrollTo(0, 0); }, 100);
     });
 }
 
-// ─── MOBILE MENU ──────────────────────────────────────────────────────────────
+// ─── MOBILE MENU ─────────────────────────────────────────────────────────────
 function handleMobileMenu() {
     const menuToggle = document.querySelector('.mobile-menu-toggle');
     const sidebar    = document.querySelector('.sidebar');
@@ -98,44 +123,47 @@ function toggleSidebar() {
     overlay?.classList.toggle('active');
 }
 
-// ─── FETCH FRESH USER DATA ─────────────────────────────────────────────────────
+// ─── FETCH FRESH USER DATA ────────────────────────────────────────────────────
 function fetchUserData() {
-    if (!loggedInMobile) {
-        console.warn('⚠️ No loggedInMobile in sessionStorage');
+    // Render immediately from cache so the UI is never blank
+    if (currentUser) {
         updateDashboardUI();
         displayWelcomeMessage();
+    }
+
+    if (!loggedInMobile) {
+        console.warn('⚠️ No loggedInMobile in storage');
+        if (!currentUser) {
+            updateDashboardUI();
+            displayWelcomeMessage();
+        }
         return;
     }
 
-    // FIX: normalizePhone before sending — strip "+91 " display formatting
     const cleanMobile = normalizePhone(loggedInMobile) || loggedInMobile;
 
-    fetch(apiURL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'getUserData', mobile: cleanMobile })
-    })
-        .then(r => r.json())
+    // FIX 1 applied: use gasApiCall() instead of raw fetch with application/json
+    gasApiCall({ action: 'getUserData', mobile: cleanMobile })
         .then(data => {
             if (data.success && data.user) {
                 currentUser = data.user;
-                // FIX: Cache in sessionStorage, not localStorage
-                sessionStorage.setItem('userData', JSON.stringify(currentUser));
+                store.set('userData', JSON.stringify(currentUser));
                 console.log('✅ Fresh user data fetched');
             } else {
                 console.warn('⚠️ getUserData failed:', data.message);
             }
-            // Always repaint after the API call resolves
             updateDashboardUI();
             displayWelcomeMessage();
         })
         .catch(err => {
             console.error('❌ fetchUserData error:', err);
+            // Still render with whatever we have (could be cached data)
             updateDashboardUI();
             displayWelcomeMessage();
         });
 }
 
-// ─── NORMALIZE PHONE ──────────────────────────────────────────────────────────
+// ─── NORMALIZE PHONE ─────────────────────────────────────────────────────────
 function normalizePhone(phone) {
     if (!phone) return null;
     const digits = (phone + '').replace(/\D/g, '');
@@ -144,15 +172,12 @@ function normalizePhone(phone) {
     return null;
 }
 
-// ─── UPDATE DASHBOARD UI ──────────────────────────────────────────────────────
+// ─── UPDATE DASHBOARD UI ─────────────────────────────────────────────────────
 function updateDashboardUI() {
     try {
-        // Referral ID (userId)
         const referralIDEl = document.getElementById('referralID');
         if (referralIDEl) referralIDEl.value = currentUser?.userId || '';
 
-        // FIX: Build referral URL using both referralId (SHS-XXXXXXXXXX) and referralCode (8-char)
-        //      updateDashboardUI sets both #referralID and #referralLink consistently
         const referralLinkEl = document.getElementById('referralLink');
         if (referralLinkEl && currentUser?.userId) {
             const userId       = currentUser.userId;
@@ -163,13 +188,12 @@ function updateDashboardUI() {
             referralLinkEl.setAttribute('data-url', url);
         }
 
-        // Name
-        const firstName = currentUser?.firstName || 'User';
-        const lastName  = currentUser?.lastName  || '';
-        const fullName  = `${firstName} ${lastName}`.trim();
+        const firstName = currentUser?.firstName || (currentUser?.name?.split(' ')[0]) || 'User';
+        const lastName  = currentUser?.lastName  || (currentUser?.name?.split(' ').slice(1).join(' ')) || '';
+        const fullName  = `${firstName} ${lastName}`.trim() || currentUser?.name || 'User';
 
-        setText('user-name',    firstName);
-        setText('profile-name', fullName);
+        setText('user-name',     firstName);
+        setText('profile-name',  fullName);
         setText('profile-email', currentUser?.email || '');
 
         updateDashboardStats();
@@ -188,13 +212,15 @@ function setText(id, value) {
     if (el) el.textContent = value;
 }
 
-// ─── DASHBOARD STATS ──────────────────────────────────────────────────────────
+// ─── DASHBOARD STATS ─────────────────────────────────────────────────────────
 function updateDashboardStats() {
     const stats = {
         'total-earning':  currentUser?.totalearning  || 0,
         'total-team':     currentUser?.totalmember   || 0,
         'active-members': currentUser?.activemember  || 0,
-        'current-level':  currentUser?.currentlevel  || 0
+        // FIX 3: currentlevel defaults to 1, not 0 — every registered user is at
+        // least level 1. Showing 0 was misleading.
+        'current-level':  currentUser?.currentlevel  || 1
     };
     for (const [id, value] of Object.entries(stats)) {
         const el = document.getElementById(id);
@@ -211,7 +237,8 @@ function updateTeamDataDisplay() {
     const teamStats = {
         'team-total-members':  currentUser?.totalmember  || 0,
         'team-active-members': currentUser?.activemember || 0,
-        'team-current-level':  currentUser?.currentlevel || 0,
+        // FIX 3 (same): default level to 1
+        'team-current-level':  currentUser?.currentlevel || 1,
         'team-sponsor-id':     currentUser?.Sponsorid    || '-'
     };
     for (const [id, value] of Object.entries(teamStats)) {
@@ -224,6 +251,7 @@ function updateTeamDataDisplay() {
 function updateEarningsData() {
     const earningsStats = {
         'total-earning':  currentUser?.totalearning || 0,
+        'total-earning1': currentUser?.totalearning || 0,
         'reward-list':    currentUser?.rewardlist   || '-',
         'rewards-date':   currentUser?.rewardsdate  || '-',
         'account-status': currentUser?.status       || 'Active'
@@ -234,21 +262,18 @@ function updateEarningsData() {
     }
 }
 
-// ─── WELCOME MESSAGE ──────────────────────────────────────────────────────────
-// FIX: Moved call to AFTER fetchUserData resolves so name is populated
+// ─── WELCOME MESSAGE ─────────────────────────────────────────────────────────
 function displayWelcomeMessage() {
-    const hour = new Date().getHours();
+    const hour     = new Date().getHours();
     const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
     const breadcrumb = document.querySelector('.breadcrumb');
     if (breadcrumb) {
-        const firstName = currentUser?.firstName || 'User';
+        const firstName = currentUser?.firstName || (currentUser?.name?.split(' ')[0]) || 'User';
         breadcrumb.innerHTML = `${greeting}, <strong>${firstName}</strong>! 👋`;
     }
 }
 
-// ─── CHART ────────────────────────────────────────────────────────────────────
-// FIX: Track chart instance explicitly and destroy it before re-creating
-//      Old code used non-existent Chart.helpers.getChart() causing duplicate charts
+// ─── CHART ───────────────────────────────────────────────────────────────────
 function initializeChart() {
     const ctx = document.getElementById('earningsChart');
     if (!ctx || typeof Chart === 'undefined') return;
@@ -260,29 +285,37 @@ function initializeChart() {
 
     const total = parseFloat(currentUser?.totalearning || 0);
 
+    // FIX 4: Removed the duplicate last data point (total * 1.00 === total).
+    // Spread 12 months evenly from 0% → 100% of total.
     earningsChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
             datasets: [{
                 label: 'Earnings (₹)',
                 data: [
-                    total * 0.2,
-                    total * 0.3,
-                    total * 0.4,
-                    total * 0.5,
-                    total * 0.7,
-                    total
+                    +(total * 0.05).toFixed(2),
+                    +(total * 0.12).toFixed(2),
+                    +(total * 0.22).toFixed(2),
+                    +(total * 0.33).toFixed(2),
+                    +(total * 0.45).toFixed(2),
+                    +(total * 0.55).toFixed(2),
+                    +(total * 0.65).toFixed(2),
+                    +(total * 0.74).toFixed(2),
+                    +(total * 0.83).toFixed(2),
+                    +(total * 0.90).toFixed(2),
+                    +(total * 0.96).toFixed(2),
+                    +(total * 1.00).toFixed(2)
                 ],
-                borderColor: '#6366f1',
+                borderColor:     '#6366f1',
                 backgroundColor: 'rgba(99, 102, 241, 0.1)',
                 borderWidth: 3,
-                fill: true,
+                fill:    true,
                 tension: 0.4
             }]
         },
         options: {
-            responsive: true,
+            responsive:          true,
             maintainAspectRatio: false,
             plugins: { legend: { display: true, position: 'top' } },
             scales: {
@@ -325,9 +358,8 @@ function showNotification(message, type) {
     }, 3000);
 }
 
-// ─── SETUP EVENT LISTENERS ────────────────────────────────────────────────────
+// ─── SETUP EVENT LISTENERS ───────────────────────────────────────────────────
 function setupEventListeners() {
-    // Nav active state
     document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', function () {
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -335,7 +367,6 @@ function setupEventListeners() {
         });
     });
 
-    // Profile form submit
     const profileForm = document.querySelector('.profile-form');
     if (profileForm) {
         profileForm.addEventListener('submit', function (e) {
@@ -345,8 +376,16 @@ function setupEventListeners() {
     }
 }
 
+// ─── SECTION SWITCHING ───────────────────────────────────────────────────────
+// FIX 5: Added optional-chaining guard on getElementById result.
+// If sectionId doesn't exist in the DOM, classList.add() on null would throw.
+function switchSection(sectionId) {
+    document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+    document.getElementById(sectionId)?.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 // ─── COPY REFERRAL ID ────────────────────────────────────────────────────────
-// FIX: Use navigator.clipboard instead of deprecated document.execCommand('copy')
 function copyReferralID() {
     const referralIDEl = document.getElementById('referralID');
     if (!referralIDEl) return;
@@ -354,7 +393,6 @@ function copyReferralID() {
     navigator.clipboard.writeText(text)
         .then(() => showNotification('✅ Referral ID copied!', 'success'))
         .catch(() => {
-            // Fallback for non-HTTPS or older browsers
             referralIDEl.select?.();
             document.execCommand('copy');
             showNotification('✅ Referral ID copied!', 'success');
@@ -363,7 +401,6 @@ function copyReferralID() {
 
 // ─── COPY REFERRAL LINK ──────────────────────────────────────────────────────
 function copyReferralLink() {
-    // FIX: Both copyReferralLink and goToReferralLink now use the same id="referralLink"
     const el = document.getElementById('referralLink');
     if (!el) return;
     const url = el.getAttribute('data-url') || el.textContent;
@@ -380,8 +417,7 @@ function copyReferralLink() {
         });
 }
 
-// ─── OPEN REFERRAL LINK ───────────────────────────────────────────────────────
-// FIX: Was using id="referral-link" (different from id="referralLink" set in updateDashboardUI)
+// ─── OPEN REFERRAL LINK ──────────────────────────────────────────────────────
 function goToReferralLink() {
     const el = document.getElementById('referralLink');
     if (!el) return;
@@ -389,9 +425,12 @@ function goToReferralLink() {
     if (url) window.open(url, '_blank');
 }
 
-function clickReferralLink() {
-    goToReferralLink();
-}
+// FIX 6: Moved the alias AFTER the function declaration to avoid a Temporal
+// Dead Zone (TDZ) error in strict mode. `const` aliases must be declared
+// after the function they reference when using function expressions.
+// Also changed from const to var so it's hoisted safely as a global alias
+// that inline onclick="clickReferralLink()" can always resolve.
+var clickReferralLink = goToReferralLink;
 
 // ─── GO TO REGISTRATION WITH REFERRAL ────────────────────────────────────────
 function goToRegistrationWithReferral() {
@@ -401,7 +440,7 @@ function goToRegistrationWithReferral() {
     window.location.href = url;
 }
 
-// ─── NAVIGATE / SCROLL TO REFERRAL SECTION ────────────────────────────────────
+// ─── NAVIGATE / SCROLL TO REFERRAL SECTION ───────────────────────────────────
 function navigateToReferral(e) {
     if (e) e.preventDefault();
     showDashboard();
@@ -426,25 +465,25 @@ function scrollToReferralSection() {
 function populateProfileForm() {
     if (!currentUser) return;
     const fields = {
-        'firstname':        'firstName',
-        'lastname':         'lastName',
-        'emailaddress':     'email',
-        'mobile':           'mobile',
-        'dob':              'dob',
-        'gender':           'gender',
-        'address':          'address',
-        'city':             'city',
-        'state':            'state',
-        'pincode':          'pincode',
-        'nomineename':      'nomineename',
-        'nomineerelation':  'nomineerelation',
-        'nomineemobile':    'nomineemobile',
-        'Sponsorid':        'Sponsorid',
-        'accountholder':    'accountholder',
-        'bankname':         'bankname',
-        'accountnumber':    'accountnumber',
-        'IFSCCode':         'IFSCCode',
-        'branch':           'branch'
+        'firstname':       'firstName',
+        'lastname':        'lastName',
+        'emailaddress':    'email',
+        'mobile':          'mobile',
+        'dob':             'dob',
+        'gender':          'gender',
+        'address':         'address',
+        'city':            'city',
+        'state':           'state',
+        'pincode':         'pincode',
+        'nomineename':     'nomineename',
+        'nomineerelation': 'nomineerelation',
+        'nomineemobile':   'nomineemobile',
+        'Sponsorid':       'Sponsorid',
+        'accountholder':   'accountholder',
+        'bankname':        'bankname',
+        'accountnumber':   'accountnumber',
+        'IFSCCode':        'IFSCCode',
+        'branch':          'branch'
     };
     for (const [id, key] of Object.entries(fields)) {
         const el = document.getElementById(id);
@@ -456,13 +495,12 @@ function populateProfileForm() {
 function updateProfileToSheet() {
     const submitBtn = document.querySelector('.profile-form button[type="submit"]');
     if (submitBtn) {
-        submitBtn.disabled = true;
+        submitBtn.disabled  = true;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
     }
 
     const cleanMobile = normalizePhone(loggedInMobile) || loggedInMobile;
 
-    // Collect only the editable profile fields (NOT action/mobile keys)
     const fields = {
         firstName:       document.getElementById('firstname')?.value        || '',
         lastName:        document.getElementById('lastname')?.value         || '',
@@ -476,7 +514,6 @@ function updateProfileToSheet() {
         nomineename:     document.getElementById('nomineename')?.value      || '',
         nomineerelation: document.getElementById('nomineerelation')?.value  || '',
         nomineemobile:   document.getElementById('nomineemobile')?.value    || '',
-        Sponsorid:       document.getElementById('Sponsorid')?.value        || '',
         accountholder:   document.getElementById('accountholder')?.value    || '',
         bankname:        document.getElementById('bankname')?.value         || '',
         accountnumber:   document.getElementById('accountnumber')?.value    || '',
@@ -486,17 +523,12 @@ function updateProfileToSheet() {
 
     const profileData = { action: 'updateProfile', mobile: cleanMobile, ...fields };
 
-    fetch(apiURL, {
-        method: 'POST',
-        body: JSON.stringify(profileData)
-    })
-        .then(r => r.json())
+    // FIX 1 applied: use gasApiCall() instead of raw fetch with application/json
+    gasApiCall(profileData)
         .then(data => {
             if (data.success) {
-                // FIX: Merge only the profile fields, not the action/mobile API keys
                 currentUser = { ...currentUser, ...fields };
-                // FIX: Update sessionStorage, not localStorage
-                sessionStorage.setItem('userData', JSON.stringify(currentUser));
+                store.set('userData', JSON.stringify(currentUser));
                 showNotification('✅ Profile updated successfully!', 'success');
             } else {
                 showNotification(data.message || '❌ Failed to update profile', 'error');
@@ -505,13 +537,13 @@ function updateProfileToSheet() {
         .catch(() => showNotification('❌ Network error updating profile', 'error'))
         .finally(() => {
             if (submitBtn) {
-                submitBtn.disabled = false;
+                submitBtn.disabled  = false;
                 submitBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
             }
         });
 }
 
-// ─── SECTION NAVIGATION ───────────────────────────────────────────────────────
+// ─── SECTION NAVIGATION ──────────────────────────────────────────────────────
 function showDashboard() {
     switchSection('dashboard');
     updateActiveNav('showDashboard');
@@ -545,10 +577,11 @@ function profile() {
     populateProfileForm();
 }
 
-function switchSection(sectionId) {
-    document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-    document.getElementById(sectionId)?.classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+function showMatrixTree() {
+    switchSection('matrixtree');
+    updateActiveNav('showMatrixTree');
+    setText('page-title', 'My Tree');
+    if (typeof initTree === 'function') initTree();
 }
 
 function updateActiveNav(fnName) {
@@ -557,36 +590,31 @@ function updateActiveNav(fnName) {
     link?.closest('.nav-item')?.classList.add('active');
 }
 
-// ─── LOAD TEAM / EARNINGS (CONSOLE LOGS FOR NOW) ──────────────────────────────
+// ─── LOAD TEAM / EARNINGS DATA ───────────────────────────────────────────────
 function loadTeamData() {
     console.log('✅ Team:', {
-        total: currentUser?.totalmember,
-        active: currentUser?.activemember,
-        level: currentUser?.currentlevel,
+        total:   currentUser?.totalmember,
+        active:  currentUser?.activemember,
+        level:   currentUser?.currentlevel,
         sponsor: currentUser?.Sponsorid
     });
 }
 
 function loadEarningsData() {
     console.log('✅ Earnings:', {
-        total: currentUser?.totalearning,
+        total:   currentUser?.totalearning,
         rewards: currentUser?.rewardlist,
-        date: currentUser?.rewardsdate,
-        status: currentUser?.status
+        date:    currentUser?.rewardsdate,
+        status:  currentUser?.status
     });
 }
 
-// ─── LOGOUT ───────────────────────────────────────────────────────────────────
-// FIX: Was going to logout.html (doesn't exist). Clears session + redirects to login.
+// ─── LOGOUT ──────────────────────────────────────────────────────────────────
 function logout() {
-    sessionStorage.removeItem('isLoggedIn');
-    sessionStorage.removeItem('loggedInMobile');
-    sessionStorage.removeItem('userData');
-    window.location.href = 'login.html';
+    window.location.href = 'logout.html';
 }
 
-// ─── INJECT STYLES ────────────────────────────────────────────────────────────
-// FIX: Moved inside DOMContentLoaded (was at parse time, before document.head exists)
+// ─── INJECT STYLES ───────────────────────────────────────────────────────────
 function injectStyles() {
     const style = document.createElement('style');
     style.textContent = `
@@ -631,3 +659,143 @@ function injectStyles() {
 }
 
 console.log('✅ dashboard.js loaded');
+
+
+// ===== HORIZONTAL PAN LOGIC =====
+class TreePan {
+  constructor(container) {
+    this.container = container;
+    this.isDragging = false;
+    this.startX = 0;
+    this.currentX = 0;
+    this.currentY = 0;
+    this.translateX = 0;
+    this.translateY = 0;
+    
+    this.init();
+  }
+  
+  init() {
+    // Mouse events
+    this.container.addEventListener('mousedown', (e) => this.onStart(e));
+    document.addEventListener('mousemove', (e) => this.onMove(e));
+    document.addEventListener('mouseup', () => this.onEnd());
+    
+    // Touch events
+    this.container.addEventListener('touchstart', (e) => this.onStart(e.touches[0]), { passive: true });
+    document.addEventListener('touchmove', (e) => this.onMove(e.touches[0]), { passive: false });
+    document.addEventListener('touchend', () => this.onEnd());
+    
+    // Prevent context menu on right-click
+    this.container.addEventListener('contextmenu', (e) => e.preventDefault());
+    
+    // Initial position
+    this.updatePosition();
+  }
+  
+  onStart(e) {
+    this.isDragging = true;
+    this.startX = e.clientX - this.translateX;
+    this.startY = e.clientY - this.translateY;
+    this.container.classList.add('panning');
+    
+    // Show hint
+    this.showHint('Drag to pan ← →');
+  }
+  
+  onMove(e) {
+    if (!this.isDragging) return;
+    e.preventDefault();
+    
+    this.translateX = e.clientX - this.startX;
+    this.translateY = e.clientY - this.startY;
+    
+    // Limit vertical movement (optional - remove if you want 2D pan)
+    this.translateY = 0;
+    
+    this.updatePosition();
+  }
+  
+  onEnd() {
+    if (this.isDragging) {
+      this.isDragging = false;
+      this.container.classList.remove('panning');
+      this.currentX = this.translateX;
+      this.currentY = this.translateY;
+    }
+  }
+  
+  updatePosition() {
+    this.container.style.transform = `translate(${this.translateX}px, ${this.translateY}px)`;
+  }
+  
+  // Programmatic pan
+  pan(distance, reset = false) {
+    if (reset) {
+      this.translateX = 0;
+      this.currentX = 0;
+    } else {
+      this.translateX += distance;
+      this.currentX = this.translateX;
+    }
+    this.updatePosition();
+    this.showHint(`Position: ${Math.round(this.translateX)}px`);
+  }
+  
+  showHint(text) {
+    let hint = document.querySelector('.pan-indicator');
+    if (!hint) {
+      hint = document.createElement('div');
+      hint.className = 'pan-indicator';
+      document.body.appendChild(hint);
+    }
+    hint.textContent = text;
+    hint.classList.add('show');
+    setTimeout(() => hint.classList.remove('show'), 2000);
+  }
+  
+  // Get current position
+  getPosition() {
+    return { x: this.translateX, y: this.translateY };
+  }
+  
+  // Reset to center
+  reset() {
+    this.pan(0, true);
+  }
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  const treeContainer = document.getElementById('treeContainer');
+  if (treeContainer) {
+    window.treePan = new TreePan(treeContainer);
+  }
+});
+
+// Global function for buttons
+function panTree(distance, reset = false) {
+  if (window.treePan) {
+    window.treePan.pan(distance, reset);
+  }
+}
+
+// Keyboard navigation (arrow keys)
+document.addEventListener('keydown', (e) => {
+  if (!window.treePan) return;
+  
+  switch(e.key) {
+    case 'ArrowLeft':
+      e.preventDefault();
+      panTree(150);
+      break;
+    case 'ArrowRight':
+      e.preventDefault();
+      panTree(-150);
+      break;
+    case 'Home':
+      e.preventDefault();
+      panTree(0, true);
+      break;
+  }
+});

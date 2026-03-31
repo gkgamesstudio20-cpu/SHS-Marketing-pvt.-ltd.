@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SHS Marketing - Matrix Tree Viewer</title>
+  <link rel="stylesheet" href="tree.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo">
+        <i class="fas fa-sitemap"></i>
+        <h1>SHS Marketing Matrix</h1>
+      </div>
+      <div class="header-info">
+        <span class="system-status"><i class="fas fa-circle"></i> Live System</span>
+      </div>
+    </header>
+
+    <!-- Search Section -->
+    <section class="search-section">
+      <div class="search-card">
+        <h2><i class="fas fa-search"></i> View Matrix Tree</h2>
+        <p class="search-subtitle">Enter User ID or Referral Code to view the network tree</p>
+        
+        <form id="searchForm">
+          <div class="search-input-group">
+            <input type="text" id="searchInput" placeholder="Enter User ID (SHS-XXXXXXXXXX) or Referral Code" required />
+            <select id="searchType">
+              <option value="userId">User ID</option>
+              <option value="referralCode">Referral Code</option>
+            </select>
+            <button type="submit" class="btn-primary" id="searchBtn">
+              <i class="fas fa-search"></i> View Tree
+            </button>
+          </div>
+        </form>
+
+        <div class="quick-info">
+          <div class="info-item">
+            <i class="fas fa-layer-group"></i>
+            <span>7 Levels Max</span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-users"></i>
+            <span>5×5 Matrix</span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-chart-line"></i>
+            <span>97,655 Capacity</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dashboard Section (Hidden until search) -->
+    <main id="dashboardSection" class="dashboard hidden">
+      
+      <!-- User Info Bar -->
+      <div class="user-info-bar">
+        <div class="user-details">
+          <i class="fas fa-user-circle"></i>
+          <span id="viewingUser">Viewing: -</span>
+          <span class="user-level-badge" id="viewingLevel">Level: -</span>
+        </div>
+        <button id="newSearch" class="btn-secondary">
+          <i class="fas fa-search"></i> New Search
+        </button>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <i class="fas fa-users"></i>
+          <div class="stat-value" id="totalDownline">0</div>
+          <div class="stat-label">Total Downline</div>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-layer-group"></i>
+          <div class="stat-value" id="activeLevels">0/7</div>
+          <div class="stat-label">Active Levels</div>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-user-friends"></i>
+          <div class="stat-value" id="directReferrals">0/5</div>
+          <div class="stat-label">Direct Referrals</div>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-chart-pie"></i>
+          <div class="stat-value" id="matrixFill">0%</div>
+          <div class="stat-label">Matrix Fill Rate</div>
+        </div>
+      </div>
+
+      <!-- Level Breakdown -->
+      <div class="level-breakdown">
+        <h3><i class="fas fa-chart-bar"></i> Level-wise Distribution</h3>
+        <div class="level-bars" id="levelBars">
+          <!-- Dynamic level bars -->
+        </div>
+      </div>
+
+      <!-- Tree Controls -->
+      <div class="tree-controls">
+        <div class="control-group">
+          <label>View Depth:</label>
+          <select id="depthSelector">
+            <option value="2">2 Levels</option>
+            <option value="3" selected>3 Levels</option>
+            <option value="4">4 Levels</option>
+            <option value="5">5 Levels</option>
+            <option value="7">All 7 Levels</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <button id="refreshTree" class="btn-icon" title="Refresh Tree">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+          <button id="expandAll" class="btn-icon" title="Expand All">
+            <i class="fas fa-expand-arrows-alt"></i>
+          </button>
+          <button id="collapseAll" class="btn-icon" title="Collapse All">
+            <i class="fas fa-compress-arrows-alt"></i>
+          </button>
+          <button id="exportTree" class="btn-icon" title="Export Data">
+            <i class="fas fa-download"></i>
+          </button>
+          <button id="printTree" class="btn-icon" title="Print Tree">
+            <i class="fas fa-print"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tree Container -->
+      <div class="tree-container">
+        <div id="treeLoader" class="tree-loader hidden">
+          <div class="spinner"></div>
+          <p>Loading matrix tree...</p>
+        </div>
+        <div id="treeRoot" class="tree-root"></div>
+        <div id="treeEmpty" class="tree-empty hidden">
+          <i class="fas fa-tree"></i>
+          <h3>No Downline Members</h3>
+          <p>This user hasn't referred anyone yet</p>
+        </div>
+        <div id="treeError" class="tree-error hidden">
+          <i class="fas fa-exclamation-triangle"></i>
+          <h3>Unable to Load Tree</h3>
+          <p id="errorMessage">Please check the User ID or Referral Code</p>
+        </div>
+      </div>
+
+      <!-- Member Detail Modal -->
+      <div id="memberModal" class="modal hidden">
+        <div class="modal-content">
+          <span class="modal-close" id="modalClose">&times;</span>
+          <div class="modal-header">
+            <h3 id="modalTitle">Member Details</h3>
+            <span class="modal-level" id="modalLevel">Level: -</span>
+          </div>
+          <div class="modal-body" id="modalBody">
+            <!-- Dynamic content -->
+          </div>
+          <div class="modal-footer">
+            <button class="btn-secondary" id="modalCopyReferral">
+              <i class="fas fa-copy"></i> Copy Referral Code
+            </button>
+            <button class="btn-primary" id="modalViewDownline">
+              <i class="fas fa-sitemap"></i> View This Downline
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>SHS Marketing MLM System • Matrix: 5×5 • Max Levels: 7 • Total Capacity: 97,655 members</p>
+      <p class="footer-note">Public Tree Viewer • Data sourced from Google Sheets</p>
+    </footer>
+
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="tree.js"></script>
+</body>
+</html>
