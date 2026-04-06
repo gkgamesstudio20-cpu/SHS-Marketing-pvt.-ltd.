@@ -13,6 +13,141 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style_SHS.css">
     <link rel="stylesheet" href="payment.css" />
+
+    <style>
+        /* ── Payment Amount Selector ── */
+        .amount-selector-group {
+            margin-bottom: 20px;
+        }
+
+        .amount-selector-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1e293b;
+            font-size: 15px;
+        }
+
+        .amount-select-wrapper {
+            position: relative;
+        }
+
+        .amount-select-wrapper select {
+            width: 100%;
+            padding: 13px 44px 13px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            color: #1e293b;
+            background: #fff;
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+
+        .amount-select-wrapper select:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+        }
+
+        .amount-select-wrapper select option[value=""] {
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .amount-select-wrapper .select-arrow {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #6366f1;
+            font-size: 14px;
+        }
+
+        /* ── Amount Badge shown inside QR card ── */
+        .selected-amount-badge {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #6366f1, #818cf8);
+            color: #fff;
+            font-weight: 700;
+            font-size: 18px;
+            border-radius: 10px;
+            padding: 10px 20px;
+            margin: 10px auto 6px;
+            width: fit-content;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(99,102,241,0.25);
+        }
+
+        .selected-amount-badge.visible {
+            display: flex;
+        }
+
+        /* ── QR image transition ── */
+        .qr-code-image {
+            transition: opacity 0.25s ease;
+        }
+
+        .qr-code-image.fade {
+            opacity: 0;
+        }
+
+        /* ── Plan info tag below dropdown ── */
+        .plan-info-tag {
+            display: none;
+            margin-top: 8px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            background: #f0fdf4;
+            color: #166534;
+            border-left: 3px solid #22c55e;
+        }
+
+        .plan-info-tag.visible {
+            display: block;
+        }
+
+        /* ── Amount error ── */
+        #amountError {
+            color: #ef4444;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* ── No-selection placeholder in QR area ── */
+        .qr-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 28px 10px;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .qr-placeholder i {
+            font-size: 38px;
+            color: #cbd5e1;
+        }
+
+        .qr-placeholder p {
+            margin: 0;
+            text-align: center;
+            line-height: 1.5;
+        }
+    </style>
 </head>
 
 <body>
@@ -34,7 +169,7 @@
         <h2>Payment Verification</h2>
         <p class="page-subtitle">Complete your payment to activate your account</p>
 
-        <!-- Auto-fill info banner: shown only when coming from registration -->
+        <!-- Auto-fill info banner -->
         <div id="autoFillBanner" class="autofill-banner" style="display:none;">
             <i class="fas fa-check-circle"></i>
             <span id="autoFillBannerText">Details auto-filled from your registration. Please verify before submitting.</span>
@@ -49,14 +184,14 @@
                 <span class="error-message" id="fullNameError"></span>
             </div>
 
-            <!-- Phone — no maxlength (JS formatter sets "+91 XXXXX XXXXX" = 15 chars) -->
+            <!-- Phone -->
             <div class="form-group">
                 <label for="phone">Phone Number <span class="required">*</span></label>
                 <input type="tel" id="phone" name="phone" required placeholder="+91 98765 43210" />
                 <span class="error-message" id="phoneError" style="color:#ef4444;font-size:14px;margin-top:4px;display:none;"></span>
             </div>
 
-            <!-- Sponsor / Referral ID — read-only, auto-filled from registration sessionStorage -->
+            <!-- Sponsor / Referral ID (auto-filled, hidden by default) -->
             <div class="form-group" id="referralIdGroup" style="display:none;">
                 <label for="referralIdDisplay">Sponsor ID</label>
                 <input type="text" id="referralIdDisplay" readonly
@@ -65,17 +200,55 @@
                 <small>Carried over from your registration</small>
             </div>
 
+            <!-- ══════════════════════════════════════════════
+                 PAYMENT AMOUNT DROPDOWN  ← NEW
+            ══════════════════════════════════════════════ -->
+            <div class="form-group amount-selector-group">
+                <label for="paymentAmount">Select Payment Plan <span class="required">*</span></label>
+                <div class="amount-select-wrapper">
+                    <select id="paymentAmount" name="paymentAmount" required>
+                        <option value="" disabled selected>— Choose a plan —</option>
+                        <option value="500"   data-plan="Starter"    data-svg="500.svg">   ₹500   — Starter Plan</option>
+                        <option value="2000"  data-plan="Basic"      data-svg="2000.svg">  ₹2,000 — Basic Plan</option>
+                        <option value="5000"  data-plan="Standard"   data-svg="5000.svg">  ₹5,000 — Standard Plan</option>
+                        <option value="10000" data-plan="Premium"    data-svg="10000.svg"> ₹10,000 — Premium Plan</option>
+                        <option value="20000" data-plan="Elite"      data-svg="20000.svg"> ₹20,000 — Elite Plan</option>
+                    </select>
+                    <span class="select-arrow"><i class="fas fa-chevron-down"></i></span>
+                </div>
+                <!-- Plan tag shown after selection -->
+                <div class="plan-info-tag" id="planInfoTag">
+                    <i class="fas fa-star"></i> <span id="planInfoText"></span>
+                </div>
+                <span id="amountError">Please select a payment plan</span>
+            </div>
+
             <!-- UPI QR Code Payment Section -->
             <div class="upi-payment-section">
-                <label>Payment via UPI <span class="required">*</span></label>
+                <label>Pay via UPI — scan the QR for your selected plan <span class="required">*</span></label>
                 <div class="upi-qr-container">
+
                     <div class="upi-header">
                         <i class="fas fa-chart-line"></i>
                         <span class="brand-name">SHS Marketing Pvt. Ltd.</span>
                     </div>
 
-                    <div class="qr-code-wrapper">
-                        <img src="UPI.svg" alt="UPI QR Code for SHS Marketing" class="qr-code-image" id="upiQRCode" />
+                    <!-- Amount badge (appears after plan selection) -->
+                    <div class="selected-amount-badge" id="selectedAmountBadge">
+                        <i class="fas fa-indian-rupee-sign"></i>
+                        <span id="selectedAmountText"></span>
+                    </div>
+
+                    <!-- QR code area -->
+                    <div class="qr-code-wrapper" id="qrWrapper">
+                        <!-- Placeholder shown before any plan is selected -->
+                        <div class="qr-placeholder" id="qrPlaceholder">
+                            <i class="fas fa-qrcode"></i>
+                            <p>Select a payment plan above<br>to load the QR code</p>
+                        </div>
+                        <!-- Actual QR image, hidden until plan chosen -->
+                        <img src="" alt="UPI QR Code" class="qr-code-image" id="upiQRCode"
+                             style="display:none;" />
                     </div>
 
                     <div class="upi-id" title="Click to copy UPI ID">
@@ -83,7 +256,7 @@
                         <i class="fas fa-copy" style="margin-left:6px;font-size:13px;opacity:0.6;"></i>
                     </div>
 
-                    <p class="upi-instruction">Scan to pay with any UPI app</p>
+                    <p class="upi-instruction">Scan the QR code with any UPI app and pay the exact plan amount</p>
 
                     <div class="upi-apps">
                         <span>Accepted: </span>

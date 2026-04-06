@@ -1,67 +1,74 @@
 // payment.js - Payment Verification System
 const API_URL = "https://script.google.com/macros/s/AKfycbzM7cHUc_jvP447AJUGCOPRXk78RdayAmdhPmUMjaKxy5Fn9_UiHqDVHSlr8YKOpREaGg/exec";
 
+// ─── PLAN CONFIG ─────────────────────────────────────────────────────────────
+// Keep this in sync with the <select> options in payment.html
+const PLANS = {
+    "500":   { label: "₹500",    name: "Starter Plan",  svg: "500.svg"   },
+    "2000":  { label: "₹2,000",  name: "Basic Plan",    svg: "2000.svg"  },
+    "5000":  { label: "₹5,000",  name: "Standard Plan", svg: "5000.svg"  },
+    "10000": { label: "₹10,000", name: "Premium Plan",  svg: "10000.svg" },
+    "20000": { label: "₹20,000", name: "Elite Plan",    svg: "20000.svg" }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('registrationForm');
+    const form              = document.getElementById('registrationForm');
     const transactionIdInput = document.getElementById('transactionId');
-    const termsCheckbox = document.getElementById('terms');
-    const formMessage = document.getElementById('formMessage');
-    const phoneInput = document.getElementById('phone');
-    const submitBtn = document.getElementById('submitBtn');
+    const termsCheckbox     = document.getElementById('terms');
+    const formMessage       = document.getElementById('formMessage');
+    const phoneInput        = document.getElementById('phone');
+    const submitBtn         = document.getElementById('submitBtn');
+
+    // Amount dropdown elements
+    const amountSelect       = document.getElementById('paymentAmount');
+    const upiQRCode          = document.getElementById('upiQRCode');
+    const qrPlaceholder      = document.getElementById('qrPlaceholder');
+    const selectedAmountBadge = document.getElementById('selectedAmountBadge');
+    const selectedAmountText  = document.getElementById('selectedAmountText');
+    const planInfoTag         = document.getElementById('planInfoTag');
+    const planInfoText        = document.getElementById('planInfoText');
+    const amountError         = document.getElementById('amountError');
 
     // ─── AUTO-FILL FROM REGISTRATION sessionStorage ───────────────────────────
-    // register.js saves these keys on successful registration:
-    //   reg_mobile     — raw phone entered by user (e.g. "9876543210")
-    //   reg_fullName   — "FirstName LastName"
-    //   reg_referralId — sponsor's SHS-XXXXXXXXXX (may be empty)
-    //   reg_userId     — newly assigned SHS-XXXXXXXXXX for this user
     (function autoFillFromRegistration() {
-        const savedMobile    = sessionStorage.getItem('reg_mobile')     || '';
-        const savedFullName  = sessionStorage.getItem('reg_fullName')   || '';
+        const savedMobile     = sessionStorage.getItem('reg_mobile')     || '';
+        const savedFullName   = sessionStorage.getItem('reg_fullName')   || '';
         const savedReferralId = sessionStorage.getItem('reg_referralId') || '';
-        const savedUserId    = sessionStorage.getItem('reg_userId')     || '';
+        const savedUserId     = sessionStorage.getItem('reg_userId')     || '';
 
         const hasData = savedMobile || savedFullName;
 
         if (savedFullName) {
-            const fullNameInput = document.getElementById('fullName');
-            fullNameInput.value = savedFullName;
-            // Allow editing in case they want to correct it
+            document.getElementById('fullName').value = savedFullName;
         }
 
         if (savedMobile) {
-            // Format for display: "+91 XXXXX XXXXX"
-            const digits = savedMobile.replace(/\D/g, '');
+            const digits   = savedMobile.replace(/\D/g, '');
             const mobile10 = digits.length === 12 && digits.startsWith('91')
                 ? digits.slice(2) : digits;
 
-            if (mobile10.length === 10) {
-                phoneInput.value = `+91 ${mobile10.slice(0, 5)} ${mobile10.slice(5)}`;
-            } else {
-                phoneInput.value = savedMobile; // fallback: show as-is
-            }
+            phoneInput.value = mobile10.length === 10
+                ? `+91 ${mobile10.slice(0, 5)} ${mobile10.slice(5)}`
+                : savedMobile;
 
-            // Lock the phone field — it must match the registered account
-            phoneInput.readOnly = true;
-            phoneInput.style.background = '#f8fafc';
-            phoneInput.style.color = '#64748b';
-            phoneInput.style.cursor = 'default';
-            phoneInput.title = 'Phone number is locked to your registered account';
+            phoneInput.readOnly           = true;
+            phoneInput.style.background   = '#f8fafc';
+            phoneInput.style.color        = '#64748b';
+            phoneInput.style.cursor       = 'default';
+            phoneInput.title              = 'Phone number is locked to your registered account';
         }
 
-        // Show Sponsor ID field only if a referralId exists
         if (savedReferralId) {
-            const referralIdGroup = document.getElementById('referralIdGroup');
+            const referralIdGroup   = document.getElementById('referralIdGroup');
             const referralIdDisplay = document.getElementById('referralIdDisplay');
             if (referralIdGroup && referralIdDisplay) {
-                referralIdDisplay.value = savedReferralId;
-                referralIdGroup.style.display = 'block';
+                referralIdDisplay.value        = savedReferralId;
+                referralIdGroup.style.display  = 'block';
             }
         }
 
-        // Show the auto-fill banner if we have any data
         if (hasData) {
-            const banner = document.getElementById('autoFillBanner');
+            const banner     = document.getElementById('autoFillBanner');
             const bannerText = document.getElementById('autoFillBannerText');
             if (banner) {
                 let msg = 'Details auto-filled from your registration.';
@@ -73,19 +80,55 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })();
 
+    // ─── AMOUNT DROPDOWN → QR SWAP ────────────────────────────────────────────
+    amountSelect.addEventListener('change', function () {
+        const value = this.value;
+        amountError.style.display = 'none';
+
+        if (!value || !PLANS[value]) {
+            // Reset to placeholder state
+            upiQRCode.style.display   = 'none';
+            qrPlaceholder.style.display = 'flex';
+            selectedAmountBadge.classList.remove('visible');
+            planInfoTag.classList.remove('visible');
+            return;
+        }
+
+        const plan = PLANS[value];
+
+        // Fade out → swap src → fade in
+        upiQRCode.classList.add('fade');
+
+        setTimeout(() => {
+            upiQRCode.src             = plan.svg;
+            upiQRCode.alt             = `QR Code for ${plan.name} — ${plan.label}`;
+            upiQRCode.style.display   = 'block';
+            qrPlaceholder.style.display = 'none';
+            upiQRCode.classList.remove('fade');
+        }, 250);
+
+        // Amount badge
+        selectedAmountText.textContent = `${plan.label} — ${plan.name}`;
+        selectedAmountBadge.classList.add('visible');
+
+        // Plan info tag
+        planInfoText.textContent = `You selected the ${plan.name} (${plan.label}). Please scan the QR above and pay exactly this amount.`;
+        planInfoTag.classList.add('visible');
+    });
+
     // ─── AUTO-FORMAT TRANSACTION ID ───────────────────────────────────────────
     transactionIdInput.addEventListener('input', function () {
         this.value = this.value.toUpperCase().replace(/\s/g, '');
     });
 
-    // ─── PHONE INPUT: Allow digits, +, -, spaces ──────────────────────────────
+    // ─── PHONE INPUT ──────────────────────────────────────────────────────────
     phoneInput.addEventListener('input', function () {
         if (!this.readOnly) {
             this.value = this.value.replace(/[^\d+\-\s]/g, '');
         }
     });
 
-    // ─── NORMALIZE PHONE (returns clean 10-digit string or null) ─────────────
+    // ─── NORMALIZE PHONE ─────────────────────────────────────────────────────
     function normalizePhone(phone) {
         if (!phone) return null;
         const digits = phone.replace(/\D/g, '');
@@ -103,9 +146,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return mobile;
     }
 
-    // ─── PHONE VALIDATION (UI feedback) ──────────────────────────────────────
+    // ─── PHONE VALIDATION ─────────────────────────────────────────────────────
     function validatePhone() {
-        const raw = phoneInput.value.trim();
+        const raw     = phoneInput.value.trim();
         const errorEl = document.getElementById('phoneError');
 
         if (!raw) {
@@ -122,20 +165,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showFieldError(el, msg) {
         if (!el) return;
-        el.textContent = msg;
-        el.style.display = 'block';
+        el.textContent    = msg;
+        el.style.display  = 'block';
     }
 
     function clearFieldError(el) {
         if (!el) return;
-        el.textContent = '';
-        el.style.display = 'none';
+        el.textContent    = '';
+        el.style.display  = 'none';
     }
 
-    // Phone blur: format display then validate
     phoneInput.addEventListener('blur', function () {
-        if (this.readOnly) return; // skip if locked (auto-filled)
-
+        if (this.readOnly) return;
         const digits = this.value.replace(/\D/g, '');
         if (digits.length === 10 && /^[6-9]/.test(digits)) {
             this.value = `+91 ${digits.slice(0, 5)} ${digits.slice(5)}`;
@@ -152,12 +193,12 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         formMessage.textContent = '';
-        formMessage.className = 'message';
+        formMessage.className   = 'message';
 
         let isValid = true;
 
         // Full Name
-        const fullName = document.getElementById('fullName').value.trim();
+        const fullName      = document.getElementById('fullName').value.trim();
         const fullNameError = document.getElementById('fullNameError');
         if (!fullName) {
             showFieldError(fullNameError, 'Full name is required');
@@ -172,9 +213,19 @@ document.addEventListener('DOMContentLoaded', () => {
         // Phone
         if (!validatePhone()) isValid = false;
 
+        // Payment Amount  ← NEW validation
+        const selectedAmount = amountSelect.value;
+        if (!selectedAmount || !PLANS[selectedAmount]) {
+            amountError.style.display = 'block';
+            amountError.textContent   = 'Please select a payment plan';
+            isValid = false;
+        } else {
+            amountError.style.display = 'none';
+        }
+
         // Transaction ID
-        const txnVal = transactionIdInput.value.trim();
-        const txnError = document.getElementById('transactionIdError');
+        const txnVal     = transactionIdInput.value.trim();
+        const txnError   = document.getElementById('transactionIdError');
         const txnPattern = /^[A-Za-z0-9\-]{10,50}$/;
         if (!txnVal) {
             showFieldError(txnError, 'Transaction ID is required');
@@ -203,30 +254,37 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const plan = PLANS[selectedAmount];
+
         try {
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            submitBtn.disabled   = true;
+            submitBtn.innerHTML  = '<i class="fas fa-spinner fa-spin"></i> Processing...';
             showMessage('Processing payment verification… Please wait.', 'info');
 
             const paymentData = {
-                action: 'savePayment',
-                fullName: fullName,
-                phone: normalizedPhone,
-                transactionId: txnVal.toUpperCase(),
-                // referralId: referralId,
-                paymentMethod: 'UPI',
-                upiId: 'shsbrandgroup@oksbi',
-                paymentStatus: 'Pending',
-                approvalStatus: 'Waiting for Admin',
-                timestamp: new Date().toISOString(),
-                dateSubmitted: new Date().toLocaleDateString('en-IN')
+                action         : 'savePayment',
+                fullName       : fullName,
+                phone          : normalizedPhone,
+                transactionId  : txnVal.toUpperCase(),
+                paymentMethod  : 'UPI',
+                upiId          : 'shsbrandgroup@oksbi',
+
+                // ── NEW fields sent to Google Sheets ──
+                paymentAmount  : selectedAmount,          // e.g. "5000"
+                paymentPlan    : plan.name,               // e.g. "Standard Plan"
+                paymentCategory: `${plan.name} (${plan.label})`, // e.g. "Standard Plan (₹5,000)"
+
+                paymentStatus  : 'Pending',
+                approvalStatus : 'Waiting for Admin',
+                timestamp      : new Date().toISOString(),
+                dateSubmitted  : new Date().toLocaleDateString('en-IN')
             };
 
             console.log('📤 Sending payment data:', { ...paymentData });
 
             const response = await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify(paymentData)
+                method : 'POST',
+                body   : JSON.stringify(paymentData)
             });
 
             const result = await response.json();
@@ -234,19 +292,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (result.success) {
                 showMessage(
-                    `✅ Payment submitted successfully!\n\nTransaction ID: ${paymentData.transactionId}\n\nPlease wait for admin approval (up to 24 hours). Redirecting to login…`,
+                    `✅ Payment submitted successfully!\n\nPlan: ${plan.name} (${plan.label})\nTransaction ID: ${paymentData.transactionId}\n\nPlease wait for admin approval (up to 24 hours). Redirecting to login…`,
                     'success'
                 );
 
-                // Keep phone for login page convenience; clear registration data
                 sessionStorage.setItem('pendingPaymentPhone', normalizedPhone);
                 sessionStorage.setItem('pendingPaymentTxnId', paymentData.transactionId);
+                sessionStorage.setItem('pendingPaymentPlan',  plan.name);
                 sessionStorage.removeItem('reg_mobile');
                 sessionStorage.removeItem('reg_fullName');
                 sessionStorage.removeItem('reg_referralId');
                 sessionStorage.removeItem('reg_userId');
 
                 form.reset();
+                // Reset QR area after form reset
+                upiQRCode.style.display      = 'none';
+                qrPlaceholder.style.display  = 'flex';
+                selectedAmountBadge.classList.remove('visible');
+                planInfoTag.classList.remove('visible');
 
                 setTimeout(() => {
                     window.location.href = 'login.html';
@@ -254,14 +317,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             } else {
                 showMessage(`❌ ${result.message || 'Payment submission failed. Please try again.'}`, 'error');
-                submitBtn.disabled = false;
+                submitBtn.disabled  = false;
                 submitBtn.innerHTML = '<i class="fas fa-shield-alt"></i> Submit &amp; Verify Payment';
             }
 
         } catch (error) {
             console.error('❌ Fetch error:', error);
             showMessage('Network error. Please check your connection and try again.', 'error');
-            submitBtn.disabled = false;
+            submitBtn.disabled  = false;
             submitBtn.innerHTML = '<i class="fas fa-shield-alt"></i> Submit &amp; Verify Payment';
         }
     });
@@ -269,7 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ─── SHOW MESSAGE ─────────────────────────────────────────────────────────
     function showMessage(text, type) {
         formMessage.textContent = text;
-        formMessage.className = `message ${type}`;
+        formMessage.className   = `message ${type}`;
         formMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
@@ -277,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const upiIDElement = document.querySelector('.upi-id');
     if (upiIDElement) {
         upiIDElement.style.cursor = 'pointer';
-        upiIDElement.title = 'Click to copy UPI ID';
+        upiIDElement.title        = 'Click to copy UPI ID';
         upiIDElement.addEventListener('click', () => {
             navigator.clipboard.writeText('shsbrandgroup@oksbi')
                 .then(() => showMessage('✓ UPI ID copied to clipboard!', 'success'))
