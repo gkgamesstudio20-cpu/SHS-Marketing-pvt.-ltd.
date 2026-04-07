@@ -405,7 +405,7 @@ function buildMatrixCard(user, depth) {
   ].filter(Boolean).join(' ');
 
   card.style.setProperty('--card-color', color);
-  card.onclick = () => treeShowModal(user, depth);
+  card.onclick = () => treeShowModal(user, depth - 1);
 
   // ── "YOU (ROOT)" crown label for the top node ─────────────────────────────
   if (isRoot) {
@@ -424,7 +424,7 @@ function buildMatrixCard(user, depth) {
   // Level badge
   const badge = document.createElement('span');
   badge.className   = 'matrix-badge';
-  badge.textContent = isRoot ? `L${depth} — YOU` : `L${depth}`;
+  badge.textContent = isRoot ? `L0 — YOU` : `L${depth - 1}`;
   badge.style.background = isRoot ? 'linear-gradient(135deg,#6366f1,#8b5cf6)' : color;
   card.appendChild(badge);
 
@@ -476,8 +476,8 @@ function buildEmptyMatrixSlot(depth) {
       <i class="fas fa-user-plus" style="color:${color};font-size:14px"></i>
     </div>
     <div class="matrix-name" style="color:#9ca3af;font-size:10px">Empty Slot</div>
-    <div class="matrix-uid" style="color:#d1d5db;font-size:9px">L${depth}</div>`;
-  slot.onclick = () => treeToast(`Level ${depth} slot — not yet filled`, 'info');
+    <div class="matrix-uid" style="color:#d1d5db;font-size:9px">L${depth - 1}</div>`;
+  slot.onclick = () => treeToast(`Level ${depth - 1} slot — not yet filled`, 'info');
   return slot;
 }
 
