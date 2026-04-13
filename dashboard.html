@@ -9,7 +9,9 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -19,6 +21,8 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="dashboard.css">
+
+   
 </head>
 
 <body>
@@ -59,12 +63,6 @@
                             <span>Dashboard</span>
                         </a>
                     </li>
-                    <!-- <li class="nav-item">
-                        <a href="#myteam" onclick="Myteam(); setMobileActive('mob-myteam')">
-                            <i class="fas fa-users"></i>
-                            <span>My Team</span>
-                        </a>
-                    </li> -->
                     <li class="nav-item">
                         <a href="#earnings" onclick="showEarnings(); setMobileActive('mob-earnings')">
                             <i class="fas fa-wallet"></i>
@@ -132,70 +130,18 @@
 
                 <!-- Stats Grid -->
                 <div class="stats-grid">
-                    <!-- <a href="#earnings" onclick="showEarnings()" class="a"> -->
-                        <!-- <div class="stat-card card-primary">
-                            <div class="card-icon">
-                                <i class="fas fa-rupee-sign"></i>
-                            </div>
-                            <div class="card-content">
-                                <h3>Total Earnings</h3> -->
-                                <!-- FIX: was id="total-earning" — matches dashboard.js -->
-                                <!-- <div class="card-value" id="total-earning">₹0</div>
-                                <div class="card-info">Your total earnings</div>
-                            </div>
-                        </div>
-                    </a> -->
-
-                    <!-- <a href="#myteam" onclick="Myteam()" class="a"> -->
-                        <!-- <div class="stat-card card-success">
-                            <div class="card-icon">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <div class="card-content">
-                                <h3>Team Members</h3> -->
-                                <!-- FIX: was id="team-total-members" — matches dashboard.js -->
-                                <!-- <div class="card-value" id="total-team">0</div>
-                                <div class="card-info">Total team size</div>
-                            </div>
-                        </div>
-                    </a> -->
-
-                    <!-- <a href="#myteam" onclick="Myteam()" class="a">
-                        <div class="stat-card card-warning">
-                            <div class="card-icon">
-                                <i class="fas fa-user-check"></i>
-                            </div>
-                            <div class="card-content">
-                                <h3>Active Members</h3>
-                                <div class="card-value" id="active-members">0</div>
-                                <div class="card-info">Currently active</div>
-                            </div>
-                        </div>
-                    </a> -->
-
-                    <!-- <a href="#myteam" onclick="Myteam()" class="a">
-                        <div class="stat-card card-info">
-                            <div class="card-icon">
-                                <i class="fas fa-layer-group"></i>
-                            </div>
-                            <div class="card-content">
-                                <h3>Current Level</h3>
-                                <div class="card-value" id="current-level">0</div>
-                                <div class="card-info">Your level</div>
-                            </div>
-                        </div>
-                    </a> -->
-
-                    <div class="stat-card" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;">
-                        <div class="card-icon">
+                    <div class="stat-card"
+                        style="background:linear-gradient(135deg,#0D1B3E,#1B2D5B);color:#fff;border-color:rgba(201,151,44,.20);">
+                        <div class="card-icon" style="background:rgba(201,151,44,.15);color:#E2B84A;">
                             <i class="fas fa-wallet"></i>
                         </div>
                         <div class="card-content">
-                            <h3 style="color:#e0d9ff;">Deposit Amount</h3>
+                            <h3 style="color:rgba(255,255,255,.55);">Deposit Amount</h3>
                             <div class="card-value" id="deposit-amount" style="color:#fff;">
                                 <i class="fas fa-spinner fa-spin" style="font-size:16px;opacity:.6;"></i>
                             </div>
-                            <div class="card-info" id="deposit-plan-label" style="color:#c4b5fd;">Your active plan</div>
+                            <div class="card-info" id="deposit-plan-label" style="color:#E2B84A;font-size:11px;">Your
+                                active plan</div>
                         </div>
                     </div>
                 </div>
@@ -215,7 +161,7 @@
                     </div>
                 </div>
 
-                <!-- FIX: Added id="referral-id-section" so scrollToReferralSection() works -->
+                <!-- Referral Section -->
                 <div class="referral-section" id="referral-id-section">
                     <div class="referral-card">
                         <div class="referral-header">
@@ -226,45 +172,24 @@
 
                             <!-- Referral ID input + copy -->
                             <div style="display:flex; gap:8px; width:100%; box-sizing:border-box;">
-                                <input type="text" id="referralID" class="referral-input"
-                                    value="" readonly placeholder="Loading..."
-                                    style="flex:1; min-width:0; font-size:14px;">
-                                    <p>
-                                <button class="copy-btn" onclick="copyReferralID()"
-                                    style="flex-shrink:0; white-space:nowrap;">
+                                <input type="text" id="referralID" class="referral-input" value="" readonly
+                                    placeholder="Loading...">
+                                <button class="copy-btn" onclick="copyReferralID()">
                                     <i class="fas fa-copy"></i>
                                     <span>Copy ID</span>
                                 </button>
-                                </p>
                             </div>
 
                             <!-- Full referral link -->
-                            <div class="referral-url" style="margin-top:16px;">
-                                <strong style="font-size:14px;">Full Referral Link:</strong>
+                            <div class="referral-url" style="margin-top:18px;">
+                                <strong>Full Referral Link:</strong>
 
-                                <code id="referralLink"
-                                    onclick="copyReferralLink()"
-                                    title="Click to copy referral link"
-                                    style="
-                                        cursor:pointer;
-                                        display:block;
-                                        margin-top:8px;
-                                        padding:10px 12px;
-                                        border-radius:6px;
-                                        background:#f3f4f6;
-                                        font-size:12px;
-                                        line-height:1.6;
-                                        word-break:break-all;
-                                        overflow-wrap:anywhere;
-                                        white-space:normal;
-                                        width:100%;
-                                        box-sizing:border-box;
-                                        color:#374151;
-                                    ">
+                                <code id="referralLink" onclick="copyReferralLink()"
+                                    title="Click to copy referral link">
                                     Loading your referral link...
                                 </code>
 
-                                <small style="display:block; margin-top:8px; color:#666; font-size:12px;">
+                                <small>
                                     <i class="fas fa-info-circle"></i>
                                     Share this link — new users will register under you!
                                 </small>
@@ -290,7 +215,6 @@
                     <p>Manage and track your team members</p>
                 </div>
 
-                <!-- FIX: team-total-members1 → team-total-members so JS can update it -->
                 <div class="team-stats">
                     <div class="team-stat-item">
                         <h3>Total Members</h3>
@@ -324,13 +248,11 @@
                                     <th>Status</th>
                                 </tr>
                             </thead>
-                            <!-- FIX: Removed hardcoded placeholder row with duplicate IDs.
-                                 Team member rows should be injected by JS (loadTeamData).
-                                 Empty tbody shown until data is loaded. -->
                             <tbody id="team-members-tbody">
                                 <tr>
-                                    <td colspan="3" style="text-align:center; color:#94a3b8; padding:24px;">
-                                        <i class="fas fa-users" style="font-size:24px; margin-bottom:8px; display:block;"></i>
+                                    <td colspan="3" style="text-align:center; color:#94a3b8; padding:32px;">
+                                        <i class="fas fa-users"
+                                            style="font-size:28px; margin-bottom:10px; display:block; opacity:.35;"></i>
                                         Team data will appear here
                                     </td>
                                 </tr>
@@ -377,24 +299,26 @@
                     </div>
                 </div>
 
-                <!-- FIX-3: Claim button — visible only when currentlevel >= 1 -->
+                <!-- Claim section -->
                 <div id="claim-section" style="display:none; margin:20px 0;">
                     <div class="table-card" style="padding:22px 24px;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+                        <div
+                            style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
                             <div>
-                                <h3 style="margin:0 0 4px;font-size:16px;color:#1e293b;">
-                                    <i class="fas fa-trophy" style="color:#f59e0b;margin-right:6px;"></i>
+                                <h3
+                                    style="margin:0 0 4px;font-size:16px;color:#0D1B3E;font-family:'Sora',sans-serif;font-weight:700;border:none;padding:0;">
+                                    <i class="fas fa-trophy" style="color:#C9972C;margin-right:6px;"></i>
                                     Level Reward Claim
                                 </h3>
-                                <p id="claim-section-desc" style="margin:0;font-size:13px;color:#64748b;">
+                                <p id="claim-section-desc" style="margin:0;font-size:13px;color:#5C6B8A;">
                                     You have reached a claimable level. Submit your claim below.
                                 </p>
                             </div>
-                            <button onclick="openClaimModal()"
-                                style="background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;
+                            <button onclick="openClaimModal()" style="background:linear-gradient(135deg,#E2B84A,#A37820);color:#0D1B3E;
                                        border:none;border-radius:10px;padding:12px 24px;font-size:14px;
-                                       font-weight:600;cursor:pointer;display:flex;align-items:center;
-                                       gap:8px;box-shadow:0 4px 12px rgba(99,102,241,0.35);">
+                                       font-weight:700;cursor:pointer;display:flex;align-items:center;
+                                       gap:8px;box-shadow:0 4px 12px rgba(201,151,44,.30);
+                                       font-family:'Inter',sans-serif;">
                                 <i class="fas fa-hand-holding-usd"></i>
                                 Claim Reward
                             </button>
@@ -418,8 +342,9 @@
                             </thead>
                             <tbody id="earnings-tbody">
                                 <tr>
-                                    <td colspan="3" style="text-align:center; color:#94a3b8; padding:24px;">
-                                        <i class="fas fa-wallet" style="font-size:24px; margin-bottom:8px; display:block;"></i>
+                                    <td colspan="3" style="text-align:center; color:#94a3b8; padding:32px;">
+                                        <i class="fas fa-wallet"
+                                            style="font-size:28px; margin-bottom:10px; display:block; opacity:.35;"></i>
                                         Earnings history will appear here
                                     </td>
                                 </tr>
@@ -430,101 +355,127 @@
             </section>
 
             <!-- ═══════════════════════════════════════
-                 CLAIM MODAL (FIX-4: close button wired correctly)
+                 CLAIM MODAL
             ════════════════════════════════════════ -->
-            <div id="claimModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);
-                 z-index:9999;overflow-y:auto;padding:20px;box-sizing:border-box;">
+            <div id="claimModal" style="display:none;position:fixed;inset:0;background:rgba(13,27,62,.60);
+                 backdrop-filter:blur(4px);z-index:9999;overflow-y:auto;padding:20px;box-sizing:border-box;">
                 <div style="background:#fff;max-width:520px;margin:40px auto;border-radius:16px;
-                     padding:28px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
-                    <!-- FIX-4: onclick="closeClaimModal()" properly wired -->
-                    <button onclick="closeClaimModal()"
-                        style="position:absolute;top:16px;right:16px;background:#f1f5f9;border:none;
+                     padding:28px;position:relative;box-shadow:0 24px 60px rgba(13,27,62,.25);
+                     border-top:3px solid #C9972C;">
+                    <button onclick="closeClaimModal()" style="position:absolute;top:16px;right:16px;background:#F3F4F6;border:none;
                                width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer;
-                               color:#64748b;line-height:1;display:flex;align-items:center;justify-content:center;">
+                               color:#5C6B8A;line-height:1;display:flex;align-items:center;justify-content:center;
+                               transition:all .2s;">
                         &times;
                     </button>
-                    <h2 style="margin:0 0 4px;font-size:20px;color:#1e293b;">
-                        <i class="fas fa-hand-holding-usd" style="color:#6366f1;margin-right:8px;"></i>
+                    <h2
+                        style="margin:0 0 4px;font-size:20px;color:#0D1B3E;font-family:'Sora',sans-serif;font-weight:800;">
+                        <i class="fas fa-hand-holding-usd" style="color:#C9972C;margin-right:8px;"></i>
                         Submit Reward Claim
                     </h2>
-                    <p id="claimModalLevelInfo" style="margin:0 0 20px;font-size:13px;color:#64748b;"></p>
+                    <p id="claimModalLevelInfo" style="margin:0 0 20px;font-size:13px;color:#5C6B8A;"></p>
                     <form id="claimForm" onsubmit="submitClaim(event)">
                         <div style="display:grid;gap:14px;">
                             <div>
-                                <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">
-                                    Account Holder Name <span style="color:#ef4444">*</span>
+                                <label
+                                    style="font-size:11px;font-weight:700;color:#0D1B3E;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;">
+                                    Account Holder Name <span style="color:#B91C1C">*</span>
                                 </label>
                                 <input type="text" id="claim-accountHolder" required
-                                    placeholder="Full name as per bank account"
-                                    style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;
-                                           border-radius:8px;font-size:14px;box-sizing:border-box;outline:none;">
+                                    placeholder="Full name as per bank account" style="width:100%;padding:11px 14px;border:1.5px solid #E5E7EB;
+                                           border-radius:8px;font-size:14px;box-sizing:border-box;
+                                           outline:none;font-family:'Inter',sans-serif;transition:border-color .2s;"
+                                    onfocus="this.style.borderColor='#C9972C'"
+                                    onblur="this.style.borderColor='#E5E7EB'">
                             </div>
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                                 <div>
-                                    <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">
-                                        Bank Name <span style="color:#ef4444">*</span>
+                                    <label
+                                        style="font-size:11px;font-weight:700;color:#0D1B3E;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;">
+                                        Bank Name <span style="color:#B91C1C">*</span>
                                     </label>
                                     <input type="text" id="claim-bankName" required placeholder="e.g. SBI"
-                                        style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;
-                                               border-radius:8px;font-size:14px;box-sizing:border-box;outline:none;">
+                                        style="width:100%;padding:11px 14px;border:1.5px solid #E5E7EB;
+                                               border-radius:8px;font-size:14px;box-sizing:border-box;
+                                               outline:none;font-family:'Inter',sans-serif;transition:border-color .2s;" onfocus="this.style.borderColor='#C9972C'"
+                                        onblur="this.style.borderColor='#E5E7EB'">
                                 </div>
                                 <div>
-                                    <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">
+                                    <label
+                                        style="font-size:11px;font-weight:700;color:#0D1B3E;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;">
                                         Branch
                                     </label>
                                     <input type="text" id="claim-branch" placeholder="Branch name"
-                                        style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;
-                                               border-radius:8px;font-size:14px;box-sizing:border-box;outline:none;">
+                                        style="width:100%;padding:11px 14px;border:1.5px solid #E5E7EB;
+                                               border-radius:8px;font-size:14px;box-sizing:border-box;
+                                               outline:none;font-family:'Inter',sans-serif;transition:border-color .2s;" onfocus="this.style.borderColor='#C9972C'"
+                                        onblur="this.style.borderColor='#E5E7EB'">
                                 </div>
                             </div>
                             <div>
-                                <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">
-                                    Account Number <span style="color:#ef4444">*</span>
+                                <label
+                                    style="font-size:11px;font-weight:700;color:#0D1B3E;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;">
+                                    Account Number <span style="color:#B91C1C">*</span>
                                 </label>
                                 <input type="text" id="claim-accountNumber" required placeholder="Bank account number"
-                                    style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;
-                                           border-radius:8px;font-size:14px;box-sizing:border-box;outline:none;">
+                                    style="width:100%;padding:11px 14px;border:1.5px solid #E5E7EB;
+                                           border-radius:8px;font-size:14px;box-sizing:border-box;
+                                           outline:none;font-family:'Inter',sans-serif;transition:border-color .2s;"
+                                    onfocus="this.style.borderColor='#C9972C'"
+                                    onblur="this.style.borderColor='#E5E7EB'">
                             </div>
                             <div>
-                                <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">
-                                    IFSC Code <span style="color:#ef4444">*</span>
+                                <label
+                                    style="font-size:11px;font-weight:700;color:#0D1B3E;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;">
+                                    IFSC Code <span style="color:#B91C1C">*</span>
                                 </label>
                                 <input type="text" id="claim-ifsc" required placeholder="e.g. SBIN0001234"
-                                    style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;
-                                           border-radius:8px;font-size:14px;box-sizing:border-box;outline:none;text-transform:uppercase;">
+                                    style="width:100%;padding:11px 14px;border:1.5px solid #E5E7EB;
+                                           border-radius:8px;font-size:14px;box-sizing:border-box;
+                                           outline:none;font-family:'Inter',sans-serif;text-transform:uppercase;transition:border-color .2s;" onfocus="this.style.borderColor='#C9972C'"
+                                    onblur="this.style.borderColor='#E5E7EB'">
                             </div>
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                                 <div>
-                                    <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">
-                                        Aadhaar Number <span style="color:#ef4444">*</span>
+                                    <label
+                                        style="font-size:11px;font-weight:700;color:#0D1B3E;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;">
+                                        Aadhaar Number <span style="color:#B91C1C">*</span>
                                     </label>
                                     <input type="text" id="claim-aadhar" required placeholder="12-digit Aadhaar"
                                         maxlength="12" inputmode="numeric"
-                                        style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;
-                                               border-radius:8px;font-size:14px;box-sizing:border-box;outline:none;">
+                                        style="width:100%;padding:11px 14px;border:1.5px solid #E5E7EB;
+                                               border-radius:8px;font-size:14px;box-sizing:border-box;
+                                               outline:none;font-family:'Inter',sans-serif;transition:border-color .2s;"
+                                        onfocus="this.style.borderColor='#C9972C'"
+                                        onblur="this.style.borderColor='#E5E7EB'">
                                 </div>
                                 <div>
-                                    <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">
-                                        PAN Number <span style="color:#ef4444">*</span>
+                                    <label
+                                        style="font-size:11px;font-weight:700;color:#0D1B3E;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;">
+                                        PAN Number <span style="color:#B91C1C">*</span>
                                     </label>
                                     <input type="text" id="claim-pan" required placeholder="e.g. ABCDE1234F"
                                         maxlength="10"
-                                        style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;
-                                               border-radius:8px;font-size:14px;box-sizing:border-box;outline:none;text-transform:uppercase;">
+                                        style="width:100%;padding:11px 14px;border:1.5px solid #E5E7EB;
+                                               border-radius:8px;font-size:14px;box-sizing:border-box;
+                                               outline:none;font-family:'Inter',sans-serif;text-transform:uppercase;transition:border-color .2s;"
+                                        onfocus="this.style.borderColor='#C9972C'"
+                                        onblur="this.style.borderColor='#E5E7EB'">
                                 </div>
                             </div>
-                            <p id="claimFormError" style="color:#ef4444;font-size:13px;margin:0;display:none;
-                               background:#fef2f2;padding:10px 12px;border-radius:8px;border-left:3px solid #ef4444;"></p>
+                            <p id="claimFormError" style="color:#B91C1C;font-size:13px;margin:0;display:none;
+                               background:#FEF2F2;padding:10px 12px;border-radius:8px;border-left:3px solid #B91C1C;">
+                            </p>
                             <div style="display:flex;gap:12px;margin-top:4px;">
-                                <button type="button" onclick="closeClaimModal()"
-                                    style="flex:1;padding:12px;border:1.5px solid #e2e8f0;border-radius:10px;
-                                           background:#fff;font-size:14px;font-weight:600;cursor:pointer;color:#64748b;">
+                                <button type="button" onclick="closeClaimModal()" style="flex:1;padding:12px;border:1.5px solid #E5E7EB;border-radius:10px;
+                                           background:#fff;font-size:14px;font-weight:600;cursor:pointer;
+                                           color:#5C6B8A;font-family:'Inter',sans-serif;">
                                     Cancel
                                 </button>
-                                <button type="submit" id="claimSubmitBtn"
-                                    style="flex:2;padding:12px;border:none;border-radius:10px;
-                                           background:linear-gradient(135deg,#6366f1,#8b5cf6);
-                                           color:#fff;font-size:14px;font-weight:600;cursor:pointer;">
+                                <button type="submit" id="claimSubmitBtn" style="flex:2;padding:12px;border:none;border-radius:10px;
+                                           background:linear-gradient(135deg,#E2B84A,#A37820);
+                                           color:#0D1B3E;font-size:14px;font-weight:700;cursor:pointer;
+                                           font-family:'Inter',sans-serif;">
                                     <i class="fas fa-paper-plane"></i> Submit Claim
                                 </button>
                             </div>
@@ -544,10 +495,10 @@
 
                 <div class="profile-container">
                     <div class="profile-header">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user3"  alt="Profile" class="profile-image">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user3" alt="Profile"
+                            class="profile-image">
                         <div class="profile-info">
                             <h2 id="profile-name">Loading...</h2>
-                            <!-- FIX: was Cloudflare obfuscated email markup — replaced with clean empty span -->
                             <p id="profile-email"></p>
                             <span class="member-badge">Member</span>
                         </div>
@@ -555,12 +506,12 @@
 
                     <form class="profile-form">
 
-                        <!-- Personal Details -->
                         <h3>Personal Details</h3>
                         <div class="form-row">
                             <div class="form-group">
                                 <label>First Name</label>
-                                <input type="text" id="firstname" name="data[firstName]" placeholder="First Name" readonly>
+                                <input type="text" id="firstname" name="data[firstName]" placeholder="First Name"
+                                    readonly>
                             </div>
                             <div class="form-group">
                                 <label>Last Name</label>
@@ -570,7 +521,8 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Email Address</label>
-                                <input type="email" id="emailaddress" name="data[email]" placeholder="Email Address" readonly>
+                                <input type="email" id="emailaddress" name="data[email]" placeholder="Email Address"
+                                    readonly>
                             </div>
                             <div class="form-group">
                                 <label>Phone Number</label>
@@ -604,64 +556,35 @@
                             </div>
                             <div class="form-group">
                                 <label>Sponsor ID</label>
-                                <input type="text" id="Sponsorid" placeholder="Sponsor ID" name="data[Sponsorid]" readonly>
+                                <input type="text" id="Sponsorid" placeholder="Sponsor ID" name="data[Sponsorid]"
+                                    readonly>
                             </div>
                         </div>
                         <div class="form-group">
                             <label>Address</label>
-                            <textarea rows="3" id="address" name="data[address]" placeholder="Address" readonly></textarea>
+                            <textarea rows="3" id="address" name="data[address]" placeholder="Address"
+                                readonly></textarea>
                         </div>
 
-                        <!-- Nominee Details -->
                         <h3>Nominee Details</h3>
-                        <div class="form-grid">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Nominee Name</label>
-                                    <input type="text" id="nomineename" placeholder="Nominee Name" name="data[nomineename]">
-                                </div>
-                                <div class="form-group">
-                                    <label>Relation With Nominee</label>
-                                    <input type="text" id="nomineerelation" placeholder="Relation With Nominee" name="data[nomineerelation]">
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Nominee Mobile Number</label>
-                                    <input type="tel" id="nomineemobile" maxlength="10" pattern="[0-9]{10}"
-                                        inputmode="numeric" placeholder="Nominee Mobile Number" name="data[nomineemobile]">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Bank Details -->
-                        <!-- <h3>Bank Details</h3>
-                        <div class="form-grid">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Account Holder Name</label>
-                                    <input type="text" id="accountholder" placeholder="Account Holder Name" name="data[accountholder]">
-                                </div>
-                                <div class="form-group">
-                                    <label>Bank Name</label>
-                                    <input type="text" id="bankname" placeholder="Bank Name" name="data[bankname]">
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Account Number</label>
-                                    <input type="text" id="accountnumber" placeholder="Account Number" name="data[accountnumber]">
-                                </div>
-                                <div class="form-group">
-                                    <label>IFSC Code</label>
-                                    <input type="text" id="IFSCCode" placeholder="IFSC Code" name="data[IFSCCode]">
-                                </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Nominee Name</label>
+                                <input type="text" id="nomineename" placeholder="Nominee Name" name="data[nomineename]">
                             </div>
                             <div class="form-group">
-                                <label>Branch</label>
-                                <input type="text" id="branch" placeholder="Branch" name="data[branch]">
+                                <label>Relation With Nominee</label>
+                                <input type="text" id="nomineerelation" placeholder="Relation With Nominee"
+                                    name="data[nomineerelation]">
                             </div>
-                        </div> -->
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Nominee Mobile Number</label>
+                                <input type="tel" id="nomineemobile" maxlength="10" pattern="[0-9]{10}"
+                                    inputmode="numeric" placeholder="Nominee Mobile Number" name="data[nomineemobile]">
+                            </div>
+                        </div>
 
                         <button type="submit" class="submit-btn">
                             <i class="fas fa-save"></i>
@@ -678,36 +601,9 @@
                 <div class="section-header">
                     <h1>Tree</h1>
                     <p>Visualise your network — 7 levels deep</p>
-                    <!-- <p>Visualise your 5×5 network — 7 levels deep</p> -->
                 </div>
 
-                <!-- Search Panel -->
-                <!-- <div id="treeSearchPanel" class="tree-search-panel">
-                    <div class="tree-search-card">
-                        <h2><i class="fas fa-search"></i> View Matrix Tree</h2>
-                        <p>Search any user by User ID or Referral Code</p>
-                        <form id="treeSearchForm">
-                            <div class="tree-search-input-group">
-                                <input type="text" id="treeSearchInput"
-                                    placeholder="Enter User ID (SHS-XXXXXXXXXX) or Referral Code" />
-                                <select id="treeSearchType">
-                                    <option value="userId">User ID</option>
-                                    <option value="referralCode">Referral Code</option>
-                                </select>
-                                <button type="submit" class="btn-primary">
-                                    <i class="fas fa-search"></i> View Tree
-                                </button>
-                            </div>
-                        </form>
-                        <div class="tree-quick-info">
-                            <span><i class="fas fa-layer-group"></i> 7 Levels Max</span>
-                            <span><i class="fas fa-users"></i> 5×5 Matrix</span>
-                            <span><i class="fas fa-chart-line"></i> 97,655 Capacity</span>
-                        </div>
-                    </div>
-                </div> -->
-
-                <!-- Dashboard Panel (hidden until tree loads) -->
+                <!-- Dashboard Panel -->
                 <div id="treeDashPanel" class="hidden">
 
                     <!-- User info bar -->
@@ -715,8 +611,6 @@
                         <div class="tree-user-details">
                             <i class="fas fa-user-circle"></i>
                             <span id="viewingUser">Viewing: —</span>
-                            
-                            
                             <span class="user-level-badge" id="viewingLevel">Level: —</span>
                         </div>
                         <button id="newSearch" class="btn-secondary">
@@ -767,16 +661,17 @@
                             </select>
                         </div>
                         <div class="tree-control-group">
-                            <button id="refreshTree"  class="btn-icon" title="Refresh"><i class="fas fa-sync-alt"></i></button>
-                            <button id="expandAll"    class="btn-icon" title="Expand All"><i class="fas fa-expand-arrows-alt"></i></button>
-                            <button id="collapseAll"  class="btn-icon" title="Collapse All"><i class="fas fa-compress-arrows-alt"></i></button>
-                            <button id="exportTree"   class="btn-icon" title="Export CSV"><i class="fas fa-download"></i></button>
-                            <button id="printTree"    class="btn-icon" title="Print"><i class="fas fa-print"></i></button>
+                            <button id="refreshTree" class="btn-icon" title="Refresh"><i
+                                    class="fas fa-sync-alt"></i></button>
+                            <button id="expandAll" class="btn-icon" title="Expand All"><i
+                                    class="fas fa-expand-arrows-alt"></i></button>
+                            <button id="collapseAll" class="btn-icon" title="Collapse All"><i
+                                    class="fas fa-compress-arrows-alt"></i></button>
+                            <button id="exportTree" class="btn-icon" title="Export CSV"><i
+                                    class="fas fa-download"></i></button>
+                            <button id="printTree" class="btn-icon" title="Print"><i class="fas fa-print"></i></button>
                         </div>
                     </div>
-
-
-
 
                     <!-- Tree render area -->
                     <div class="tree-container">
@@ -785,19 +680,8 @@
                             <p>Loading my tree…</p>
                         </div>
                         <div id="treeRoot" class="tree-root"></div>
-                        <div id="treeEmpty" class="tree-empty hidden">
-                            <!-- <i class="fas fa-tree"></i>
-                            <h3>No Downline Members</h3>
-                            <p>This user hasn't referred anyone yet</p> -->
-                        </div>
-                        <!-- <div id="treeError" class="tree-error hidden">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <h3>Unable to Load Tree</h3>
-                            <p id="errorMessage">Please check the User ID or Referral Code</p>
-                        </div> -->
+                        <div id="treeEmpty" class="tree-empty hidden"></div>
                     </div>
-
-
 
                     <!-- Member detail modal -->
                     <div id="memberModal" class="modal hidden">
@@ -833,12 +717,6 @@
                     <span>Home</span>
                 </a>
             </li>
-            <!-- <li class="nav-item" id="mob-myteam">
-                <a href="#myteam" onclick="Myteam(); setMobileActive('mob-myteam')">
-                    <i class="fas fa-users"></i>
-                    <span>Team</span>
-                </a>
-            </li> -->
             <li class="nav-item" id="mob-earnings">
                 <a href="#earnings" onclick="showEarnings(); setMobileActive('mob-earnings')">
                     <i class="fas fa-wallet"></i>
@@ -857,10 +735,10 @@
                     <span>Profile</span>
                 </a>
             </li>
-            <li class="nav-item" id="">
+            <li class="nav-item">
                 <a href="logout.html">
                     <i class="fas fa-sign-out-alt"></i>
-                    <span>logout</span>
+                    <span>Logout</span>
                 </a>
             </li>
         </ul>
@@ -875,9 +753,8 @@
 
     <script>
         /* ── Mobile sidebar toggle ── */
-        const _toggle  = document.getElementById('sidebarToggle');
+        const _toggle = document.getElementById('sidebarToggle');
         const _overlay = document.getElementById('sidebarOverlay');
-        const _sidebar = document.querySelector('.sidebar');
 
         function toggleSidebar() {
             const open = document.body.classList.toggle('sidebar-open');
@@ -890,7 +767,6 @@
         _toggle?.addEventListener('click', toggleSidebar);
         _overlay?.addEventListener('click', toggleSidebar);
 
-        /* Close sidebar when any nav link is tapped on mobile */
         document.querySelectorAll('.sidebar-nav .nav-item a').forEach(link => {
             link.addEventListener('click', () => {
                 if (window.innerWidth <= 768) {
@@ -907,7 +783,7 @@
             document.getElementById(id)?.classList.add('active');
         }
 
-        /* ── Show/hide mobile nav & adjust main padding ── */
+        /* ── Show/hide mobile nav ── */
         function handleResize() {
             const isMobile = window.innerWidth <= 768;
             const mobileNav = document.getElementById('mobileNav');
@@ -922,41 +798,32 @@
         }
 
         window.addEventListener('resize', handleResize);
-        handleResize(); /* run on load */
+        handleResize();
     </script>
 
-    <!-- Touch / mouse pan for the tree container -->
+    <!-- Tree pan script -->
     <script>
         (function () {
             function makeTreePannable(el) {
                 if (!el) return;
                 let isDown = false, startX, startY, scrollLeft, scrollTop;
-
                 el.addEventListener('mousedown', e => {
-                    isDown = true;
-                    el.style.cursor = 'grabbing';
-                    startX = e.pageX - el.offsetLeft;
-                    startY = e.pageY - el.offsetTop;
-                    scrollLeft = el.scrollLeft;
-                    scrollTop  = el.scrollTop;
+                    isDown = true; el.style.cursor = 'grabbing';
+                    startX = e.pageX - el.offsetLeft; startY = e.pageY - el.offsetTop;
+                    scrollLeft = el.scrollLeft; scrollTop = el.scrollTop;
                 });
                 el.addEventListener('mouseleave', () => { isDown = false; el.style.cursor = 'grab'; });
-                el.addEventListener('mouseup',    () => { isDown = false; el.style.cursor = 'grab'; });
-                el.addEventListener('mousemove',  e => {
-                    if (!isDown) return;
-                    e.preventDefault();
+                el.addEventListener('mouseup', () => { isDown = false; el.style.cursor = 'grab'; });
+                el.addEventListener('mousemove', e => {
+                    if (!isDown) return; e.preventDefault();
                     el.scrollLeft = scrollLeft - (e.pageX - el.offsetLeft - startX);
-                    el.scrollTop  = scrollTop  - (e.pageY - el.offsetTop  - startY);
+                    el.scrollTop = scrollTop - (e.pageY - el.offsetTop - startY);
                 });
             }
-
-            // Wait for the tree section to exist
             function init() {
                 makeTreePannable(document.getElementById('treeRoot')?.closest('.tree-container')
                     || document.querySelector('.tree-container'));
             }
-
-            // Re-init whenever the tree re-renders (in case it's rebuilt dynamically)
             const _orig = window.showMatrixTree;
             window.showMatrixTree = function (...args) {
                 if (_orig) _orig.apply(this, args);
@@ -967,4 +834,5 @@
     </script>
 
 </body>
+
 </html>
