@@ -132,22 +132,22 @@
 
                 <!-- Stats Grid -->
                 <div class="stats-grid">
-                    
-                        <div class="stat-card card-primary">
+                    <!-- <a href="#earnings" onclick="showEarnings()" class="a"> -->
+                        <!-- <div class="stat-card card-primary">
                             <div class="card-icon">
                                 <i class="fas fa-rupee-sign"></i>
                             </div>
                             <div class="card-content">
-                                <h3>Deposit Amount</h3>
+                                <h3>Total Earnings</h3> -->
                                 <!-- FIX: was id="total-earning" — matches dashboard.js -->
-                                <div class="card-value" id="depositamount">₹0</div>
-                                <div class="card-info">Your Amount</div>
+                                <!-- <div class="card-value" id="total-earning">₹0</div>
+                                <div class="card-info">Your total earnings</div>
                             </div>
                         </div>
-                    
+                    </a> -->
 
-                    <!-- <a href="#myteam" onclick="Myteam()" class="a">
-                        <div class="stat-card card-success">
+                    <!-- <a href="#myteam" onclick="Myteam()" class="a"> -->
+                        <!-- <div class="stat-card card-success">
                             <div class="card-icon">
                                 <i class="fas fa-users"></i>
                             </div>
@@ -173,19 +173,31 @@
                         </div>
                     </a> -->
 
-                    <a href="#" onclick="Claimamount()" class="a">
+                    <!-- <a href="#myteam" onclick="Myteam()" class="a">
                         <div class="stat-card card-info">
                             <div class="card-icon">
-                                <!-- <i class="fas fa-layer-group"></i> -->
-                                <i class="fas fa-info-circle"></i>
+                                <i class="fas fa-layer-group"></i>
                             </div>
                             <div class="card-content">
-                                <h2>CLAIM</h2>
+                                <h3>Current Level</h3>
                                 <div class="card-value" id="current-level">0</div>
                                 <div class="card-info">Your level</div>
                             </div>
                         </div>
-                    </a>
+                    </a> -->
+
+                    <div class="stat-card" style="background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;">
+                        <div class="card-icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3 style="color:#e0d9ff;">Deposit Amount</h3>
+                            <div class="card-value" id="deposit-amount" style="color:#fff;">
+                                <i class="fas fa-spinner fa-spin" style="font-size:16px;opacity:.6;"></i>
+                            </div>
+                            <div class="card-info" id="deposit-plan-label" style="color:#c4b5fd;">Your active plan</div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Chart -->
@@ -338,7 +350,6 @@
                 </div>
 
                 <div class="earnings-grid">
-                    <!-- FIX: id="total-earning total-earning1" had a space → split into two valid IDs -->
                     <div class="earnings-card">
                         <h3>Total Earning</h3>
                         <div class="earnings-amount" id="total-earning1">₹0</div>
@@ -349,8 +360,6 @@
                         <div class="earnings-amount" id="reward-list">-</div>
                         <div class="earnings-detail">Level completion</div>
                     </div>
-                    <!-- FIX: Added missing elements for rewards-date and account-status
-                         (dashboard.js updateEarningsData() writes to these IDs) -->
                     <div class="earnings-card">
                         <h3>Rewards Date</h3>
                         <div class="earnings-amount" id="rewards-date">-</div>
@@ -360,6 +369,36 @@
                         <h3>Account Status</h3>
                         <div class="earnings-amount" id="account-status">Active</div>
                         <div class="earnings-detail">Current account status</div>
+                    </div>
+                    <div class="earnings-card">
+                        <h3>Current Level</h3>
+                        <div class="earnings-amount" id="earnings-current-level">-</div>
+                        <div class="earnings-detail">Your network level</div>
+                    </div>
+                </div>
+
+                <!-- FIX-3: Claim button — visible only when currentlevel >= 1 -->
+                <div id="claim-section" style="display:none; margin:20px 0;">
+                    <div class="table-card" style="padding:22px 24px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+                            <div>
+                                <h3 style="margin:0 0 4px;font-size:16px;color:#1e293b;">
+                                    <i class="fas fa-trophy" style="color:#f59e0b;margin-right:6px;"></i>
+                                    Level Reward Claim
+                                </h3>
+                                <p id="claim-section-desc" style="margin:0;font-size:13px;color:#64748b;">
+                                    You have reached a claimable level. Submit your claim below.
+                                </p>
+                            </div>
+                            <button onclick="openClaimModal()"
+                                style="background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;
+                                       border:none;border-radius:10px;padding:12px 24px;font-size:14px;
+                                       font-weight:600;cursor:pointer;display:flex;align-items:center;
+                                       gap:8px;box-shadow:0 4px 12px rgba(99,102,241,0.35);">
+                                <i class="fas fa-hand-holding-usd"></i>
+                                Claim Reward
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -389,6 +428,110 @@
                     </div>
                 </div>
             </section>
+
+            <!-- ═══════════════════════════════════════
+                 CLAIM MODAL (FIX-4: close button wired correctly)
+            ════════════════════════════════════════ -->
+            <div id="claimModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);
+                 z-index:9999;overflow-y:auto;padding:20px;box-sizing:border-box;">
+                <div style="background:#fff;max-width:520px;margin:40px auto;border-radius:16px;
+                     padding:28px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+                    <!-- FIX-4: onclick="closeClaimModal()" properly wired -->
+                    <button onclick="closeClaimModal()"
+                        style="position:absolute;top:16px;right:16px;background:#f1f5f9;border:none;
+                               width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer;
+                               color:#64748b;line-height:1;display:flex;align-items:center;justify-content:center;">
+                        &times;
+                    </button>
+                    <h2 style="margin:0 0 4px;font-size:20px;color:#1e293b;">
+                        <i class="fas fa-hand-holding-usd" style="color:#6366f1;margin-right:8px;"></i>
+                        Submit Reward Claim
+                    </h2>
+                    <p id="claimModalLevelInfo" style="margin:0 0 20px;font-size:13px;color:#64748b;"></p>
+                    <form id="claimForm" onsubmit="submitClaim(event)">
+                        <div style="display:grid;gap:14px;">
+                            <div>
+                                <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">
+                                    Account Holder Name <span style="color:#ef4444">*</span>
+                                </label>
+                                <input type="text" id="claim-accountHolder" required
+                                    placeholder="Full name as per bank account"
+                                    style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;
+                                           border-radius:8px;font-size:14px;box-sizing:border-box;outline:none;">
+                            </div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                                <div>
+                                    <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">
+                                        Bank Name <span style="color:#ef4444">*</span>
+                                    </label>
+                                    <input type="text" id="claim-bankName" required placeholder="e.g. SBI"
+                                        style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;
+                                               border-radius:8px;font-size:14px;box-sizing:border-box;outline:none;">
+                                </div>
+                                <div>
+                                    <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">
+                                        Branch
+                                    </label>
+                                    <input type="text" id="claim-branch" placeholder="Branch name"
+                                        style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;
+                                               border-radius:8px;font-size:14px;box-sizing:border-box;outline:none;">
+                                </div>
+                            </div>
+                            <div>
+                                <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">
+                                    Account Number <span style="color:#ef4444">*</span>
+                                </label>
+                                <input type="text" id="claim-accountNumber" required placeholder="Bank account number"
+                                    style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;
+                                           border-radius:8px;font-size:14px;box-sizing:border-box;outline:none;">
+                            </div>
+                            <div>
+                                <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">
+                                    IFSC Code <span style="color:#ef4444">*</span>
+                                </label>
+                                <input type="text" id="claim-ifsc" required placeholder="e.g. SBIN0001234"
+                                    style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;
+                                           border-radius:8px;font-size:14px;box-sizing:border-box;outline:none;text-transform:uppercase;">
+                            </div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                                <div>
+                                    <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">
+                                        Aadhaar Number <span style="color:#ef4444">*</span>
+                                    </label>
+                                    <input type="text" id="claim-aadhar" required placeholder="12-digit Aadhaar"
+                                        maxlength="12" inputmode="numeric"
+                                        style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;
+                                               border-radius:8px;font-size:14px;box-sizing:border-box;outline:none;">
+                                </div>
+                                <div>
+                                    <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:4px;">
+                                        PAN Number <span style="color:#ef4444">*</span>
+                                    </label>
+                                    <input type="text" id="claim-pan" required placeholder="e.g. ABCDE1234F"
+                                        maxlength="10"
+                                        style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;
+                                               border-radius:8px;font-size:14px;box-sizing:border-box;outline:none;text-transform:uppercase;">
+                                </div>
+                            </div>
+                            <p id="claimFormError" style="color:#ef4444;font-size:13px;margin:0;display:none;
+                               background:#fef2f2;padding:10px 12px;border-radius:8px;border-left:3px solid #ef4444;"></p>
+                            <div style="display:flex;gap:12px;margin-top:4px;">
+                                <button type="button" onclick="closeClaimModal()"
+                                    style="flex:1;padding:12px;border:1.5px solid #e2e8f0;border-radius:10px;
+                                           background:#fff;font-size:14px;font-weight:600;cursor:pointer;color:#64748b;">
+                                    Cancel
+                                </button>
+                                <button type="submit" id="claimSubmitBtn"
+                                    style="flex:2;padding:12px;border:none;border-radius:10px;
+                                           background:linear-gradient(135deg,#6366f1,#8b5cf6);
+                                           color:#fff;font-size:14px;font-weight:600;cursor:pointer;">
+                                    <i class="fas fa-paper-plane"></i> Submit Claim
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
             <!-- ═══════════════════════════════════════
                  PROFILE SECTION
@@ -492,8 +635,8 @@
                         </div>
 
                         <!-- Bank Details -->
-                        <!-- <h3>Bank Details</h3> -->
-                        <!-- <div class="form-grid">
+                        <!-- <h3>Bank Details</h3>
+                        <div class="form-grid">
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Account Holder Name</label>
@@ -503,8 +646,8 @@
                                     <label>Bank Name</label>
                                     <input type="text" id="bankname" placeholder="Bank Name" name="data[bankname]">
                                 </div>
-                            </div> -->
-                            <!-- <div class="form-row">
+                            </div>
+                            <div class="form-row">
                                 <div class="form-group">
                                     <label>Account Number</label>
                                     <input type="text" id="accountnumber" placeholder="Account Number" name="data[accountnumber]">

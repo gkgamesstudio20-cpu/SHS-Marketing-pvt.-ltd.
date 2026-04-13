@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms & Conditions — SHS Marketing Pvt. Ltd.</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C96A;
+    --dark: #0D0D0D;
+    --dark2: #161616;
+    --dark3: #1E1E1E;
+    --border: #2A2A2A;
+    --text: #D4D4D4;
+    --text-muted: #888;
+    --white: #F5F2EC;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.8;
+    font-size: 15px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--dark2);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 0 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+
+  .company-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 4vw, 32px);
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.04em;
+  }
+  .doc-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(14px, 2.5vw, 18px);
+    color: var(--gold);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 6px;
+    font-weight: 400;
+  }
+  .doc-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 8px;
+  }
+  .meta-badges {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  .badge {
+    font-size: 11px;
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.3);
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── LAYOUT ── */
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ── TOC ── */
+  .toc {
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--gold);
+    padding: 28px 32px;
+    margin-bottom: 48px;
+    border-radius: 2px;
+  }
+  .toc-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .toc-list { list-style: none; }
+  .toc-list li { margin: 6px 0; }
+  .toc-list a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s;
+  }
+  .toc-list a:hover { color: var(--gold); }
+  .toc-list .toc-part {
+    color: var(--white);
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  /* ── PART HEADER ── */
+  .part-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 48px 0 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .part-label {
+    background: var(--gold);
+    color: var(--dark);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .part-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(16px, 2.5vw, 20px);
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  /* ── SECTION ── */
+  .section { margin-bottom: 36px; }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: var(--white);
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .section-num {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    color: var(--gold);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    min-width: 24px;
+  }
+
+  /* ── CLAUSE ── */
+  .clause { margin-bottom: 12px; padding-left: 0; }
+  .clause-label {
+    color: var(--gold);
+    font-weight: 500;
+    font-size: 13px;
+    margin-right: 6px;
+  }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; margin: 20px 0; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  thead tr {
+    background: var(--dark3);
+    border-bottom: 2px solid var(--gold);
+  }
+  thead th {
+    padding: 12px 16px;
+    text-align: left;
+    color: var(--gold);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  tbody tr:hover { background: rgba(201,168,76,0.04); }
+  tbody td {
+    padding: 12px 16px;
+    color: var(--text);
+    vertical-align: top;
+  }
+  tbody td:first-child { color: var(--gold-light); font-weight: 500; }
+
+  /* ── NOTICE BOX ── */
+  .notice {
+    background: rgba(201,168,76,0.06);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-left: 3px solid var(--gold);
+    padding: 16px 20px;
+    margin: 20px 0;
+    font-size: 13px;
+    color: var(--text-muted);
+    font-style: italic;
+    border-radius: 0 2px 2px 0;
+  }
+  .notice strong { color: var(--gold); font-style: normal; }
+
+  .warning {
+    background: rgba(220, 60, 60, 0.06);
+    border: 1px solid rgba(220,60,60,0.2);
+    border-left: 3px solid #DC3C3C;
+    padding: 16px 20px;
+    margin: 20px 0;
+    font-size: 13px;
+    color: #C08080;
+    border-radius: 0 2px 2px 0;
+  }
+  .warning strong { color: #E05555; font-style: normal; }
+
+  /* ── BULLET LIST ── */
+  .bullet-list { list-style: none; margin: 12px 0; padding: 0; }
+  .bullet-list li {
+    padding: 6px 0 6px 20px;
+    position: relative;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(42,42,42,0.5);
+  }
+  .bullet-list li:last-child { border-bottom: none; }
+  .bullet-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-weight: 400;
+  }
+
+  /* ── SIGNATURE BLOCK ── */
+  .signature-block {
+    border: 1px solid var(--border);
+    padding: 32px;
+    margin-top: 48px;
+    background: var(--dark2);
+    border-radius: 2px;
+    position: relative;
+  }
+  .signature-block::before {
+    content: 'DECLARATION & SIGNATURE';
+    position: absolute;
+    top: -10px;
+    left: 24px;
+    background: var(--dark2);
+    padding: 0 10px;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.12em;
+    font-weight: 500;
+  }
+  .sig-declaration {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+    line-height: 1.7;
+  }
+  .sig-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 500px) { .sig-grid { grid-template-columns: 1fr; } }
+  .sig-field {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+  }
+  .sig-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .sig-area {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .sig-line {
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--dark2);
+    border-top: 1px solid var(--border);
+    text-align: center;
+    padding: 24px;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .footer span { color: var(--gold); }
+
+  /* ── PRINT ── */
+  @media print {
+    body { background: white; color: #111; }
+    .header { background: #f9f9f9; }
+    .toc, .section, .signature-block { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="company-name">SHS Marketing Pvt. Ltd.</div>
+    <div class="doc-title">Terms &amp; Conditions</div>
+    <div class="doc-subtitle">Customer &amp; Direct Selling Distributor Agreement &nbsp;•&nbsp; Effective April 2026 &nbsp;•&nbsp; Version 2.0</div>
+    <div class="meta-badges">
+      <span class="badge">Consumer Protection Act 2019</span>
+      <span class="badge">Direct Selling Guidelines 2021</span>
+      <span class="badge">Indian Contract Act 1872</span>
+      <span class="badge">FSSAI Regulations</span>
+      <span class="badge">Income Tax Act 1961</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <ul class="toc-list">
+      <span class="toc-part">Part A — General Customer Terms</span>
+      <li><a href="#s1">1. Definitions</a></li>
+      <li><a href="#s2">2. Product Ordering &amp; Delivery</a></li>
+      <li><a href="#s3">3. Pricing &amp; Payment</a></li>
+      <li><a href="#s4">4. Product Quality &amp; FSSAI Compliance</a></li>
+      <li><a href="#s5">5. Returns, Refunds &amp; Replacements</a></li>
+      <li><a href="#s6">6. Customer KYC &amp; Data Privacy</a></li>
+      <li><a href="#s7">7. Grievance Redressal</a></li>
+      <span class="toc-part">Part B — Direct Selling &amp; Distributor Terms</span>
+      <li><a href="#s8">8. Direct Selling Programme — Overview &amp; Legal Basis</a></li>
+      <li><a href="#s9">9. Distributor Enrolment &amp; Registration Fee</a></li>
+      <li><a href="#s10">10. Commission Structure — 7-Level Sales Bonus</a></li>
+      <li><a href="#s11">11. Distributor Code of Conduct</a></li>
+      <li><a href="#s12">12. Prohibited Activities</a></li>
+      <li><a href="#s13">13. Distributor Termination &amp; Exit</a></li>
+      <li><a href="#s14">14. General Provisions</a></li>
+      <li><a href="#s15">15. Declaration &amp; Signature</a></li>
+    </ul>
+  </div>
+
+  <!-- PART A -->
+  <div class="part-header">
+    <span class="part-label">Part A</span>
+    <span class="part-title">General Customer Terms</span>
+  </div>
+
+  <!-- Section 1 -->
+  <div class="section" id="s1">
+    <div class="section-title"><span class="section-num">01</span> Definitions</div>
+    <div class="clause"><span class="clause-label">"Company"</span> means SHS Marketing Pvt. Ltd., registered under the Companies Act, 2013.</div>
+    <div class="clause"><span class="clause-label">"Customer"</span> means any individual or entity purchasing stationary products for personal or household use.</div>
+    <div class="clause"><span class="clause-label">"Distributor"</span> means an individual enrolled under the Company's Direct Selling programme to sell Products and build a sales team.</div>
+    <div class="clause"><span class="clause-label">"Products"</span> means all stationary goods, stationary-derived items, or FMCG products offered by the Company.</div>
+    <div class="clause"><span class="clause-label">"Order"</span> means a confirmed purchase request submitted via official Company channels.</div>
+    <div class="clause"><span class="clause-label">"Net Sales Value (NSV)"</span> means the actual product sale price received from the end customer, excluding GST and logistics charges, on which commissions are calculated.</div>
+    <div class="clause"><span class="clause-label">"Active Distributor"</span> means a Distributor who has recorded qualifying product sales to end customers within the current rolling 90-day period.</div>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="section" id="s2">
+    <div class="section-title"><span class="section-num">02</span> Product Ordering &amp; Delivery</div>
+    <div class="clause"><span class="clause-label">2.1 Order Confirmation</span> Orders are confirmed only upon written acknowledgement (email/SMS/WhatsApp) from the Company. Verbal commitments by field staff are not binding.</div>
+    <div class="clause"><span class="clause-label">2.2 Delivery Timeline</span> Standard delivery within 7–15 business days of confirmed order. Bulk or special orders will have timelines confirmed in writing at order placement.</div>
+    <div class="clause"><span class="clause-label">2.3 Delivery Conditions</span> The Customer must ensure an authorised person is available at the delivery address. Re-delivery charges may apply for failed deliveries due to Customer unavailability.</div>
+    <div class="clause"><span class="clause-label">2.4 Risk of Loss</span> Risk passes to the Customer upon delivery and acceptance at the delivery address.</div>
+    <div class="clause"><span class="clause-label">2.5 Force Majeure</span> The Company is not liable for delays caused by natural disasters, government restrictions, supply chain disruptions, or transport strikes. Customers will be promptly notified.</div>
+  </div>
+
+  <!-- Section 3 -->
+  <div class="section" id="s3">
+    <div class="section-title"><span class="section-num">03</span> Pricing &amp; Payment</div>
+    <div class="clause"><span class="clause-label">3.1 Prices</span> All prices are inclusive of applicable GST unless stated otherwise. Prices are confirmed at order placement.</div>
+    <div class="clause"><span class="clause-label">3.2 Payment Modes</span> Accepted via NEFT/RTGS/IMPS, UPI, or Account Payee Cheque in favour of "SHS Marketing Pvt. Ltd." Cash payments above ₹2,000 are not accepted per applicable tax law.</div>
+    <div class="clause"><span class="clause-label">3.3 Payment Security</span> The Company will never request OTPs, passwords, or CVV numbers. Report any such request to the official helpline immediately.</div>
+    <div class="clause"><span class="clause-label">3.4 Invoice</span> A GST-compliant invoice is issued for every transaction. Customers must retain invoices for returns or warranty claims.</div>
+  </div>
+
+  <!-- Section 4 -->
+  <div class="section" id="s4">
+    <div class="section-title"><span class="section-num">04</span> Product Quality &amp; FSSAI Compliance</div>
+    <div class="clause"><span class="clause-label">4.1 Quality Standards</span> All products comply with FSSAI standards. Products are stored and transported under recommended temperature and hygiene conditions.</div>
+    <div class="clause"><span class="clause-label">4.2 Expiry</span> Customers must inspect manufacturing and expiry dates at delivery. Products within valid expiry are the Company's responsibility; post-expiry use is the Customer's sole responsibility.</div>
+    <div class="clause"><span class="clause-label">4.3 Storage</span> Damage due to improper storage by the Customer does not qualify for a refund.</div>
+  </div>
+
+  <!-- Section 5 -->
+  <div class="section" id="s5">
+    <div class="section-title"><span class="section-num">05</span> Returns, Refunds &amp; Replacements</div>
+    <div class="clause"><span class="clause-label">5.1 Eligible Returns</span> Damaged, defective, or incorrectly supplied products may be returned within 48 hours of delivery with photographic evidence and original invoice.</div>
+    <div class="clause"><span class="clause-label">5.2 Refund Process</span> Approved refunds processed within 7–10 business days via the original payment mode. No cash refunds for digital payments.</div>
+    <div class="clause"><span class="clause-label">5.3 Non-Returnable Items</span> Perishable goods (fresh milk, curd, paneer, etc.) are non-returnable unless found damaged or defective at delivery.</div>
+    <div class="notice">Under the Consumer Protection Act, 2019, Customers retain full rights to seek redress for defective goods or deficiency of service, including approaching Consumer Disputes Redressal Commissions.</div>
+  </div>
+
+  <!-- Section 6 -->
+  <div class="section" id="s6">
+    <div class="section-title"><span class="section-num">06</span> Customer KYC &amp; Data Privacy</div>
+    <div class="clause"><span class="clause-label">6.1 KYC Documents</span> For bulk orders or credit accounts: Aadhaar Card (address proof), PAN Card (TDS compliance), and one additional government-issued photo ID.</div>
+    <div class="clause"><span class="clause-label">6.2 Accuracy</span> Fraudulent documentation results in immediate transaction cancellation and may attract legal action.</div>
+    <div class="clause"><span class="clause-label">6.3 Data Privacy</span> Customer data is processed solely for business purposes per applicable Indian data protection laws. The Company does not sell customer data to third parties without consent.</div>
+  </div>
+
+  <!-- Section 7 -->
+  <div class="section" id="s7">
+    <div class="section-title"><span class="section-num">07</span> Grievance Redressal</div>
+    <div class="clause"><span class="clause-label">7.1 Internal Complaints</span> Complaints may be raised with the Grievance Officer at the registered office or official email within 30 days of the issue. The Company will respond within 10 business days.</div>
+    <div class="clause"><span class="clause-label">7.2 Escalation</span> Customers unsatisfied with the Company's response may approach the appropriate Consumer Disputes Redressal Commission under the Consumer Protection Act, 2019.</div>
+    <div class="clause"><span class="clause-label">7.3 Jurisdiction</span> Subject to consumer protection laws, disputes shall be governed by courts at the Company's registered office location.</div>
+  </div>
+
+  <!-- PART B -->
+  <div class="part-header">
+    <span class="part-label">Part B</span>
+    <span class="part-title">Direct Selling &amp; Distributor Terms</span>
+  </div>
+
+  <div class="notice">SHS Marketing Pvt. Ltd. operates its Direct Selling programme in full compliance with the Consumer Protection (Direct Selling) Rules, 2021 issued by the Ministry of Consumer Affairs, Government of India, and the Direct Selling Guidelines 2016 (as updated). All Distributors are required to read and comply with these rules.</div>
+
+  <!-- Section 8 -->
+  <div class="section" id="s8">
+    <div class="section-title"><span class="section-num">08</span> Direct Selling Programme — Overview &amp; Legal Basis</div>
+    <div class="clause"><span class="clause-label">8.1 Governing Law</span> This Direct Selling programme is governed by: Consumer Protection (Direct Selling) Rules 2021; Consumer Protection Act 2019; Indian Contract Act 1872; Income Tax Act 1961 (TDS on commissions); and applicable GST laws.</div>
+    <div class="clause"><span class="clause-label">8.2 Nature of Business</span> SHS Marketing Pvt. Ltd. is a Direct Selling Entity (DSE) selling stationary and FMCG products through a network of independent Distributors. The Company does not operate a money circulation scheme, pyramid scheme, or prize chit scheme as defined under the Prize Chits and Money Circulation Schemes (Banning) Act, 1978.</div>
+    <div class="clause"><span class="clause-label">8.3 Income Source</span> ALL income earned by Distributors is derived exclusively from the Net Sales Value of actual products sold to genuine end customers. No income is paid merely for recruiting new members.</div>
+    <div class="clause"><span class="clause-label">8.4 Independent Contractor</span> Distributors are independent contractors, not employees, agents, or partners of the Company. The Company is not liable for any representations, commitments, or actions made by Distributors beyond these terms.</div>
+  </div>
+
+  <!-- Section 9 -->
+  <div class="section" id="s9">
+    <div class="section-title"><span class="section-num">09</span> Distributor Enrolment &amp; Registration Fee</div>
+    <div class="clause"><span class="clause-label">9.1 Eligibility</span> Any Indian citizen aged 18 years or above with valid KYC documents may apply to become a Distributor.</div>
+    <div class="clause"><span class="clause-label">9.2 One-Time Registration Fee</span> A one-time registration fee is charged at the time of enrolment. This fee covers: Distributor welcome kit (product samples and marketing materials); access to the Company's online sales portal; and initial product training. The registration fee does NOT include any guaranteed income, reward, or investment return.</div>
+    <div class="clause"><span class="clause-label">9.3 No Income for Joining</span> The registration fee does not entitle any Distributor to commissions, bonuses, or rewards. Earnings commence only upon actual product sales.</div>
+    <div class="clause"><span class="clause-label">9.4 Cooling-Off Period</span> Every new Distributor has a 30-day cooling-off period from the date of enrolment. A Distributor who wishes to cancel within this period will receive a full refund of the registration fee, less the cost of any product samples consumed, per Rule 9 of the Consumer Protection (Direct Selling) Rules 2021.</div>
+    <div class="clause"><span class="clause-label">9.5 KYC Mandatory</span> Submission of the following is mandatory at enrolment: Aadhaar Card; PAN Card; cancelled bank cheque or bank passbook copy; and a passport-size photograph. Enrolment of minors or submission of fraudulent documents is strictly prohibited and will result in immediate termination and legal action.</div>
+    <div class="clause"><span class="clause-label">9.6 No Inventory Loading</span> The Company does not require Distributors to purchase or maintain compulsory inventory beyond the initial welcome kit. Distributors are not required to purchase products as a condition of receiving commissions.</div>
+  </div>
+
+  <!-- Section 10 -->
+  <div class="section" id="s10">
+    <div class="section-title"><span class="section-num">10</span> Commission Structure — 7-Level Sales Bonus</div>
+    <div class="clause"><span class="clause-label">10.1 Basis of Commission</span> Commissions are calculated solely on the Net Sales Value (NSV) of products sold by each Distributor and their downline Distributors to verified end customers. Specific commission percentages per level are published in the Company's current Compensation Plan document, which forms part of this agreement.</div>
+    <div class="clause"><span class="clause-label">10.2 Commission Levels</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Level</th>
+            <th>Relationship</th>
+            <th>Commission on Net Sales</th>
+            <th>Condition</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Level 0</td><td>Direct recruits (your team)</td><td>As per Company schedule</td><td>Active sales in period</td></tr>
+          <tr><td>Level 1</td><td>Recruits of Level 1</td><td>As per Company schedule</td><td>Level 1 must be active</td></tr>
+          <tr><td>Level 2</td><td>Recruits of Level 2</td><td>As per Company schedule</td><td>Levels 1–2 must be active</td></tr>
+          <tr><td>Level 3</td><td>Recruits of Level 3</td><td>As per Company schedule</td><td>Levels 1–3 must be active</td></tr>
+          <tr><td>Level 4</td><td>Recruits of Level 4</td><td>As per Company schedule</td><td>Levels 1–4 must be active</td></tr>
+          <tr><td>Level 5</td><td>Recruits of Level 5</td><td>As per Company schedule</td><td>Levels 1–5 must be active</td></tr>
+          <tr><td>Level 6</td><td>Recruits of Level 6</td><td>As per Company schedule</td><td>Levels 1–6 must be active</td></tr>
+          <tr><td>Level 7</td><td>Recruits of Level 6</td><td>As per Company schedule</td><td>Levels 1– must be active</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="notice">* Commission percentages are specified in the Compensation Plan schedule. Rates are subject to revision with 30 days' advance notice.</div>
+    <div class="clause"><span class="clause-label">10.3 Active Status Requirement</span> A Distributor must maintain Active status (minimum qualifying sales within the rolling 90-day period) to earn commissions on their downline levels. Inactive Distributors forfeit downline commissions for that period only; accrued commissions already credited are not affected.</div>
+    <div class="clause"><span class="clause-label">10.4 No Commission on Recruitment</span> No commission, bonus, or incentive is paid to any Distributor solely for recruiting a new member. Commissions are paid only when products are sold to end customers.</div>
+    <div class="clause"><span class="clause-label">10.5 Commission Payment</span> Earned commissions are calculated monthly and disbursed within 30 days of the close of the commission month via NEFT/RTGS/UPI to the Distributor's registered bank account. Minimum payout threshold: ₹500. Amounts below threshold carry forward to the next cycle.</div>
+    <div class="clause"><span class="clause-label">10.6 TDS Deduction</span> TDS will be deducted on commission payments as applicable under the Income Tax Act, 1961. Form 16A will be issued annually. Distributors are responsible for their own income tax filings.</div>
+    <div class="clause"><span class="clause-label">10.7 GST on Commission</span> Distributors earning above the GST registration threshold are required to register under GST and provide their GSTIN to the Company. GST on commissions will be handled per applicable law.</div>
+    <div class="warning"><strong>Legal Notice:</strong> Any Distributor found misrepresenting the Company's income opportunity — including showing false income projections, guaranteeing returns, or claiming that joining fees generate passive income — will be immediately terminated and may face civil and criminal action under the Consumer Protection Act 2019 and IPC.</div>
+  </div>
+
+  <!-- Section 11 -->
+  <div class="section" id="s11">
+    <div class="section-title"><span class="section-num">11</span> Distributor Code of Conduct</div>
+    <p style="margin-bottom:12px; font-size:14px;">Every Distributor must strictly follow these obligations:</p>
+    <ul class="bullet-list">
+      <li>Sell products only at the Company's published Maximum Retail Price (MRP) or below. Never above MRP.</li>
+      <li>Provide accurate and honest information about products and the income opportunity to prospective customers and recruits.</li>
+      <li>Never guarantee a specific income or return to any recruit or customer.</li>
+      <li>Never collect cash payments from customers on behalf of the Company. All payments must be directed to official Company channels.</li>
+      <li>Never engage in misleading advertising, false testimonials, or exaggerated income claims on any platform including social media.</li>
+      <li>Respect the cooling-off and return rights of customers and new Distributors without resistance or persuasion.</li>
+      <li>Not engage in cross-line recruiting or inducing Distributors from another upline to switch teams.</li>
+      <li>Comply with all applicable laws including Consumer Protection Act 2019, Prize Chits and Money Circulation Schemes (Banning) Act 1978, and the Direct Selling Rules 2021.</li>
+    </ul>
+  </div>
+
+  <!-- Section 12 -->
+  <div class="section" id="s12">
+    <div class="section-title"><span class="section-num">12</span> Prohibited Activities</div>
+    <p style="margin-bottom:12px; font-size:14px;">The following activities are strictly prohibited and will result in immediate termination:</p>
+    <ul class="bullet-list">
+      <li>Operating or promoting any money circulation scheme, chain scheme, or pyramid structure in the name of the Company.</li>
+      <li>Collecting joining fees or product purchase commitments from recruits beyond what is specified in Section 9.</li>
+      <li>Selling or promoting products not authorised by the Company under the SHS Marketing brand.</li>
+      <li>Misusing the Company's name, logo, or trademark in unauthorised materials.</li>
+      <li>Providing false sales data or fabricating customer transactions to inflate commissions.</li>
+      <li>Recruiting individuals below 18 years of age as Distributors.</li>
+    </ul>
+  </div>
+
+  <!-- Section 13 -->
+  <div class="section" id="s13">
+    <div class="section-title"><span class="section-num">13</span> Distributor Termination &amp; Exit</div>
+    <div class="clause"><span class="clause-label">13.1 Voluntary Resignation</span> A Distributor may resign at any time by providing written notice to the Company. Commissions accrued up to the date of resignation will be paid in the normal cycle.</div>
+    <div class="clause"><span class="clause-label">13.2 Termination by Company</span> The Company may terminate a Distributor's agreement with 15 days' written notice for non-performance, or immediately for breach of the Code of Conduct, fraudulent activity, or violation of applicable law.</div>
+    <div class="clause"><span class="clause-label">13.3 Effect of Termination</span> Upon termination, the Distributor loses the right to commissions from their downline. The downline network does not transfer to the terminated Distributor's upline automatically — the Company will determine network restructuring at its sole discretion.</div>
+    <div class="clause"><span class="clause-label">13.4 Non-Solicitation</span> For 12 months following termination, the former Distributor must not solicit or recruit any active SHS Marketing Distributor to join a competing direct selling entity.</div>
+  </div>
+
+  <!-- Section 14 -->
+  <div class="section" id="s14">
+    <div class="section-title"><span class="section-num">14</span> General Provisions</div>
+    <div class="clause"><span class="clause-label">14.1 Amendments</span> These terms may be updated periodically. Distributors and Customers will be notified of material changes at least 15 days in advance via registered contact details.</div>
+    <div class="clause"><span class="clause-label">14.2 Severability</span> If any clause is found invalid under applicable law, the remainder of these terms shall continue in full force.</div>
+    <div class="clause"><span class="clause-label">14.3 Entire Agreement</span> These terms, along with the Compensation Plan schedule and the invoice/order confirmation, constitute the entire agreement between the Company and the participant.</div>
+    <div class="clause"><span class="clause-label">14.4 Dispute Resolution</span> Disputes shall first be referred to the Company's Grievance Officer. If unresolved within 30 days, the matter may be referred to mediation. Subject to consumer protection laws, courts at the Company's registered office location shall have jurisdiction.</div>
+    <div class="clause"><span class="clause-label">14.5 Governing Law</span> This agreement is governed by the laws of India.</div>
+  </div>
+
+  <!-- Section 15 / Signature -->
+  <!-- <div id="s15" class="signature-block">
+    <div class="sig-declaration">
+      I, the undersigned, confirm that I have read, understood, and voluntarily agree to all Terms and Conditions of SHS Marketing Pvt. Ltd., including both Part A (Customer Terms) and Part B (Direct Selling &amp; Distributor Terms). I acknowledge that my income, if any, will be derived solely from actual product sales and not from recruitment. I confirm that I have not been coerced, misled, or given any guarantee of income.
+    </div>
+    <div class="sig-grid">
+      <div class="sig-field"><div class="sig-label">Full Name</div></div>
+      <div class="sig-field"><div class="sig-label">Date of Enrolment</div></div>
+      <div class="sig-field"><div class="sig-label">Aadhaar / PAN Number</div></div>
+      <div class="sig-field"><div class="sig-label">Mobile Number</div></div>
+      <div class="sig-field"><div class="sig-label">Sponsor / Upline Distributor ID</div></div>
+      <div class="sig-field"><div class="sig-label">Place</div></div>
+    </div>
+    <div class="sig-area">
+      <div class="sig-line">Participant Signature</div>
+      <div class="sig-line">Authorised Signatory — SHS Marketing Pvt. Ltd.</div>
+    </div>
+  </div> -->
+
+</div><!-- /container -->
+
+<div class="footer">
+  <strong style="color:var(--white)">SHS Marketing Pvt. Ltd.</strong> &nbsp;•&nbsp; All rights reserved &nbsp;•&nbsp; Governed by the laws of India<br>
+  <span>Compliant with Consumer Protection (Direct Selling) Rules 2021</span> &nbsp;&amp;&nbsp; Prize Chits and Money Circulation Schemes (Banning) Act 1978
+</div>
+
+</body>
+</html>

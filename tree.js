@@ -15,7 +15,7 @@
  */
 
 // ── CONSTANTS ─────────────────────────────────────────────────────────────────
-const TREE_API_URL  = 'https://script.google.com/macros/s/AKfycbw1FYhXD0D8vp5onIPveuXk9tlZtO5-r7JXbjN0TcCC7TG8-UUios2BdpJKp8v-0SH46g/exec';
+const TREE_API_URL  = 'https://script.google.com/macros/s/AKfycbzfHIV2BQHqHsxE5c4Hc9IS_ssXfsLb0sYDtzehoFbb9fbgBYhlUXGI7Zm0bEfKQzR-jg/exec';
 const MAX_LEVELS    = 7;
 const MAX_DIRECT    = 5;   // Each member can have exactly 5 direct referrals
 const LEVEL_CAP     = [0, 5, 25, 125, 625, 3125, 15625, 78125]; // index = level number
@@ -25,7 +25,7 @@ const TOTAL_MAX     = 97655; // 5+25+125+625+3125+15625+78125
 const treeState = {
   currentUser : null,
   treeData    : null,
-  currentDepth: 3          // default view depth (1–7)
+  currentDepth: 2          // default view depth — shows L0 (root), L1, L2
 };
 
 // ── DOM REFS ──────────────────────────────────────────────────────────────────
@@ -33,7 +33,7 @@ let T = {};
 let _treeInitialized = false;
 
 // ── LEVEL COLOURS ─────────────────────────────────────────────────────────────
-const LEVEL_COLORS = ['','#3b82f6','#8b5cf6','#ec4899','#f97316','#eab308','#14b8a6','#6366f1'];
+const LEVEL_COLORS = ['#6366f1','#3b82f6','#8b5cf6','#ec4899','#f97316','#eab308','#14b8a6','#6366f1'];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // API
@@ -141,7 +141,7 @@ async function loadTreeData() {
   try {
     const [countResult, treeResult] = await Promise.all([
       treeApiCall('tree', { treeAction: 'countDownline',   userId: treeState.currentUser.userId }),
-      treeApiCall('tree', { treeAction: 'getDownlineTree', userId: treeState.currentUser.userId, maxDepth: MAX_LEVELS, maxChildren: MAX_DIRECT })
+      treeApiCall('tree', { treeAction: 'getDownlineTree', userId: treeState.currentUser.userId, maxDepth: MAX_LEVELS, maxChildren: 100 })
     ]);
 
     treeState.treeData = treeResult.tree;
@@ -258,8 +258,8 @@ function renderTreeView() {
   // ancestor-set check inside buildPyramid itself)
   deduplicateTree(rootUser, new Set());
 
-  // Build the full pyramid DOM
-  const pyramid = buildPyramid(rootUser, 1);
+  // Build the full pyramid DOM — root starts at depth 0 (L0)
+  const pyramid = buildPyramid(rootUser, 0);
   T.treeRoot.appendChild(pyramid);
 }
 
@@ -310,28 +310,70 @@ function buildPyramid(user, depth, ancestors = new Set()) {
   cardRow.appendChild(buildMatrixCard(user, depth));
   wrap.appendChild(cardRow);
 
-  // ── Stop recursion beyond selected depth or MAX_LEVELS ───────────────────
-  if (depth >= treeState.currentDepth || depth >= MAX_LEVELS) return wrap;
+  // ── Hard stop at MAX_LEVELS — nothing beyond level 7 ────────────────────
+  if (depth >= MAX_LEVELS) return wrap;
 
-  // ── Filter children — remove any node whose userId already appears above ──
-  // This fixes the circular-reference bug where a user's sponsor points back
-  // to themselves or an ancestor, causing the same card to repeat in the tree.
+  // ── Filter children — remove circular/ancestor refs ──────────────────────
   const ancestorsWithSelf = new Set(ancestors);
   if (user.userId) ancestorsWithSelf.add(user.userId);
 
   const rawChildren = user.children || [];
   const children    = rawChildren.filter(c => {
-    if (!c || !c.userId) return true;          // keep nodes with no id (can't detect cycle)
-    return !ancestorsWithSelf.has(c.userId);   // drop nodes already shown above
+    if (!c || !c.userId) return true;
+    return !ancestorsWithSelf.has(c.userId);
   });
 
-  const totalFilled = Math.min(
-    user.referralCount !== undefined ? user.referralCount : children.length,
-    MAX_DIRECT
-  );
-  const hasAnyChild = children.length > 0 || totalFilled > 0;
+  const hasAnyChild = children.length > 0;
 
-  if (!hasAnyChild && depth > 1) return wrap; // leaf node — no empty slots beyond L1
+  if (!hasAnyChild && depth > 0) return wrap; // leaf node — no empty slots beyond L0
+
+  // ── At display depth limit: show overflow button only (no children row) ──
+  if (depth >= treeState.currentDepth) {
+    const overflowKids = children.slice(MAX_DIRECT);
+    if (overflowKids.length > 0) {
+      const overflowToggle = document.createElement('button');
+      overflowToggle.className = 'matrix-overflow-toggle';
+      overflowToggle.innerHTML =
+        '<i class="fas fa-ellipsis-h"></i> +' + overflowKids.length +
+        ' overflow member' + (overflowKids.length > 1 ? 's' : '') + ' — click to view';
+      overflowToggle.title = 'These members were placed here via overflow routing';
+
+      const ovConnV = document.createElement('div');
+      ovConnV.className = 'matrix-connector-v matrix-connector-collapsed';
+      const ovHBar = document.createElement('div');
+      ovHBar.className = 'matrix-connector-h matrix-connector-collapsed';
+      const overflowRow = document.createElement('div');
+      overflowRow.className = 'matrix-children-row matrix-children-collapsed';
+
+      overflowKids.forEach(kid => {
+        const slotWrap = document.createElement('div');
+        slotWrap.className = 'matrix-slot-wrap';
+        const tick = document.createElement('div');
+        tick.className = 'matrix-connector-tick';
+        slotWrap.appendChild(tick);
+        slotWrap.appendChild(buildPyramid(kid, depth + 1, ancestorsWithSelf));
+        overflowRow.appendChild(slotWrap);
+      });
+
+      overflowToggle.onclick = (e) => {
+        e.stopPropagation();
+        const hidden = overflowRow.classList.toggle('matrix-children-collapsed');
+        ovConnV.classList.toggle('matrix-connector-collapsed', hidden);
+        ovHBar.classList.toggle('matrix-connector-collapsed', hidden);
+        overflowToggle.innerHTML = hidden
+          ? '<i class="fas fa-ellipsis-h"></i> +' + overflowKids.length + ' overflow member' + (overflowKids.length > 1 ? 's' : '') + ' — click to view'
+          : '<i class="fas fa-chevron-up"></i> Hide overflow members';
+      };
+
+      wrap.appendChild(overflowToggle);
+      wrap.appendChild(ovConnV);
+      wrap.appendChild(ovHBar);
+      wrap.appendChild(overflowRow);
+    }
+    return wrap;
+  }
+
+  // ── Full render: connector + children row + overflow button ──────────────
 
   // Connector: vertical line from parent card down to children row
   const connector = document.createElement('div');
@@ -343,7 +385,7 @@ function buildPyramid(user, depth, ancestors = new Set()) {
   hBar.className = 'matrix-connector-h';
   wrap.appendChild(hBar);
 
-  // Children container
+  // Children container — first MAX_DIRECT slots (filled or empty)
   const childrenWrap = document.createElement('div');
   childrenWrap.className = 'matrix-children-row';
 
@@ -353,16 +395,13 @@ function buildPyramid(user, depth, ancestors = new Set()) {
     const slotWrap = document.createElement('div');
     slotWrap.className = 'matrix-slot-wrap';
 
-    // Small vertical tick connecting hBar to each slot
     const tick = document.createElement('div');
     tick.className = 'matrix-connector-tick';
     slotWrap.appendChild(tick);
 
     if (child) {
-      // Recurse — pass the updated ancestor set so duplicates are caught deeper too
       slotWrap.appendChild(buildPyramid(child, depth + 1, ancestorsWithSelf));
     } else {
-      // Empty slot placeholder
       slotWrap.appendChild(buildEmptyMatrixSlot(depth + 1));
     }
 
@@ -370,6 +409,50 @@ function buildPyramid(user, depth, ancestors = new Set()) {
   }
 
   wrap.appendChild(childrenWrap);
+
+  // Overflow members (beyond slot 5) — orange toggle button, expands as normal pyramid cards
+  const overflowKids = children.slice(MAX_DIRECT);
+  if (overflowKids.length > 0) {
+    const overflowToggle = document.createElement('button');
+    overflowToggle.className = 'matrix-overflow-toggle';
+    overflowToggle.innerHTML =
+      '<i class="fas fa-ellipsis-h"></i> +' + overflowKids.length +
+      ' overflow member' + (overflowKids.length > 1 ? 's' : '') + ' — click to view';
+    overflowToggle.title = 'These members were placed here via overflow routing';
+
+    const ovConnV = document.createElement('div');
+    ovConnV.className = 'matrix-connector-v matrix-connector-collapsed';
+    const ovHBar = document.createElement('div');
+    ovHBar.className = 'matrix-connector-h matrix-connector-collapsed';
+
+    const overflowRow = document.createElement('div');
+    overflowRow.className = 'matrix-children-row matrix-children-collapsed';
+
+    overflowKids.forEach(kid => {
+      const slotWrap = document.createElement('div');
+      slotWrap.className = 'matrix-slot-wrap';
+      const tick = document.createElement('div');
+      tick.className = 'matrix-connector-tick';
+      slotWrap.appendChild(tick);
+      slotWrap.appendChild(buildPyramid(kid, depth + 1, ancestorsWithSelf));
+      overflowRow.appendChild(slotWrap);
+    });
+
+    overflowToggle.onclick = (e) => {
+      e.stopPropagation();
+      const hidden = overflowRow.classList.toggle('matrix-children-collapsed');
+      ovConnV.classList.toggle('matrix-connector-collapsed', hidden);
+      ovHBar.classList.toggle('matrix-connector-collapsed', hidden);
+      overflowToggle.innerHTML = hidden
+        ? '<i class="fas fa-ellipsis-h"></i> +' + overflowKids.length + ' overflow member' + (overflowKids.length > 1 ? 's' : '') + ' — click to view'
+        : '<i class="fas fa-chevron-up"></i> Hide overflow members';
+    };
+
+    wrap.appendChild(overflowToggle);
+    wrap.appendChild(ovConnV);
+    wrap.appendChild(ovHBar);
+    wrap.appendChild(overflowRow);
+  }
 
   // Collapse/expand toggle (only when there are actual real children)
   if (children.length > 0) {
@@ -393,7 +476,7 @@ function buildPyramid(user, depth, ancestors = new Set()) {
 
 // ─── Member card ──────────────────────────────────────────────────────────────
 function buildMatrixCard(user, depth) {
-  const color  = LEVEL_COLORS[depth] || '#6366f1';
+  const color  = LEVEL_COLORS[Math.min(depth, MAX_LEVELS)] || '#6366f1';
   const isFull = (user.referralCount || 0) >= MAX_DIRECT;
   const isRoot = !!user.isRoot;
 
@@ -405,7 +488,7 @@ function buildMatrixCard(user, depth) {
   ].filter(Boolean).join(' ');
 
   card.style.setProperty('--card-color', color);
-  card.onclick = () => treeShowModal(user, depth - 1);
+  card.onclick = () => treeShowModal(user, depth);
 
   // ── "YOU (ROOT)" crown label for the top node ─────────────────────────────
   if (isRoot) {
@@ -424,7 +507,7 @@ function buildMatrixCard(user, depth) {
   // Level badge
   const badge = document.createElement('span');
   badge.className   = 'matrix-badge';
-  badge.textContent = isRoot ? `L0 — YOU` : `L${depth - 1}`;
+  badge.textContent = isRoot ? `L${depth} — YOU` : `L${depth}`;
   badge.style.background = isRoot ? 'linear-gradient(135deg,#6366f1,#8b5cf6)' : color;
   card.appendChild(badge);
 
@@ -476,8 +559,8 @@ function buildEmptyMatrixSlot(depth) {
       <i class="fas fa-user-plus" style="color:${color};font-size:14px"></i>
     </div>
     <div class="matrix-name" style="color:#9ca3af;font-size:10px">Empty Slot</div>
-    <div class="matrix-uid" style="color:#d1d5db;font-size:9px">L${depth - 1}</div>`;
-  slot.onclick = () => treeToast(`Level ${depth - 1} slot — not yet filled`, 'info');
+    <div class="matrix-uid" style="color:#d1d5db;font-size:9px">L${depth}</div>`;
+  slot.onclick = () => treeToast(`Level ${depth} slot — not yet filled`, 'info');
   return slot;
 }
 
@@ -880,6 +963,39 @@ function injectTreeStyles() {
       margin: 2px 0;
     }
     .matrix-toggle:hover { background: #4f46e5; }
+
+    /* ── Overflow row toggle button ── */
+    .matrix-overflow-toggle {
+      background: #fff7ed;
+      color: #c2410c;
+      border: 1.5px dashed #fb923c;
+      border-radius: 8px;
+      padding: 5px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 6px auto 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      align-self: center;
+    }
+    .matrix-overflow-toggle:hover { background: #ffedd5; }
+
+    /* ── Overflow row (same layout as normal children row) ── */
+    .matrix-overflow-row {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+      padding: 8px;
+      background: #fff7ed;
+      border-radius: 10px;
+      border: 1.5px dashed #fb923c;
+    }
 
     /* ── Depth > 2: shrink cards to keep layout manageable ── */
     [data-depth="3"] .matrix-card,

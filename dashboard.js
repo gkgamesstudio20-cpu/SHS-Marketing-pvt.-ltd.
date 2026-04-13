@@ -2,7 +2,7 @@
 //  dashboard.js — SHS Marketing Dashboard
 // ============================================================
 
-const apiURL = "https://script.google.com/macros/s/AKfycbw1FYhXD0D8vp5onIPveuXk9tlZtO5-r7JXbjN0TcCC7TG8-UUios2BdpJKp8v-0SH46g/exec";
+const apiURL = "https://script.google.com/macros/s/AKfycbzfHIV2BQHqHsxE5c4Hc9IS_ssXfsLb0sYDtzehoFbb9fbgBYhlUXGI7Zm0bEfKQzR-jg/exec";
 
 // ─── STORAGE HELPER ──────────────────────────────────────────────────────────
 const store = {
@@ -142,12 +142,9 @@ function fetchUserData() {
 
     const cleanMobile = normalizePhone(loggedInMobile) || loggedInMobile;
 
-    // Fetch user data AND payment info in parallel
-    Promise.all([
-        gasApiCall({ action: 'getUserData', mobile: cleanMobile }),
-        gasApiCall({ action: 'checkPaymentApproval', mobile: cleanMobile })
-    ])
-        .then(([data, paymentData]) => {
+    // FIX 1 applied: use gasApiCall() instead of raw fetch with application/json
+    gasApiCall({ action: 'getUserData', mobile: cleanMobile })
+        .then(data => {
             if (data.success && data.user) {
                 currentUser = data.user;
                 store.set('userData', JSON.stringify(currentUser));
@@ -155,43 +152,15 @@ function fetchUserData() {
             } else {
                 console.warn('⚠️ getUserData failed:', data.message);
             }
-            // Update deposit amount from Payments sheet
-            updateDepositAmountUI(paymentData);
             updateDashboardUI();
             displayWelcomeMessage();
         })
         .catch(err => {
             console.error('❌ fetchUserData error:', err);
+            // Still render with whatever we have (could be cached data)
             updateDashboardUI();
             displayWelcomeMessage();
         });
-}
-
-// ─── UPDATE DEPOSIT AMOUNT UI ─────────────────────────────────────────────────
-function updateDepositAmountUI(paymentData) {
-    // checkPaymentApproval returns { found, approved, status, approvalDate }
-    // but NOT paymentAmount. We need a separate call to get the amount.
-    // Use getDepositAmount action (add to Apps Script, or reuse savePayment data)
-    const cached = Number(store.get('depositAmount') || 0);
-    const el = document.getElementById('depositamount');
-
-    if (paymentData && paymentData.paymentAmount !== undefined) {
-        const amt = Number(paymentData.paymentAmount) || 0;
-        if (el) el.textContent = '₹' + amt.toLocaleString('en-IN');
-        store.set('depositAmount', amt);
-    } else {
-        // Fetch deposit amount separately
-        const cleanMobile = normalizePhone(loggedInMobile) || loggedInMobile;
-        gasApiCall({ action: 'getDepositAmount', mobile: cleanMobile })
-            .then(res => {
-                const amt = Number(res.paymentAmount || 0);
-                if (el) el.textContent = '₹' + amt.toLocaleString('en-IN');
-                store.set('depositAmount', amt);
-            })
-            .catch(() => {
-                if (el && cached) el.textContent = '₹' + cached.toLocaleString('en-IN');
-            });
-    }
 }
 
 // ─── NORMALIZE PHONE ─────────────────────────────────────────────────────────
@@ -230,6 +199,7 @@ function updateDashboardUI() {
         updateDashboardStats();
         updateTeamDataDisplay();
         updateEarningsData();
+        fetchDepositAmount();
         initializeChart();
 
         console.log('✅ Dashboard UI updated');
@@ -280,17 +250,180 @@ function updateTeamDataDisplay() {
 
 // ─── EARNINGS DATA ────────────────────────────────────────────────────────────
 function updateEarningsData() {
+    const currentLevel = parseInt(currentUser?.currentlevel) || 0;
     const earningsStats = {
-        'total-earning':  currentUser?.totalearning || 0,
-        'total-earning1': currentUser?.totalearning || 0,
-        'reward-list':    currentUser?.rewardlist   || '-',
-        'rewards-date':   currentUser?.rewardsdate  || '-',
-        'account-status': currentUser?.status       || 'Active'
+        'total-earning':          currentUser?.totalearning || 0,
+        'total-earning1':         currentUser?.totalearning || 0,
+        'reward-list':            currentUser?.rewardlist   || '-',
+        'rewards-date':           currentUser?.rewardsdate  || '-',
+        'account-status':         currentUser?.status       || 'Active',
+        'earnings-current-level': currentLevel || 1
     };
     for (const [id, value] of Object.entries(earningsStats)) {
         const el = document.getElementById(id);
         if (el) el.textContent = value;
     }
+    // FIX-3: show claim button only when user has reached level >= 1
+    updateClaimVisibility(currentLevel);
+}
+
+// ─── FETCH DEPOSIT AMOUNT (from Payments sheet, paymentAmount column) ────────
+function fetchDepositAmount() {
+    const el    = document.getElementById('deposit-amount');
+    const label = document.getElementById('deposit-plan-label');
+    if (!el) return;
+
+    const mobile = normalizePhone(loggedInMobile) || loggedInMobile;
+    if (!mobile) {
+        el.innerHTML = '<span>—</span>';
+        return;
+    }
+
+    // Show spinner while loading
+    el.innerHTML = '<i class="fas fa-spinner fa-spin" style="font-size:16px;opacity:.6;"></i>';
+
+    gasApiCall({ action: 'getDepositAmount', mobile })
+        .then(data => {
+            const amt = data.success ? Number(data.paymentAmount) : 0;
+            const planMap = {
+                500:   'Starter Plan',
+                2000:  'Basic Plan',
+                5000:  'Standard Plan',
+                10000: 'Premium Plan',
+                20000: 'Elite Plan'
+            };
+            if (amt > 0) {
+                el.textContent = '₹' + amt.toLocaleString('en-IN');
+                if (label) label.textContent = planMap[amt] || 'Active Plan';
+            } else {
+                el.textContent = '₹0';
+                if (label) label.textContent = 'No payment found';
+            }
+        })
+        .catch(() => {
+            el.textContent = '—';
+            if (label) label.textContent = 'Could not load';
+        });
+}
+
+// ─── FIX-3: CLAIM BUTTON VISIBILITY ─────────────────────────────────────────
+function updateClaimVisibility(currentLevel) {
+    const claimSection = document.getElementById('claim-section');
+    const claimDesc    = document.getElementById('claim-section-desc');
+    if (!claimSection) return;
+    const level = parseInt(currentLevel) || 0;
+    if (level >= 1) {
+        claimSection.style.display = 'block';
+        if (claimDesc) claimDesc.textContent =
+            'You are at Level ' + level + '. You can submit a claim for your Level ' + level + ' reward.';
+    } else {
+        claimSection.style.display = 'none';
+    }
+}
+
+// ─── FIX-4: CLAIM MODAL OPEN / CLOSE ─────────────────────────────────────────
+function openClaimModal() {
+    const modal = document.getElementById('claimModal');
+    const info  = document.getElementById('claimModalLevelInfo');
+    const errEl = document.getElementById('claimFormError');
+    const level = parseInt(currentUser?.currentlevel) || 1;
+
+    if (info) info.textContent = 'Claiming reward for Level ' + level + '. Fill in your bank details below.';
+    if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
+
+    // Pre-fill bank details from profile if available
+    const fields = {
+        'claim-accountHolder': currentUser?.accountholder || '',
+        'claim-bankName':      currentUser?.bankname      || '',
+        'claim-branch':        currentUser?.branch        || '',
+        'claim-accountNumber': currentUser?.accountnumber || '',
+        'claim-ifsc':          currentUser?.IFSCCode      || ''
+    };
+    for (const [id, val] of Object.entries(fields)) {
+        const el = document.getElementById(id);
+        if (el && val) el.value = val;
+    }
+
+    if (modal) { modal.style.display = 'block'; document.body.style.overflow = 'hidden'; }
+}
+
+function closeClaimModal() {
+    const modal = document.getElementById('claimModal');
+    if (modal) { modal.style.display = 'none'; document.body.style.overflow = ''; }
+    const form = document.getElementById('claimForm');
+    if (form) form.reset();
+    const errEl = document.getElementById('claimFormError');
+    if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(e) {
+    const modal = document.getElementById('claimModal');
+    if (modal && e.target === modal) closeClaimModal();
+});
+
+// ─── SUBMIT CLAIM ─────────────────────────────────────────────────────────────
+function submitClaim(e) {
+    e.preventDefault();
+    const errEl = document.getElementById('claimFormError');
+    const btn   = document.getElementById('claimSubmitBtn');
+    const level = parseInt(currentUser?.currentlevel) || 1;
+
+    const accountHolder = document.getElementById('claim-accountHolder')?.value.trim();
+    const bankName      = document.getElementById('claim-bankName')?.value.trim();
+    const branch        = document.getElementById('claim-branch')?.value.trim() || '';
+    const accountNumber = document.getElementById('claim-accountNumber')?.value.trim();
+    const ifsc          = document.getElementById('claim-ifsc')?.value.trim().toUpperCase();
+    const aadhar        = document.getElementById('claim-aadhar')?.value.trim().replace(/\s/g,'');
+    const pan           = document.getElementById('claim-pan')?.value.trim().toUpperCase();
+
+    if (!accountHolder || !bankName || !accountNumber || !ifsc || !aadhar || !pan) {
+        if (errEl) { errEl.textContent = 'Please fill in all required fields.'; errEl.style.display = 'block'; }
+        return;
+    }
+    if (!/^\d{12}$/.test(aadhar)) {
+        if (errEl) { errEl.textContent = 'Aadhaar must be exactly 12 digits.'; errEl.style.display = 'block'; }
+        return;
+    }
+    if (!/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(pan)) {
+        if (errEl) { errEl.textContent = 'Invalid PAN format (expected: ABCDE1234F).'; errEl.style.display = 'block'; }
+        return;
+    }
+
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...'; }
+    if (errEl) errEl.style.display = 'none';
+
+    gasApiCall({
+        action: 'saveClaim',
+        userId:         currentUser?.userId || '',
+        userName:       ((currentUser?.firstName || '') + ' ' + (currentUser?.lastName || '')).trim(),
+        mobile:         normalizePhone(loggedInMobile) || loggedInMobile,
+        email:          currentUser?.email || '',
+        claimLevel:     String(level),
+        accountHolder,
+        bankName,
+        branch,
+        accountNumber,
+        IFSCCode:       ifsc,
+        aadharNumber:   aadhar,
+        panNumber:      pan,
+        timestamp:      new Date().toISOString(),
+        dateSubmitted:  new Date().toLocaleDateString('en-IN')
+    })
+    .then(res => {
+        if (res.success) {
+            closeClaimModal();
+            showNotification('✅ Claim submitted! Admin will review it shortly.', 'success');
+        } else {
+            if (errEl) { errEl.textContent = res.message || 'Submission failed.'; errEl.style.display = 'block'; }
+        }
+    })
+    .catch(() => {
+        if (errEl) { errEl.textContent = 'Network error. Please try again.'; errEl.style.display = 'block'; }
+    })
+    .finally(() => {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Claim'; }
+    });
 }
 
 // ─── WELCOME MESSAGE ─────────────────────────────────────────────────────────
@@ -830,232 +963,3 @@ document.addEventListener('keydown', (e) => {
       break;
   }
 });
-// ═══════════════════════════════════════════════════════════════════════════════
-//  CLAIM SYSTEM
-//  - Shows a claim button when a user has fully completed a level (L1–L7)
-//  - Each level needs 5^level members in that level row (from tree counts)
-//  - Opens a modal to collect bank + KYC details and saves to Google Sheet
-// ═══════════════════════════════════════════════════════════════════════════════
-
-const CLAIM_LEVEL_CAPS = [0, 5, 25, 125, 625, 3125, 15625, 78125];
-
-function Claimamount() {
-    openClaimModal();
-}
-
-function openClaimModal() {
-    if (!document.getElementById('claimModal')) injectClaimModal();
-    const modal = document.getElementById('claimModal');
-    modal.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-    document.getElementById('claimLevelList').innerHTML =
-        '<div style="text-align:center;padding:24px;color:#6b7280"><i class="fas fa-spinner fa-spin fa-2x"></i><p style="margin-top:8px">Checking your levels…</p></div>';
-    loadClaimableLevels();
-}
-
-function closeClaimModal() {
-    const modal = document.getElementById('claimModal');
-    if (modal) modal.classList.add('hidden');
-    document.body.style.overflow = '';
-}
-
-function loadClaimableLevels() {
-    if (!currentUser?.userId) {
-        document.getElementById('claimLevelList').innerHTML =
-            '<p style="color:#ef4444;text-align:center">Please log in to claim.</p>';
-        return;
-    }
-    gasApiCall({ action: 'tree', treeAction: 'countDownline', userId: currentUser.userId })
-    .then(res => {
-        if (!res.success) throw new Error(res.message);
-        renderClaimLevels(res.counts);
-    })
-    .catch(err => {
-        document.getElementById('claimLevelList').innerHTML =
-            '<p style="color:#ef4444;text-align:center">Error loading tree: ' + err.message + '</p>';
-    });
-}
-
-function renderClaimLevels(counts) {
-    const breakdown = counts.breakdown || {};
-    const COLORS = ['','#3b82f6','#8b5cf6','#ec4899','#f97316','#eab308','#14b8a6','#6366f1'];
-    let html = '';
-    for (let i = 1; i <= 7; i++) {
-        const count = breakdown['level' + i] || 0;
-        const cap   = CLAIM_LEVEL_CAPS[i];
-        const pct   = Math.min(Math.round((count / cap) * 100), 100);
-        const complete = count >= cap;
-        const color = COLORS[i];
-        html += '<div style="border:2px solid ' + (complete ? color : '#e5e7eb') + ';border-radius:14px;padding:16px 18px;margin-bottom:12px;background:' + (complete ? color + '0f' : '#fafafa') + ';display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">'
-            + '<div style="display:flex;align-items:center;gap:12px;flex:1;min-width:0;">'
-            + '<div style="width:42px;height:42px;border-radius:50%;background:' + (complete ? color : '#e5e7eb') + ';display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px;flex-shrink:0;">L' + i + '</div>'
-            + '<div style="flex:1;min-width:0;">'
-            + '<div style="font-weight:700;color:' + (complete ? color : '#374151') + ';font-size:14px;">Level ' + i + (complete ? ' ✅ Complete' : '') + '</div>'
-            + '<div style="font-size:12px;color:#6b7280;margin-top:2px;">' + count.toLocaleString('en-IN') + ' / ' + cap.toLocaleString('en-IN') + ' members</div>'
-            + '<div style="background:#e5e7eb;border-radius:999px;height:6px;margin-top:6px;"><div style="width:' + pct + '%;height:100%;background:' + color + ';border-radius:999px;"></div></div>'
-            + '</div></div>'
-            + '<div style="flex-shrink:0;">'
-            + (complete
-                ? '<button onclick="openClaimForm(' + i + ')" style="background:' + color + ';color:#fff;border:none;padding:10px 20px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 4px 12px ' + color + '55;"><i class="fas fa-hand-holding-usd"></i> Claim L' + i + '</button>'
-                : '<span style="font-size:12px;color:#9ca3af;font-style:italic;">' + pct + '% filled</span>')
-            + '</div></div>';
-    }
-    document.getElementById('claimLevelList').innerHTML = html;
-}
-
-function openClaimForm(level) {
-    if (!document.getElementById('claimModal')) injectClaimModal();
-    document.getElementById('claimLevelListView').classList.add('hidden');
-    document.getElementById('claimFormView').classList.remove('hidden');
-    document.getElementById('claimFormLevelTitle').textContent = 'Claim — Level ' + level + ' Reward';
-    document.getElementById('claimFormLevel').value = level;
-    const prefill = {
-        'claimAccountHolder': currentUser?.accountholder || '',
-        'claimBankName':      currentUser?.bankname      || '',
-        'claimAccountNumber': currentUser?.accountnumber || '',
-        'claimIFSC':          currentUser?.IFSCCode      || '',
-        'claimBranch':        currentUser?.branch        || ''
-    };
-    for (const [id, val] of Object.entries(prefill)) {
-        const el = document.getElementById(id);
-        if (el && val) el.value = val;
-    }
-}
-
-function backToClaimLevels() {
-    document.getElementById('claimLevelListView').classList.remove('hidden');
-    document.getElementById('claimFormView').classList.add('hidden');
-}
-
-function submitClaimForm() {
-    const btn = document.getElementById('claimSubmitBtn');
-    const level = document.getElementById('claimFormLevel')?.value;
-    const required = ['claimAccountHolder','claimBankName','claimAccountNumber','claimIFSC','claimAadhar','claimPAN'];
-    for (const id of required) {
-        const el = document.getElementById(id);
-        if (!el || !el.value.trim()) {
-            showNotification('Please fill all required fields', 'error');
-            el?.focus();
-            return;
-        }
-    }
-    const aadhar = document.getElementById('claimAadhar').value.replace(/\s/g,'');
-    if (!/^\d{12}$/.test(aadhar)) { showNotification('Aadhaar must be 12 digits', 'error'); return; }
-    const pan = document.getElementById('claimPAN').value.toUpperCase().trim();
-    if (!/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(pan)) { showNotification('PAN format invalid (e.g. ABCDE1234F)', 'error'); return; }
-
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting…';
-
-    const userName = currentUser?.firstName
-        ? ((currentUser.firstName || '') + ' ' + (currentUser.lastName || '')).trim()
-        : (currentUser?.name || '');
-
-    gasApiCall({
-        action:        'saveClaim',
-        userId:        currentUser?.userId || '',
-        userName:      userName,
-        mobile:        currentUser?.mobile || normalizePhone(loggedInMobile) || '',
-        email:         currentUser?.email  || '',
-        claimLevel:    level,
-        accountHolder: document.getElementById('claimAccountHolder').value.trim(),
-        bankName:      document.getElementById('claimBankName').value.trim(),
-        accountNumber: document.getElementById('claimAccountNumber').value.trim(),
-        IFSCCode:      document.getElementById('claimIFSC').value.trim().toUpperCase(),
-        branch:        document.getElementById('claimBranch').value.trim(),
-        aadharNumber:  aadhar,
-        panNumber:     pan,
-        claimStatus:   'Pending',
-        timestamp:     new Date().toISOString(),
-        dateSubmitted: new Date().toLocaleDateString('en-IN')
-    })
-    .then(res => {
-        if (res.success) {
-            showNotification('Level ' + level + ' claim submitted! Admin will review it.', 'success');
-            closeClaimModal();
-        } else {
-            showNotification((res.message || 'Submission failed'), 'error');
-        }
-    })
-    .catch(() => showNotification('Network error. Please try again.', 'error'))
-    .finally(() => {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Claim';
-    });
-}
-
-function claimField(id, label, type, placeholder, required) {
-    return '<div style="margin-bottom:12px;">'
-        + '<label style="display:block;font-size:12px;font-weight:600;color:#374151;margin-bottom:4px;">'
-        + label + (required ? ' <span style="color:#ef4444;">*</span>' : '')
-        + '</label>'
-        + '<input id="' + id + '" type="' + type + '" placeholder="' + placeholder + '" '
-        + 'style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:14px;outline:none;" '
-        + 'onfocus="this.style.borderColor=\'#6366f1\'" onblur="this.style.borderColor=\'#e5e7eb\'" />'
-        + '</div>';
-}
-
-function injectClaimModal() {
-    const modal = document.createElement('div');
-    modal.id = 'claimModal';
-    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;';
-    modal.innerHTML =
-        '<div style="background:#fff;border-radius:20px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 25px 60px rgba(0,0,0,0.25);font-family:Inter,sans-serif;">'
-        // Header
-        + '<div style="background:linear-gradient(135deg,#6366f1,#8b5cf6);padding:20px 24px;border-radius:20px 20px 0 0;display:flex;align-items:center;justify-content:space-between;">'
-        + '<div><h2 style="color:#fff;margin:0;font-size:18px;font-weight:800;"><i class="fas fa-hand-holding-usd" style="margin-right:8px;"></i>Claim Rewards</h2>'
-        + '<p style="color:#c4b5fd;margin:4px 0 0;font-size:13px;">Complete a level to unlock your reward</p></div>'
-        + '<button onclick="closeClaimModal()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:34px;height:34px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&times;</button>'
-        + '</div>'
-        // Level list view
-        + '<div id="claimLevelListView" style="padding:20px 24px;">'
-        + '<p style="color:#6b7280;font-size:13px;margin:0 0 16px;"><i class="fas fa-info-circle" style="color:#6366f1;"></i> Levels with all slots filled show a <strong>Claim</strong> button.</p>'
-        + '<div id="claimLevelList"></div>'
-        + '</div>'
-        // Claim form view
-        + '<div id="claimFormView" class="hidden" style="padding:20px 24px;">'
-        + '<button onclick="backToClaimLevels()" style="background:none;border:none;color:#6366f1;font-size:13px;cursor:pointer;margin-bottom:14px;padding:0;display:flex;align-items:center;gap:6px;font-weight:600;"><i class="fas fa-arrow-left"></i> Back to Levels</button>'
-        + '<h3 id="claimFormLevelTitle" style="margin:0 0 18px;font-size:16px;font-weight:800;color:#1f2937;"></h3>'
-        + '<input type="hidden" id="claimFormLevel" value="">'
-        // Bank section
-        + '<div style="background:#f8f9ff;border-radius:12px;padding:16px;margin-bottom:16px;">'
-        + '<h4 style="margin:0 0 12px;font-size:14px;font-weight:700;color:#4f46e5;"><i class="fas fa-university"></i> Bank Details</h4>'
-        + claimField('claimAccountHolder','Account Holder Name','text','Full name as in bank account',true)
-        + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">'
-        + claimField('claimBankName','Bank Name','text','e.g. SBI, HDFC',true)
-        + claimField('claimBranch','Branch','text','Branch name',false)
-        + '</div>'
-        + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">'
-        + claimField('claimAccountNumber','Account Number','text','Bank account number',true)
-        + claimField('claimIFSC','IFSC Code','text','e.g. SBIN0001234',true)
-        + '</div>'
-        + '</div>'
-        // KYC section
-        + '<div style="background:#fff8f0;border-radius:12px;padding:16px;margin-bottom:20px;">'
-        + '<h4 style="margin:0 0 12px;font-size:14px;font-weight:700;color:#f97316;"><i class="fas fa-id-card"></i> KYC Details</h4>'
-        + claimField('claimAadhar','Aadhaar Card Number','text','12-digit Aadhaar number',true)
-        + claimField('claimPAN','PAN Card Number','text','e.g. ABCDE1234F',true)
-        + '</div>'
-        + '<button id="claimSubmitBtn" onclick="submitClaimForm()" style="width:100%;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(99,102,241,0.4);display:flex;align-items:center;justify-content:center;gap:8px;">'
-        + '<i class="fas fa-paper-plane"></i> Submit Claim</button>'
-        + '</div>'
-        + '</div>';
-    modal.addEventListener('click', e => { if (e.target === modal) closeClaimModal(); });
-    document.body.appendChild(modal);
-}
-
-// ─── DEPOSIT AMOUNT INIT ──────────────────────────────────────────────────────
-// Also expose updateDepositAmountUI in case it was not defined in the main block
-if (typeof updateDepositAmountUI === 'undefined') {
-    window.updateDepositAmountUI = function(paymentData) {
-        const el = document.getElementById('depositamount');
-        const cached = Number(sessionStorage.getItem('depositAmount') || 0);
-        if (paymentData && paymentData.paymentAmount !== undefined) {
-            const amt = Number(paymentData.paymentAmount) || 0;
-            if (el) el.textContent = '₹' + amt.toLocaleString('en-IN');
-            sessionStorage.setItem('depositAmount', amt);
-        } else if (cached && el) {
-            el.textContent = '₹' + cached.toLocaleString('en-IN');
-        }
-    };
-}
