@@ -612,7 +612,7 @@
 // INITIALIZATION
 // ============================================
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzfHIV2BQHqHsxE5c4Hc9IS_ssXfsLb0sYDtzehoFbb9fbgBYhlUXGI7Zm0bEfKQzR-jg/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby6bXcLt6W8xAoJcW5hCrOHhzVM0HjvcS-J-RqTFP0uwxGTNnCHy0oqDM0IAekrKWpG9g/exec";
 
 // Get URL parameters for referral tracking
 function getURLParameter(param) {

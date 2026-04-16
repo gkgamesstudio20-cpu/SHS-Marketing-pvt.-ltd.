@@ -15,7 +15,7 @@
  */
 
 // ── CONSTANTS ─────────────────────────────────────────────────────────────────
-const TREE_API_URL  = 'https://script.google.com/macros/s/AKfycbzfHIV2BQHqHsxE5c4Hc9IS_ssXfsLb0sYDtzehoFbb9fbgBYhlUXGI7Zm0bEfKQzR-jg/exec';
+const TREE_API_URL  = 'https://script.google.com/macros/s/AKfycby6bXcLt6W8xAoJcW5hCrOHhzVM0HjvcS-J-RqTFP0uwxGTNnCHy0oqDM0IAekrKWpG9g/exec';
 const MAX_LEVELS    = 7;
 const MAX_DIRECT    = 5;   // Each member can have exactly 5 direct referrals
 const LEVEL_CAP     = [0, 5, 25, 125, 625, 3125, 15625, 78125]; // index = level number

@@ -2,7 +2,7 @@
 //  dashboard.js — SHS Marketing Dashboard
 // ============================================================
 
-const apiURL = "https://script.google.com/macros/s/AKfycbzfHIV2BQHqHsxE5c4Hc9IS_ssXfsLb0sYDtzehoFbb9fbgBYhlUXGI7Zm0bEfKQzR-jg/exec";
+const apiURL = "https://script.google.com/macros/s/AKfycby6bXcLt6W8xAoJcW5hCrOHhzVM0HjvcS-J-RqTFP0uwxGTNnCHy0oqDM0IAekrKWpG9g/exec";
 
 // ─── STORAGE HELPER ──────────────────────────────────────────────────────────
 const store = {
@@ -306,29 +306,189 @@ function fetchDepositAmount() {
         });
 }
 
-// ─── FIX-3: CLAIM BUTTON VISIBILITY ─────────────────────────────────────────
+// ─── CLAIM VISIBILITY — driven by getClaimableLevel (FIX-16) ─────────────────
+// Reward amounts per level
+const LEVEL_REWARDS = { 1: 2500, 2: 12500, 3: 62500, 4: 312500, 5: 1562500, 6: 7812500, 7: 39062500 };
+
+let _claimLevelFetchTimer   = null;   // debounce timer
+let _claimLevelFetchPending = false;  // prevent overlapping calls
+
+// Called from updateEarningsData(); debounced so rapid UI refreshes
+// (cache render + network render) only fire ONE API call.
 function updateClaimVisibility(currentLevel) {
     const claimSection = document.getElementById('claim-section');
-    const claimDesc    = document.getElementById('claim-section-desc');
     if (!claimSection) return;
-    const level = parseInt(currentLevel) || 0;
-    if (level >= 1) {
+
+    const userId = currentUser?.userId;
+    // Always show the section — show a loading spinner if userId not ready yet
+    if (!userId) {
         claimSection.style.display = 'block';
-        if (claimDesc) claimDesc.textContent =
-            'You are at Level ' + level + '. You can submit a claim for your Level ' + level + ' reward.';
-    } else {
-        claimSection.style.display = 'none';
+        const levelsGrid = document.getElementById('claim-levels-grid');
+        if (levelsGrid) levelsGrid.innerHTML =
+            '<div style="text-align:center;padding:20px;color:#5C6B8A;">' +
+            '<i class="fas fa-spinner fa-spin" style="margin-right:6px;"></i>Loading…</div>';
+        return;
+    }
+
+    // Debounce: wait 300 ms, cancel any pending timer
+    clearTimeout(_claimLevelFetchTimer);
+    _claimLevelFetchTimer = setTimeout(() => _doFetchClaimLevels(userId), 300);
+}
+
+function _doFetchClaimLevels(userId) {
+    // Skip if a fetch is already in-flight
+    if (_claimLevelFetchPending) return;
+    _claimLevelFetchPending = true;
+
+    const claimSection = document.getElementById('claim-section');
+    const claimDesc    = document.getElementById('claim-section-desc');
+    const levelsGrid   = document.getElementById('claim-levels-grid');
+
+    // Show loading state
+    if (claimSection) claimSection.style.display = 'block';
+    if (claimDesc)    claimDesc.textContent = 'Checking your level rewards…';
+    if (levelsGrid)   levelsGrid.innerHTML =
+        '<div style="text-align:center;padding:20px;color:#5C6B8A;">' +
+        '<i class="fas fa-spinner fa-spin" style="margin-right:6px;"></i>Loading levels…</div>';
+
+    gasApiCall({ action: 'getClaimableLevel', userId })
+        .then(res => {
+            if (!res.success) {
+                // Show error with a Retry button — never leave a spinning loader
+                if (claimDesc) claimDesc.textContent = '';
+                if (levelsGrid) levelsGrid.innerHTML =
+                    '<div style="text-align:center;padding:20px;color:#DC2626;">' +
+                    '<i class="fas fa-exclamation-circle" style="margin-right:6px;"></i>' +
+                    (res.message || 'Could not load level data.') +
+                    ' <button onclick="_claimLevelFetchPending=false;updateClaimVisibility(0)" ' +
+                    'style="margin-left:8px;background:none;border:1px solid #DC2626;color:#DC2626;' +
+                    'border-radius:6px;padding:4px 10px;cursor:pointer;font-size:12px;">Retry</button></div>';
+                return;
+            }
+            renderClaimLevels(res.levels);
+        })
+        .catch(err => {
+            console.error('❌ getClaimableLevel error:', err);
+            if (levelsGrid) levelsGrid.innerHTML =
+                '<div style="text-align:center;padding:20px;color:#DC2626;">' +
+                '<i class="fas fa-wifi" style="margin-right:6px;"></i>Network error. ' +
+                '<button onclick="_claimLevelFetchPending=false;updateClaimVisibility(0)" ' +
+                'style="margin-left:8px;background:none;border:1px solid #DC2626;color:#DC2626;' +
+                'border-radius:6px;padding:4px 10px;cursor:pointer;font-size:12px;">Retry</button></div>';
+        })
+        .finally(() => {
+            _claimLevelFetchPending = false;
+        });
+}
+
+// Render per-level cards inside #claim-levels-grid
+// All 7 level cards are ALWAYS shown so users can see their progress.
+// The Claim button appears exactly when showClaim===true (backend sets this
+// when current >= required AND no Pending/Approved claim exists).
+// claimLevel saved to Google Sheet is the level NUMBER (1-7), NOT the member count.
+function renderClaimLevels(levels) {
+    const claimSection = document.getElementById('claim-section');
+    const claimDesc    = document.getElementById('claim-section-desc');
+    const levelsGrid   = document.getElementById('claim-levels-grid');
+    if (!claimSection || !levelsGrid) return;
+
+    // Always show the claim section with all 7 level cards
+    claimSection.style.display = 'block';
+
+    const claimableCount = Object.values(levels).filter(l => l.showClaim).length;
+    if (claimDesc) {
+        claimDesc.textContent = claimableCount > 0
+            ? `You have ${claimableCount} level reward${claimableCount > 1 ? 's' : ''} ready to claim!`
+            : 'Complete levels to unlock reward claims. (L1=5, L2=25, L3=125, L4=625, L5=3125, L6=15625, L7=78125 members)';
+    }
+
+    levelsGrid.innerHTML = '';
+
+    for (let l = 1; l <= 7; l++) {
+        const key  = 'L' + l;
+        // If backend didn't return data for this level, build a default empty entry
+        const data = levels[key] || { level: l, required: Math.pow(5, l), current: 0, completed: false, claimStatus: null, showClaim: false };
+
+        const pct        = Math.min(100, Math.round((data.current / data.required) * 100));
+        const reward     = LEVEL_REWARDS[l] ? '₹' + LEVEL_REWARDS[l].toLocaleString('en-IN') : '—';
+        const statusInfo = getClaimStatusInfo(data.claimStatus, data.showClaim, data.completed);
+
+        const card = document.createElement('div');
+        card.className = 'claim-level-card';
+        card.style.cssText = `
+            background:#fff;border:1.5px solid ${data.completed ? '#C9972C' : '#E5E7EB'};
+            border-radius:12px;padding:16px;position:relative;
+            box-shadow:${data.completed ? '0 4px 16px rgba(201,151,44,.15)' : '0 2px 8px rgba(13,27,62,.06)'};
+            transition:transform .2s,box-shadow .2s;
+        `;
+
+        card.innerHTML = `
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <div style="width:32px;height:32px;border-radius:50%;background:${data.completed ? 'linear-gradient(135deg,#E2B84A,#A37820)' : '#F3F4F6'};
+                         display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;
+                         color:${data.completed ? '#0D1B3E' : '#94A3B8'};">L${l}</div>
+                    <div>
+                        <div style="font-size:13px;font-weight:700;color:#0D1B3E;font-family:'Sora',sans-serif;">Level ${l}</div>
+                        <div style="font-size:11px;color:#5C6B8A;">${reward} reward</div>
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:12px;font-weight:600;color:#0D1B3E;">${data.current}/${data.required}</div>
+                    <div style="font-size:10px;color:#5C6B8A;">members</div>
+                </div>
+            </div>
+            <div style="background:#F3F4F6;border-radius:100px;height:6px;overflow:hidden;margin-bottom:12px;">
+                <div style="width:${pct}%;height:100%;border-radius:100px;
+                     background:${data.completed ? 'linear-gradient(90deg,#E2B84A,#A37820)' : 'linear-gradient(90deg,#6366f1,#818cf8)'};
+                     transition:width .4s ease;"></div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+                <span style="font-size:11px;padding:3px 10px;border-radius:100px;font-weight:600;
+                      background:${statusInfo.bg};color:${statusInfo.color};">
+                    ${statusInfo.icon} ${statusInfo.label}
+                </span>
+                ${data.showClaim ? `
+                <button onclick="openClaimModal(${l})"
+                    style="background:linear-gradient(135deg,#E2B84A,#A37820);color:#0D1B3E;border:none;
+                           border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;
+                           display:flex;align-items:center;gap:5px;font-family:'Inter',sans-serif;
+                           box-shadow:0 3px 8px rgba(201,151,44,.30);transition:opacity .2s;"
+                    onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+                    <i class="fas fa-hand-holding-usd"></i> Claim
+                </button>` : ''}
+            </div>
+        `;
+        levelsGrid.appendChild(card);
     }
 }
 
-// ─── FIX-4: CLAIM MODAL OPEN / CLOSE ─────────────────────────────────────────
-function openClaimModal() {
+function getClaimStatusInfo(claimStatus, showClaim, completed) {
+    if (!completed) return { label: 'In Progress', icon: '⏳', bg: '#EFF6FF', color: '#3B82F6' };
+    if (claimStatus === 'Approved')  return { label: 'Approved',  icon: '✅', bg: '#ECFDF5', color: '#059669' };
+    if (claimStatus === 'Pending')   return { label: 'Pending',   icon: '🕐', bg: '#FEF3C7', color: '#D97706' };
+    if (claimStatus === 'Rejected')  return { label: 'Rejected — Resubmit', icon: '❌', bg: '#FEF2F2', color: '#DC2626' };
+    if (showClaim)                   return { label: 'Ready to Claim', icon: '🏆', bg: '#FFF7ED', color: '#C9972C' };
+    return { label: 'Completed', icon: '✅', bg: '#ECFDF5', color: '#059669' };
+}
+
+// ─── CLAIM MODAL OPEN / CLOSE ─────────────────────────────────────────────────
+// level is passed explicitly from the per-level Claim button (e.g. openClaimModal(2))
+let _pendingClaimLevel = 1;
+
+function openClaimModal(level) {
     const modal = document.getElementById('claimModal');
     const info  = document.getElementById('claimModalLevelInfo');
     const errEl = document.getElementById('claimFormError');
-    const level = parseInt(currentUser?.currentlevel) || 1;
 
-    if (info) info.textContent = 'Claiming reward for Level ' + level + '. Fill in your bank details below.';
+    // Use the explicitly passed level; fallback to currentlevel only if not provided
+    _pendingClaimLevel = parseInt(level) || parseInt(currentUser?.currentlevel) || 1;
+    const reward = LEVEL_REWARDS[_pendingClaimLevel]
+        ? ' (₹' + LEVEL_REWARDS[_pendingClaimLevel].toLocaleString('en-IN') + ')'
+        : '';
+
+    if (info) info.textContent =
+        'Claiming reward for Level ' + _pendingClaimLevel + reward + '. Fill in your bank details below.';
     if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
 
     // Pre-fill bank details from profile if available
@@ -367,7 +527,8 @@ function submitClaim(e) {
     e.preventDefault();
     const errEl = document.getElementById('claimFormError');
     const btn   = document.getElementById('claimSubmitBtn');
-    const level = parseInt(currentUser?.currentlevel) || 1;
+    // Use _pendingClaimLevel set by openClaimModal(level)
+    const level = _pendingClaimLevel || parseInt(currentUser?.currentlevel) || 1;
 
     const accountHolder = document.getElementById('claim-accountHolder')?.value.trim();
     const bankName      = document.getElementById('claim-bankName')?.value.trim();
@@ -414,6 +575,9 @@ function submitClaim(e) {
         if (res.success) {
             closeClaimModal();
             showNotification('✅ Claim submitted! Admin will review it shortly.', 'success');
+            // Refresh the level cards so the claimed level's button disappears
+            _claimLevelFetchPending = false;
+            updateClaimVisibility(parseInt(currentUser?.currentlevel) || 0);
         } else {
             if (errEl) { errEl.textContent = res.message || 'Submission failed.'; errEl.style.display = 'block'; }
         }
