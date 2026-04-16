@@ -267,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 phone          : normalizedPhone,
                 transactionId  : txnVal.toUpperCase(),
                 paymentMethod  : 'UPI',
-                upiId          : 'shsbrandgroup@oksbi',
+                upiId          : '9888566949@iob',
 
                 // ── NEW fields sent to Google Sheets ──
                 paymentAmount  : selectedAmount,          // e.g. "5000"
@@ -342,9 +342,9 @@ document.addEventListener('DOMContentLoaded', () => {
         upiIDElement.style.cursor = 'pointer';
         upiIDElement.title        = 'Click to copy UPI ID';
         upiIDElement.addEventListener('click', () => {
-            navigator.clipboard.writeText('shsbrandgroup@oksbi')
+            navigator.clipboard.writeText('9888566949@iob')
                 .then(() => showMessage('✓ UPI ID copied to clipboard!', 'success'))
-                .catch(() => showMessage('UPI ID: shsbrandgroup@oksbi (copy manually)', 'info'));
+                .catch(() => showMessage('UPI ID: 9888566949@iob (copy manually)', 'info'));
         });
     }
 
