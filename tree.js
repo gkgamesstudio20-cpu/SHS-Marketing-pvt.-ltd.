@@ -71,10 +71,10 @@ async function treeApiCall(action, payload = {}) {
 // SEARCH
 // ─────────────────────────────────────────────────────────────────────────────
 function initTreeSearch() {
-  T.searchForm?.addEventListener('submit', async (e) => {
+  if (T.searchForm) T.searchForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const val  = T.searchInput?.value.trim();
-    const type = T.searchType?.value;
+    var val  = T.searchInput ? T.searchInput.value.trim() : "";
+    var type = T.searchType ? T.searchType.value : "userId";
     if (!val) { treeToast('Enter a User ID or Referral Code', 'warning'); return; }
 
     treeShowLoader(true);
@@ -96,12 +96,12 @@ function initTreeSearch() {
     }
   });
 
-  T.newSearch?.addEventListener('click', treeResetView);
+  if (T.newSearch) T.newSearch.addEventListener('click', treeResetView);
 }
 
 function treeShowDashboard() {
-  T.treeSearchPanel?.classList.add('hidden');
-  T.treeDashPanel?.classList.remove('hidden');
+  if (T.treeSearchPanel) T.treeSearchPanel.classList.add('hidden');
+  if (T.treeDashPanel) T.treeDashPanel.classList.remove('hidden');
   if (treeState.currentUser) {
     const u    = treeState.currentUser;
     const name = u.firstName
@@ -116,17 +116,17 @@ function treeShowDashboard() {
 function treeResetView() {
   treeState.currentUser = null;
   treeState.treeData    = null;
-  T.treeDashPanel?.classList.add('hidden');
-  T.treeSearchPanel?.classList.remove('hidden');
-  T.searchForm?.reset();
+  if (T.treeDashPanel) T.treeDashPanel.classList.add('hidden');
+  if (T.treeSearchPanel) T.treeSearchPanel.classList.remove('hidden');
+  if (T.searchForm) T.searchForm.reset();
   if (T.treeRoot) T.treeRoot.innerHTML = '';
 }
 
 function treeShowError(msg) {
-  T.treeLoader?.classList.add('hidden');
-  T.treeRoot?.classList.add('hidden');
-  T.treeEmpty?.classList.add('hidden');
-  T.treeError?.classList.remove('hidden');
+  if (T.treeLoader) T.treeLoader.classList.add('hidden');
+  if (T.treeRoot) T.treeRoot.classList.add('hidden');
+  if (T.treeEmpty) T.treeEmpty.classList.add('hidden');
+  if (T.treeError) T.treeError.classList.remove('hidden');
   if (T.errorMessage) T.errorMessage.textContent = msg;
 }
 
@@ -134,15 +134,14 @@ function treeShowError(msg) {
 // DATA LOADING
 // ─────────────────────────────────────────────────────────────────────────────
 async function loadTreeData() {
-  if (!treeState.currentUser?.userId) return;
+  if (!treeState.currentUser || !treeState.currentUser.userId) return;
   treeShowLoader(true);
-  T.treeError?.classList.add('hidden');
+  if (T.treeError) T.treeError.classList.add('hidden');
 
   try {
-    const [countResult, treeResult] = await Promise.all([
-      treeApiCall('tree', { treeAction: 'countDownline',   userId: treeState.currentUser.userId }),
-      treeApiCall('tree', { treeAction: 'getDownlineTree', userId: treeState.currentUser.userId, maxDepth: MAX_LEVELS, maxChildren: 100 })
-    ]);
+    // Serial calls — more reliable than Promise.all on Android CEF / slow GAS
+    var countResult = await treeApiCall('tree', { treeAction: 'countDownline', userId: treeState.currentUser.userId });
+    var treeResult  = await treeApiCall('tree', { treeAction: 'getDownlineTree', userId: treeState.currentUser.userId, maxDepth: MAX_LEVELS, maxChildren: 100 });
 
     treeState.treeData = treeResult.tree;
     updateTreeStats(countResult.counts);
@@ -152,7 +151,7 @@ async function loadTreeData() {
   } catch (err) {
     treeShowError('Failed to load tree: ' + (err.message || 'Please try again.'));
   } finally {
-    T.treeLoader?.classList.add('hidden');
+    if (T.treeLoader) T.treeLoader.classList.add('hidden');
   }
 }
 
@@ -167,17 +166,17 @@ function updateTreeStats(counts) {
 
   let activeLevels = 0;
   for (let i = 1; i <= MAX_LEVELS; i++) {
-    if ((counts.breakdown?.[`level${i}`] || 0) > 0) activeLevels++;
+    if (((counts.breakdown && counts.breakdown['level' + i]) || 0) > 0) activeLevels++;
   }
   if (T.activeLevels)    T.activeLevels.textContent    = `${activeLevels}/7`;
-  if (T.directReferrals) T.directReferrals.textContent = `${counts.breakdown?.level1 || 0}/${MAX_DIRECT}`;
+  if (T.directReferrals) T.directReferrals.textContent = ((counts.breakdown && counts.breakdown.level1) || 0) + '/' + MAX_DIRECT;
 
   const fill = Math.min(Math.round((total / TOTAL_MAX) * 100), 100);
   if (T.matrixFill) T.matrixFill.textContent = `${fill}%`;
 }
 
 function renderLevelBars(counts) {
-  if (!counts?.breakdown || !T.levelBars) return;
+  if (!counts || !counts.breakdown || !T.levelBars) return;
 
   let html = '';
   for (let i = 1; i <= MAX_LEVELS; i++) {
@@ -225,13 +224,13 @@ function renderTreeView() {
 
   const node = treeState.treeData;
   if (!node) {
-    T.treeEmpty?.classList.remove('hidden');
-    T.treeRoot?.classList.add('hidden');
+    if (T.treeEmpty) T.treeEmpty.classList.remove('hidden');
+    if (T.treeRoot) T.treeRoot.classList.add('hidden');
     return;
   }
 
-  T.treeEmpty?.classList.add('hidden');
-  T.treeRoot?.classList.remove('hidden');
+  if (T.treeEmpty) T.treeEmpty.classList.add('hidden');
+  if (T.treeRoot) T.treeRoot.classList.remove('hidden');
 
   // Always use the searched user's real data for the root card
   const cu = treeState.currentUser;
@@ -516,7 +515,7 @@ function buildMatrixCard(user, depth) {
     || `${user.firstName || ''} ${user.lastName || ''}`.trim()
     || (user.userId || '??');
   const parts    = displayName.trim().split(' ');
-  const initials = ((parts[0]?.[0] || '?') + (parts[1]?.[0] || parts[0]?.[1] || '?')).toUpperCase();
+  var p0 = parts[0] || ''; var p1 = parts[1] || ''; var initials = ((p0[0] || '?') + (p1[0] || p0[1] || '?')).toUpperCase();
 
   const avatar = document.createElement('div');
   avatar.className   = 'matrix-avatar';
@@ -611,7 +610,7 @@ function treeShowModal(user, level) {
 
   if (T.modalCopyReferral) {
     T.modalCopyReferral.onclick = () => {
-      const code = document.getElementById('modalReferralCode')?.textContent;
+      var codeEl = document.getElementById('modalReferralCode'); var code = codeEl ? codeEl.textContent : null;
       if (code && code !== 'N/A') {
         navigator.clipboard.writeText(code)
           .then(()  => treeToast('Referral code copied!', 'success'))
@@ -643,24 +642,24 @@ function treeShowModal(user, level) {
 }
 
 function treeCloseModal() {
-  T.memberModal?.classList.add('hidden');
+  if (T.memberModal) T.memberModal.classList.add('hidden');
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CONTROLS
 // ─────────────────────────────────────────────────────────────────────────────
 function initTreeControls() {
-  T.depthSelector?.addEventListener('change', (e) => {
+  if (T.depthSelector) T.depthSelector.addEventListener('change', (e) => {
     treeState.currentDepth = parseInt(e.target.value);
     if (treeState.treeData) renderTreeView();
   });
 
-  T.refreshTree?.addEventListener('click', () => {
+  if (T.refreshTree) T.refreshTree.addEventListener('click', () => {
     loadTreeData();
     treeToast('Refreshing tree…', 'info');
   });
 
-  T.expandAll?.addEventListener('click', () => {
+  if (T.expandAll) T.expandAll.addEventListener('click', () => {
     document.querySelectorAll('.matrix-children-collapsed').forEach(el => {
       el.classList.remove('matrix-children-collapsed');
     });
@@ -670,7 +669,7 @@ function initTreeControls() {
     });
   });
 
-  T.collapseAll?.addEventListener('click', () => {
+  if (T.collapseAll) T.collapseAll.addEventListener('click', () => {
     // Collapse all children rows except the direct children of root
     document.querySelectorAll('.matrix-slot-wrap .matrix-children-row').forEach(el => {
       el.classList.add('matrix-children-collapsed');
@@ -678,11 +677,11 @@ function initTreeControls() {
     document.querySelectorAll('.matrix-slot-wrap .matrix-toggle').forEach(btn => { btn.textContent = '+'; });
   });
 
-  T.exportTree?.addEventListener('click', exportTreeData);
-  T.printTree?.addEventListener('click',  () => window.print());
+  if (T.exportTree) T.exportTree.addEventListener('click', exportTreeData);
+  if (T.printTree) T.printTree.addEventListener('click',  () => window.print());
 
-  T.modalClose?.addEventListener('click', treeCloseModal);
-  T.memberModal?.addEventListener('click', (e) => {
+  if (T.modalClose) T.modalClose.addEventListener('click', treeCloseModal);
+  if (T.memberModal) T.memberModal.addEventListener('click', (e) => {
     if (e.target === T.memberModal) treeCloseModal();
   });
   document.addEventListener('keydown', (e) => {
@@ -694,11 +693,11 @@ function initTreeControls() {
 // UTILITIES
 // ─────────────────────────────────────────────────────────────────────────────
 function treeShowLoader(show) {
-  T.treeLoader?.classList.toggle('hidden', !show);
+  if (T.treeLoader) T.treeLoader.classList.toggle('hidden', !show);
   if (show) {
-    T.treeRoot?.classList.add('hidden');
-    T.treeEmpty?.classList.add('hidden');
-    T.treeError?.classList.add('hidden');
+    if (T.treeRoot) T.treeRoot.classList.add('hidden');
+    if (T.treeEmpty) T.treeEmpty.classList.add('hidden');
+    if (T.treeError) T.treeError.classList.add('hidden');
   }
 }
 
@@ -1080,17 +1079,16 @@ function initTree() {
     _treeInitialized = true;
   }
 
-  // Auto-load from session cache on first visit
+  // Auto-load from localStorage cache on first visit
   if (!treeState.currentUser) {
     try {
-      // Auto-load from localStorage cache on first visit
-      const cached = JSON.parse(localStorage.getItem('userData') || 'null');
-      if (cached?.userId) {
+      var cached = JSON.parse(localStorage.getItem('userData') || 'null');
+      if (cached && cached.userId) {
         // Re-fetch fresh user data from API so root card always shows accurate info
         treeShowLoader(true);
         treeApiCall('getUserDataByUserId', { userId: cached.userId })
           .then(res => {
-            treeState.currentUser = res.user || cached;
+            treeState.currentUser = (res && res.user) ? res.user : cached;
             return loadTreeData();
           })
           .then(() => treeShowDashboard())
