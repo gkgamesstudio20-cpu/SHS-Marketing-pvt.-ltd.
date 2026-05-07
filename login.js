@@ -5,7 +5,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycby6bXcLt6W8xAoJcW5hCrOH
 document.addEventListener('DOMContentLoaded', function () {
 
     // Redirect if already logged in
-    if (sessionStorage.getItem('isLoggedIn') === 'true') {
+
+
+    if (localStorage.getItem('isLoggedIn') === 'true')
+        
+    // if (sessionStorage.getItem('isLoggedIn') === 'true') 
+    {
         window.location.href = 'dashboard.html';
         return;
     }
@@ -239,7 +244,15 @@ function setupFormSubmit() {
                 const user = result.user || {};
 
                 // Session stored in sessionStorage (clears on tab close)
-                sessionStorage.setItem('isLoggedIn', 'true');
+
+
+                    localStorage.setItem('isLoggedIn', 'true');
+
+                
+                // sessionStorage.setItem('isLoggedIn', 'true');
+
+
+                
                 sessionStorage.setItem('loggedInMobile', normalizedMobile);
                 sessionStorage.setItem('userData', JSON.stringify({
                     userId:       user.userId       || '',
