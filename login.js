@@ -7,9 +7,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Redirect if already logged in
 
 
-    if (localStorage.getItem('isLoggedIn') === 'true')
+    // if (localStorage.getItem('isLoggedIn') === 'true')
         
-    // if (sessionStorage.getItem('isLoggedIn') === 'true') 
+    if (sessionStorage.getItem('isLoggedIn') === 'true') 
     {
         window.location.href = 'dashboard.html';
         return;
@@ -246,10 +246,10 @@ function setupFormSubmit() {
                 // Session stored in sessionStorage (clears on tab close)
 
 
-                    localStorage.setItem('isLoggedIn', 'true');
+                    // localStorage.setItem('isLoggedIn', 'true');
 
                 
-                // sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('isLoggedIn', 'true');
 
 
                 
