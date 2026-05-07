@@ -5,10 +5,11 @@
 const apiURL = "https://script.google.com/macros/s/AKfycby6bXcLt6W8xAoJcW5hCrOHhzVM0HjvcS-J-RqTFP0uwxGTNnCHy0oqDM0IAekrKWpG9g/exec";
 
 // ─── STORAGE HELPER ──────────────────────────────────────────────────────────
+// Using localStorage — sessionStorage is wiped by CEF on Android during navigation
 const store = {
-    get:    key        => sessionStorage.getItem(key),
-    set:    (key, val) => sessionStorage.setItem(key, val),
-    remove: key        => sessionStorage.removeItem(key)
+    get:    key        => localStorage.getItem(key),
+    set:    (key, val) => localStorage.setItem(key, val),
+    remove: key        => localStorage.removeItem(key)
 };
 
 // ─── GAS API HELPER ──────────────────────────────────────────────────────────
@@ -74,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function checkAuth() {
     if (store.get('isLoggedIn') !== 'true') {
         console.warn('⚠️ Not authenticated — redirecting to login');
-        window.location.href = 'login.html';
+        window.location.replace('login.html'); // replace() removes dashboard from history — no back-button flicker
     }
 }
 
@@ -309,7 +310,7 @@ function fetchDepositAmount() {
 // ─── CLAIM VISIBILITY — driven by getClaimableLevel (FIX-16) ─────────────────
 // Reward amounts per level
 const LEVEL_REWARDS = {};
-// const LEVEL_REWARDS = { 1: 2500, 2: 12500, 3: 62500, 4: 312500, 5: 1562500, 6: 7812500, 7: 39062500 };
+// const LEVEL_REWARDS = { 1: 1000, 2: 3750, 3: 81250, 4: 1187500, 5: 9375000, 6: 62500000, 7: 429687500 };
 
 let _claimLevelFetchTimer   = null;   // debounce timer
 let _claimLevelFetchPending = false;  // prevent overlapping calls
@@ -1040,8 +1041,12 @@ function loadEarningsData() {
 }
 
 // ─── LOGOUT ──────────────────────────────────────────────────────────────────
+// Call from Unreal Blueprint: WebBrowser->ExecuteJavascript("logout();");
 function logout() {
-    window.location.href = 'logout.html';
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('loggedInMobile');
+    localStorage.removeItem('userData');
+    window.location.replace('login.html'); // replace() — no back-button return to dashboard
 }
 
 // ─── INJECT STYLES ───────────────────────────────────────────────────────────

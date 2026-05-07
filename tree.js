@@ -1083,7 +1083,8 @@ function initTree() {
   // Auto-load from session cache on first visit
   if (!treeState.currentUser) {
     try {
-      const cached = JSON.parse(sessionStorage.getItem('userData') || 'null');
+      // Auto-load from localStorage cache on first visit
+      const cached = JSON.parse(localStorage.getItem('userData') || 'null');
       if (cached?.userId) {
         // Re-fetch fresh user data from API so root card always shows accurate info
         treeShowLoader(true);

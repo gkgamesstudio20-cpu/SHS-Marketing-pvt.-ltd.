@@ -1,6 +1,6 @@
 // ============================================================
 //  Logout Page JavaScript — SHS Marketing Pvt. Ltd.
-//  Storage: sessionStorage throughout — matches login.js
+//  Storage: localStorage throughout — survives CEF navigation on Android (UE5)
 // ============================================================
 
 const API_URL = "https://script.google.com/macros/s/AKfycby6bXcLt6W8xAoJcW5hCrOHhzVM0HjvcS-J-RqTFP0uwxGTNnCHy0oqDM0IAekrKWpG9g/exec";
@@ -8,9 +8,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycby6bXcLt6W8xAoJcW5hCrOH
 // ===== DOM Ready =====
 document.addEventListener('DOMContentLoaded', function () {
 
-  // FIX: was localStorage — login.js writes to sessionStorage
-  if (sessionStorage.getItem('isLoggedIn') !== 'true') {
-    window.location.href = 'login.html';
+  if (localStorage.getItem('isLoggedIn') !== 'true') {
+    window.location.replace('login.html');
     return;
   }
 
@@ -28,8 +27,8 @@ function showUserBadge() {
   if (!badge || !badgeText) return;
 
   try {
-    // FIX: was localStorage — login.js writes userData to sessionStorage
-    const raw      = sessionStorage.getItem('userData');
+    // localStorage — all auth keys written by login.js
+    const raw      = localStorage.getItem('userData');
     const userData = raw ? JSON.parse(raw) : null;
 
     if (userData) {
@@ -46,7 +45,7 @@ function showUserBadge() {
     }
 
     // Fallback to mobile number
-    const mobile = sessionStorage.getItem('loggedInMobile');
+    const mobile = localStorage.getItem('loggedInMobile');
     if (mobile) {
       badgeText.textContent = mobile;
       badge.style.display   = 'inline-flex';
@@ -62,7 +61,7 @@ function setupEventListeners() {
   if (btnCancel) {
     btnCancel.addEventListener('click', function (e) {
       e.preventDefault();
-      window.location.href = 'dashboard.html';
+      window.location.replace('dashboard.html');
     });
   }
 
@@ -87,7 +86,7 @@ function confirmLogout() {
     btnCancel.style.opacity       = '0.5';
   }
 
-  const loggedInMobile = sessionStorage.getItem('loggedInMobile') || '';
+  const loggedInMobile = localStorage.getItem('loggedInMobile') || '';
 
   fetch(API_URL, {
     method:  'POST',
@@ -105,14 +104,14 @@ function confirmLogout() {
     });
 }
 
-// ===== Clear Session & Redirect =====
+// ===== Clear Auth & Redirect =====
 function clearSessionAndRedirect() {
-  // Clear session keys — keep localStorage rememberMe/savedMobile intact for next login
-  sessionStorage.removeItem('isLoggedIn');
-  sessionStorage.removeItem('loggedInMobile');
-  sessionStorage.removeItem('userData');
-  sessionStorage.removeItem('pendingPaymentPhone');
-  sessionStorage.removeItem('pendingPaymentTxnId');
+  // Clear all auth keys from localStorage — keep rememberMe/savedMobile intact for next login
+  localStorage.removeItem('isLoggedIn');
+  localStorage.removeItem('loggedInMobile');
+  localStorage.removeItem('userData');
+  localStorage.removeItem('pendingPaymentPhone');
+  localStorage.removeItem('pendingPaymentTxnId');
 
   showNotification('Logged out successfully!', 'success');
 
@@ -147,10 +146,10 @@ function showNotification(message, type = 'success') {
 
 // ===== Back-Button Guard =====
 window.addEventListener('popstate', function () {
-  if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+  if (localStorage.getItem('isLoggedIn') !== 'true') {
     window.location.replace('login.html');
   } else {
-    window.location.href = 'dashboard.html';
+    window.location.replace('dashboard.html');
   }
 });
 

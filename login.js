@@ -4,14 +4,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycby6bXcLt6W8xAoJcW5hCrOH
 // ─── INIT ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function () {
 
-    // Redirect if already logged in
-
-
-    // if (localStorage.getItem('isLoggedIn') === 'true')
-        
-    if (sessionStorage.getItem('isLoggedIn') === 'true') 
-    {
-        window.location.href = 'dashboard.html';
+    // Redirect if already logged in — replace() removes login.html from history
+    // so back button can never return to it and cause login↔dashboard flicker
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+        window.location.replace('dashboard.html');
         return;
     }
 
@@ -24,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setupForgotPassword();
 
     // Auto-fill mobile from payment page if coming from there
-    const pendingPhone = sessionStorage.getItem('pendingPaymentPhone');
+    const pendingPhone = localStorage.getItem('pendingPaymentPhone');
     if (pendingPhone) {
         const mobileInput = document.getElementById('mobile');
         if (mobileInput && !mobileInput.value) {
@@ -51,8 +47,6 @@ function normalizePhone(phone) {
 }
 
 // ─── PHONE DISPLAY FORMATTER ───────────────────────────────────────────────────
-// Only used for pre-filling (remember-me / pending payment auto-fill).
-// NOT called on input events — that caused "+91" to fight the user on every keystroke.
 function formatPhoneForDisplay(raw) {
     let digits = (raw + '').replace(/\D/g, '');
     if (digits.startsWith('91') && digits.length === 12) digits = digits.substring(2);
@@ -63,19 +57,14 @@ function formatPhoneForDisplay(raw) {
 }
 
 // ─── MOBILE FIELD SETUP ────────────────────────────────────────────────────────
-// Taken from payment.js approach:
-//   input → filter allowed chars only (no reformatting mid-type)
-//   blur  → format to "+91 XXXXX XXXXX" then validate
 function setupMobileField() {
     const mobile = document.getElementById('mobile');
     if (!mobile) return;
 
-    // Allow digits, +, -, spaces only — same as payment.js
     mobile.addEventListener('input', function () {
         this.value = this.value.replace(/[^\d+\-\s]/g, '');
     });
 
-    // On blur: format first, then validate — same order as payment.js
     mobile.addEventListener('blur', function () {
         const digits = this.value.replace(/\D/g, '');
         if (digits.length === 10 && /^[6-9]/.test(digits)) {
@@ -106,7 +95,6 @@ function validateMobileInput(value) {
 }
 
 // ─── PASSWORD FIELD SETUP ───────────────────────────────────────────────────────
-// Login only checks non-empty — complexity rules belong at registration only.
 function setupPasswordField() {
     const password = document.getElementById('password');
     if (!password) return;
@@ -143,9 +131,6 @@ function toggleError(id, hasError, message) {
 }
 
 // ─── REMEMBER ME ───────────────────────────────────────────────────────────────
-// Stores and restores the raw 10-digit number.
-// formatPhoneForDisplay() is called on restore to show the pretty "+91 XXXXX XXXXX"
-// without the double-format bug the old code had.
 function setupRememberMe() {
     if (localStorage.getItem('rememberMe') === 'true') {
         const savedMobile = localStorage.getItem('savedMobile');
@@ -185,11 +170,10 @@ function setupFormSubmit() {
         e.preventDefault();
 
         const mobileRaw = document.getElementById('mobile')?.value.trim();
-        const password  = document.getElementById('password')?.value; // no trim — preserve as registered
+        const password  = document.getElementById('password')?.value;
         const remember  = document.getElementById('remember')?.checked;
         const btn       = document.getElementById('loginBtn');
 
-        // Validate fields — show all errors before returning
         let isValid = true;
 
         const mobileValidation = validateMobileInput(mobileRaw);
@@ -209,7 +193,6 @@ function setupFormSubmit() {
 
         if (!isValid) return;
 
-        // Send clean 10-digit number to GAS backend
         const normalizedMobile = normalizePhone(mobileRaw);
 
         setLoading(btn, true);
@@ -229,7 +212,6 @@ function setupFormSubmit() {
             const result = await response.json();
             console.log('📥 Backend response:', result);
 
-            // Check paymentPending FIRST — GAS returns success:false + paymentPending:true
             if (result.paymentPending) {
                 showNotification(
                     '⏳ Your payment is still being verified. Please wait up to 24 hours.',
@@ -243,18 +225,10 @@ function setupFormSubmit() {
                 console.log('✅ Login successful!');
                 const user = result.user || {};
 
-                // Session stored in sessionStorage (clears on tab close)
-
-
-                    // localStorage.setItem('isLoggedIn', 'true');
-
-                
-                sessionStorage.setItem('isLoggedIn', 'true');
-
-
-                
-                sessionStorage.setItem('loggedInMobile', normalizedMobile);
-                sessionStorage.setItem('userData', JSON.stringify({
+                // ── Auth state in localStorage — survives CEF navigation on Android ──
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('loggedInMobile', normalizedMobile);
+                localStorage.setItem('userData', JSON.stringify({
                     userId:       user.userId       || '',
                     name:         user.name         || '',
                     mobile:       user.mobile        || normalizedMobile,
@@ -262,7 +236,6 @@ function setupFormSubmit() {
                     referralCode: user.referralCode  || ''
                 }));
 
-                // Remember me — persist raw 10-digit number only
                 if (remember) {
                     localStorage.setItem('rememberMe', 'true');
                     localStorage.setItem('savedMobile', normalizedMobile);
@@ -271,15 +244,15 @@ function setupFormSubmit() {
                     localStorage.removeItem('savedMobile');
                 }
 
-                // Clean up payment sessionStorage keys
-                sessionStorage.removeItem('pendingPaymentPhone');
-                sessionStorage.removeItem('pendingPaymentTxnId');
+                localStorage.removeItem('pendingPaymentPhone');
+                localStorage.removeItem('pendingPaymentTxnId');
 
                 showNotification(`✅ Welcome, ${user.name || 'User'}!`, 'success');
 
-                // Small delay so user sees the notification, then redirect
+                // replace() — removes login.html from history stack entirely
+                // back button on dashboard will NOT return to login
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html';
+                    window.location.replace('dashboard.html');
                 }, 1200);
 
             } else {
@@ -358,8 +331,8 @@ function showNotification(message, type) {
 
 // ─── NAVIGATION GUARD ─────────────────────────────────────────────────────────
 window.addEventListener('popstate', () => {
-    if (sessionStorage.getItem('isLoggedIn') === 'true') {
-        window.location.href = 'dashboard.html';
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+        window.location.replace('dashboard.html');
     }
 });
 
@@ -368,16 +341,19 @@ if (window.history.replaceState) {
 }
 
 // ─── AUTH UTILITIES — call these from dashboard.html and other protected pages ──
+
+// To logout from Unreal Blueprint use:
+// WebBrowser->ExecuteJavascript("logout();");
 function logout() {
-    sessionStorage.removeItem('isLoggedIn');
-    sessionStorage.removeItem('loggedInMobile');
-    sessionStorage.removeItem('userData');
-    window.location.href = 'login.html';
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('loggedInMobile');
+    localStorage.removeItem('userData');
+    window.location.replace('login.html');
 }
 
 function requireAuth() {
-    if (sessionStorage.getItem('isLoggedIn') !== 'true') {
-        window.location.href = 'login.html';
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+        window.location.replace('login.html');
         return false;
     }
     return true;
@@ -385,7 +361,7 @@ function requireAuth() {
 
 function getCurrentUser() {
     try {
-        return JSON.parse(sessionStorage.getItem('userData') || '{}');
+        return JSON.parse(localStorage.getItem('userData') || '{}');
     } catch {
         return {};
     }
